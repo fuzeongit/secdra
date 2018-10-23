@@ -2,6 +2,7 @@ package com.junjie.secdraweb.base.advice
 
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.model.Result
+import javassist.NotFoundException
 import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType
 import org.springframework.http.converter.HttpMessageConverter
@@ -29,6 +30,13 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
         return Result(500, e.message!!);
     }
 
+    //找不到异常
+    @ResponseBody
+    @ExceptionHandler(NotFoundException::class)
+    fun notFoundExceptionHandler(e: NotFoundException): Result<Any?> {
+        return Result(404, e.message!!);
+    }
+
     //自定义异常
     @ResponseBody
     @ExceptionHandler(ProgramException::class)
@@ -36,7 +44,7 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
         return Result(e.status, e.message!!);
     }
 
-    //自定义异常
+    //其他异常
     @ResponseBody
     @ExceptionHandler(Exception::class)
     fun exceptionHandler(e: Exception): Result<Any?> {

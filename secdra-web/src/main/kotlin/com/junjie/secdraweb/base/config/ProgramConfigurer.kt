@@ -2,8 +2,10 @@ package com.junjie.secdraweb.base.config
 
 import com.junjie.secdraweb.base.component.JwtConfig
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
+import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -18,9 +20,19 @@ class ProgramConfigurer : WebMvcConfigurer{
         super.addInterceptors(registry)
     }
 
+    override fun  addArgumentResolvers(argumentResolvers :MutableList<HandlerMethodArgumentResolver> ) {
+        argumentResolvers.add(currentUserMethodArgumentResolver())
+        super.addArgumentResolvers(argumentResolvers);
+    }
+
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
         return AuthInterceptor(jwtConfig())
+    }
+
+    @Bean
+    fun currentUserMethodArgumentResolver(): CurrentUserIdMethodArgumentResolver {
+        return CurrentUserIdMethodArgumentResolver()
     }
 
     @Bean
