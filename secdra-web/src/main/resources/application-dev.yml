@@ -1,0 +1,25 @@
+server:
+  port: 8080
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/secdra
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+#  mvc:
+#    static-path-pattern: /static/**
+
+jwt:
+  expiresSecond:172800000
+  base64Secret:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMiLCJleHAiOjE1NDA0MzYxMzYsIm5iZiI6MTU0MDI2MzMzNn0.Q7FKiYp2W-V8cBIP9zEkxO7cpH9MER-aM6q_0lOZeHA=
+
+
+
+
