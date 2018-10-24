@@ -41,12 +41,10 @@ class AuthInterceptor(private val jwtConfig: JwtConfig,private val redisTemplate
                     val nbf = Date(claims["nbf"]?.toString()?.toLong()!!)
 
                     val updatePasswordTimeStr = redisTemplate.opsForValue().get(jwtConfig.redisPrefix+userId)
-                    val updatePasswordTime = null
+                    val updatePasswordTime = Date()
                     if(StringUtils.isEmpty(updatePasswordTimeStr)){
 
                     }
-
-                    //
                     if(DateUtil.getDistanceTimestamp(exp,Date()) < 0){
                         throw ProgramException("用户登录已过期", 401)
                     }
