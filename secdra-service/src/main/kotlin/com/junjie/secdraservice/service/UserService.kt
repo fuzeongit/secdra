@@ -8,13 +8,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(val userDao: IUserDao):IUserService {
-    override fun register(phone: String, password: String): User {
-        if(userDao.existsByPhone(phone)){
+    override fun register(user: User): User {
+        if(userDao.existsByPhone(user.phone!!)){
             throw ProgramException("手机号已存在", 403)
         }
-        val user = User()
-        user.phone = phone;
-        user.password = password;
         return userDao.save(user)
     }
 

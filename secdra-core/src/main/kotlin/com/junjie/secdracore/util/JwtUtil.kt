@@ -18,10 +18,9 @@ object JwtUtil {
         }
     }
 
-    fun createJWT(userId: String, expiresSecond: Long, base64Security: String): String {
+    fun createJWT(userId: String,nowMillis:Long, expiresSecond: Long, base64Security: String): String {
         val signatureAlgorithm = SignatureAlgorithm.HS256
 
-        val nowMillis = System.currentTimeMillis()
         val now = Date(nowMillis)
 
         //生成签名密钥

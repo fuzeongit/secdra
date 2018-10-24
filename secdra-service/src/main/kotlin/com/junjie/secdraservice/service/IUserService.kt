@@ -6,7 +6,7 @@ interface IUserService {
     /**
      * 注册
      */
-    fun register(phone: String, password: String): User
+    fun register(user: User): User
 
     /**
      * 登录

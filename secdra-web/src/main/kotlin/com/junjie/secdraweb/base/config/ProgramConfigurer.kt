@@ -1,8 +1,6 @@
 package com.junjie.secdraweb.base.config
 
-import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.JwtConfig
 import com.junjie.secdraweb.base.component.RedisComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
@@ -16,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
-class ProgramConfigurer : WebMvcConfigurer {
+class ProgramConfigurer(private val redisTemplate: StringRedisTemplate,private val userService: IUserService) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
@@ -32,7 +30,7 @@ class ProgramConfigurer : WebMvcConfigurer {
 
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
-        return AuthInterceptor(jwtConfig(),StringRedisTemplate())
+        return AuthInterceptor(jwtConfig(),redisTemplate,userService)
     }
 
     @Bean
