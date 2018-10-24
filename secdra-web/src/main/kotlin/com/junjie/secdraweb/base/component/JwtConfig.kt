@@ -11,4 +11,6 @@ class JwtConfig {
     var expiresSecond:Long = 0
 
     var base64Secret:String = ""
+
+    var redisPrefix:String = ""
 }

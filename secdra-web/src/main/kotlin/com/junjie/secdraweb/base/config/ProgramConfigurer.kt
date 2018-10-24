@@ -1,10 +1,15 @@
 package com.junjie.secdraweb.base.config
 
+import com.junjie.secdraservice.dao.IUserDao
+import com.junjie.secdraservice.service.IUserService
+import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.JwtConfig
+import com.junjie.secdraweb.base.component.RedisComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -27,7 +32,7 @@ class ProgramConfigurer : WebMvcConfigurer {
 
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
-        return AuthInterceptor(jwtConfig())
+        return AuthInterceptor(jwtConfig(),StringRedisTemplate())
     }
 
     @Bean
@@ -38,5 +43,10 @@ class ProgramConfigurer : WebMvcConfigurer {
     @Bean
     internal fun jwtConfig(): JwtConfig {
         return JwtConfig()
+    }
+
+    @Bean
+    internal fun redisComponent(): RedisComponent {
+        return RedisComponent(StringRedisTemplate())
     }
 }

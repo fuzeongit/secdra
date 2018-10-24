@@ -1,2 +1,3 @@
 jwt.expiresSecond=5184000000
 jwt.base64Secret=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMiLCJleHAiOjE1NDA0MzYxMzYsIm5iZiI6MTU0MDI2MzMzNn0.Q7FKiYp2W-V8cBIP9zEkxO7cpH9MER-aM6q_0lOZeHA=
+jwt.redisPrefix = update_password_time:user_id_
