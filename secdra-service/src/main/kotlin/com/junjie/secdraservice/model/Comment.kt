@@ -10,9 +10,9 @@ class Comment{
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
-    var id :String = ""
+    var id :String? = null
 
-    var userId :String = ""
+    var userId :String? = null
 
-    var drawId :String = ""
+    var drawId :String? = null
 }

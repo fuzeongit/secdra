@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
-class ProgramConfigurer : WebMvcConfigurer{
+class ProgramConfigurer : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
@@ -20,7 +20,7 @@ class ProgramConfigurer : WebMvcConfigurer{
         super.addInterceptors(registry)
     }
 
-    override fun  addArgumentResolvers(argumentResolvers :MutableList<HandlerMethodArgumentResolver> ) {
+    override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(currentUserMethodArgumentResolver())
         super.addArgumentResolvers(argumentResolvers);
     }

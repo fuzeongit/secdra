@@ -30,7 +30,7 @@ class UserController(val userService: IUserService, val jwtConfig: JwtConfig) {
             throw ProgramException("输入手机为空", 404)
         }
         val user = userService.register(phone, password)
-        val token = JwtUtil.createJWT(user.id, jwtConfig.expiresSecond, jwtConfig.base64Secret)
+        val token = JwtUtil.createJWT(user.id!!, jwtConfig.expiresSecond, jwtConfig.base64Secret)
         val cookie = Cookie("token", token)
         response.addCookie(cookie)
         return Result(user)
@@ -42,7 +42,7 @@ class UserController(val userService: IUserService, val jwtConfig: JwtConfig) {
     @PostMapping("/login")
     fun login(phone: String, password: String, response: HttpServletResponse): User {
         val user = userService.login(phone, password)
-        val token = JwtUtil.createJWT(user.id, jwtConfig.expiresSecond, jwtConfig.base64Secret)
+        val token = JwtUtil.createJWT(user.id!!, jwtConfig.expiresSecond, jwtConfig.base64Secret)
         val cookie = Cookie("token", token)
         response.addCookie(cookie)
         return user

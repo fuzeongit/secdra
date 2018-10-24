@@ -23,6 +23,14 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
         return returnValue as? Result<*> ?: Result(returnValue)
     }
 
+
+    //运行时异常
+    @ResponseBody
+    @ExceptionHandler(RuntimeException::class)
+    fun exceptionHandler( e: RuntimeException): Result<Any?> {
+        return Result(500,e.message!!)
+    }
+
     //空指针异常
     @ResponseBody
     @ExceptionHandler(NullPointerException::class)
@@ -41,15 +49,13 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
     @ResponseBody
     @ExceptionHandler(ProgramException::class)
     fun programExceptionHandler(e: ProgramException): Result<Any?> {
-        return Result(e.status, e.message!!);
+        return Result(e.status, e.message!!,e.data);
     }
 
-    //其他异常
+    //系统异常
     @ResponseBody
     @ExceptionHandler(Exception::class)
     fun exceptionHandler(e: Exception): Result<Any?> {
-        return Result(500, e.message!!);
+        return Result(500,e.message!!)
     }
-
-
 }

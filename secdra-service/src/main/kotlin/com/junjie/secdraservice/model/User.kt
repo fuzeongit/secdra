@@ -19,23 +19,23 @@ class User : Base() {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
-    var id: String = ""
+    var id: String? = null
 
-    var phone: String? = ""
+    var phone: String? = null
 
-    var password: String? = ""
+    var password: String? = null
 
-    var name: String? = ""
+    var name: String? = null
 
-    var gender: Gender = Gender.MALE
+    var gender: Gender? = null
 
-    var head: String? = ""
+    var head: String? = null
 
-    var birthday: Date = Date()
+    var birthday: Date? = null
 
-    var introduction: String? = ""
+    var introduction: String? = null
 
-    var updatePasswordDate: Date = Date()
+    var updatePasswordDate: Date? = null
 
-    var userState: UserState = UserState.PASS
+    var userState: UserState? = null
 }

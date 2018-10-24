@@ -21,10 +21,10 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.findAll(example,pageable)
     }
 
-    override fun get(id: String, userId: String): Draw {
+    override fun get(id: String, userId: String?): Draw {
         val draw = drawDao.findById(id).orElseThrow { ProgramException("图片不存在", 404) }
         if (draw.isPrivate && draw.userId != userId) {
-            ProgramException("您无权查看该图片", 404)
+           throw ProgramException("您无权查看该图片", 404)
         }
         return draw
     }

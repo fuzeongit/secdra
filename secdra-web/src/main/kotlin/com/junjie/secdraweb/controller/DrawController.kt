@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("draw")
-class DrawController(val drawService: DrawService){
-
+class DrawController(val drawService: DrawService) {
     @GetMapping("/get")
-    fun get(id:String,@CurrentUserId userId:String ){
-        drawService.get(id,userId)
+    fun get(id: String?, @CurrentUserId userId: String?) {
+        drawService.get(id!!, userId)
     }
 
     @PostMapping("/save")
     @Auth
-    fun save(userId: String, url: String, desc: String, isPrivate: Boolean){
-        drawService.save(userId,url,desc,isPrivate)
+    fun save(@CurrentUserId userId: String, url: String, desc: String, isPrivate: Boolean) {
+        drawService.save(userId, url, desc, isPrivate)
     }
 }

@@ -31,6 +31,8 @@ class AuthInterceptor(private val jwtConfig: JwtConfig) : HandlerInterceptor {
                     val token = cookieMap["token"]
                     val claims = JwtUtil.parseJWT(token!!.value, jwtConfig.base64Secret)
                     val userId = claims["userId"]
+                    println( Integer.parseInt(claims["exp"]?.toString()).toLong())
+                    println( Integer.parseInt(claims["nbf"]?.toString()).toLong())
                     if (StringUtils.isEmpty(userId)) {
                         throw ProgramException("请登录", 401)
                     }

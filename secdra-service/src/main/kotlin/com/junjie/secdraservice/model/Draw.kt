@@ -12,19 +12,19 @@ class Draw : Base() {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
-    var id: String = ""
+    var id: String? = null
 
-    var introduction: String? = ""
+    var introduction: String? = null
 
-    var url: String? = ""
+    var url: String? = null
 
-    var userId: String = ""
+    var userId: String? = null
 
     var isPrivate: Boolean = false
 
-    var addTime : Date = Date()
+    var addTime : Date? = null
 
-    var drawState: DrawState = DrawState.PASS
+    var drawState: DrawState? = null
 
     var viewAmount: Int = 0
 
