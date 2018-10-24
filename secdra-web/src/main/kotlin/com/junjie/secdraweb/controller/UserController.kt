@@ -30,17 +30,17 @@ class UserController(private val userService: IUserService, private val jwtConfi
         if (StringUtils.isEmpty(phone)) {
             throw ProgramException("输入手机为空", 404)
         }
+        //获取系统时间
         val nowMillis = System.currentTimeMillis()
         var user = User()
         user.phone = phone
         user.password = password
-        user.updatePasswordDate = Date(nowMillis)
-
+        user.rePasswordDate = Date(nowMillis)
+        //注册
         user = userService.register(user)
-        val key = String.format(jwtConfig.redisPrefix, user.id)
-        redisTemplate.opsForValue().set(key,nowMillis.toString())
-        val token = JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
-        val cookie = Cookie("token", token)
+        //把修改密码时间放到redis
+        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, user.id),nowMillis.toString())
+        val cookie = Cookie("token", JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret))
         response.addCookie(cookie)
         return Result(user)
     }
@@ -58,25 +58,26 @@ class UserController(private val userService: IUserService, private val jwtConfi
         return user
     }
 
-    @PostMapping("/getInfo")
+    /**
+     * 修改密码
+     */
+    @PostMapping("/rePassword")
+    fun rePassword(phone:String ,password:String,response: HttpServletResponse):User{
+        val nowMillis = System.currentTimeMillis()
+        val user = userService.rePassword(phone,password,Date(nowMillis))
+        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, user.id),nowMillis.toString())
+        val token = JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
+        val cookie = Cookie("token", token)
+        return user
+    }
+
+    /**
+     * 获取用户信息
+     */
     @Auth
+    @GetMapping("/getInfo")
     fun getInfo(@CurrentUserId userId: String): User {
         return userService.getInfo(userId)
     }
 
-    @GetMapping("/getToken")
-    fun getToken(): String {
-        val nowMillis = System.currentTimeMillis()
-        return JwtUtil.createJWT("123", nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
-    }
-
-    @GetMapping("postToken")
-    fun postToken(token: String): Claims {
-        return JwtUtil.parseJWT(token, jwtConfig.base64Secret)
-    }
-
-    @GetMapping("test")
-    fun test(): String {
-        return jwtConfig.base64Secret
-    }
 }

@@ -3,6 +3,8 @@ package com.junjie.secdraservice.model
 import com.junjie.secdraservice.contant.Gender
 import com.junjie.secdraservice.contant.UserState
 import org.hibernate.annotations.GenericGenerator
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -15,7 +17,7 @@ import java.util.Date
  * @author fjj
  */
 @Entity
-class User : Base() {
+class User{
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
@@ -35,7 +37,13 @@ class User : Base() {
 
     var introduction: String? = null
 
-    var updatePasswordDate: Date? = null
+    var rePasswordDate: Date? = null
 
     var userState: UserState? = null
+
+    @CreatedDate
+    var createDate: Date = Date()
+
+    @LastModifiedDate
+    var modifiedDate: Date = Date()
 }

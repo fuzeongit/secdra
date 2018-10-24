@@ -18,13 +18,17 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         val matcher = ExampleMatcher.matching()
                 .withMatcher("drawState", ExampleMatcher.GenericPropertyMatchers.exact())
         val example = Example.of(query, matcher)
-        return drawDao.findAll(example,pageable)
+        return drawDao.findAll(example, pageable)
+    }
+
+    override fun pagingByUserId(pageable: Pageable, userId: String, idPrivate: Boolean): Page<Draw> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun get(id: String, userId: String?): Draw {
         val draw = drawDao.findById(id).orElseThrow { ProgramException("图片不存在", 404) }
         if (draw.isPrivate && draw.userId != userId) {
-           throw ProgramException("您无权查看该图片", 404)
+            throw ProgramException("您无权查看该图片", 404)
         }
         return draw
     }

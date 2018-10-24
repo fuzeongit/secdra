@@ -23,7 +23,6 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
         return returnValue as? Result<*> ?: Result(returnValue)
     }
 
-
     //运行时异常
     @ResponseBody
     @ExceptionHandler(RuntimeException::class)

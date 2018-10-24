@@ -1,6 +1,9 @@
 package com.junjie.secdraservice.model
 
 import org.hibernate.annotations.GenericGenerator
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import java.util.*
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -15,4 +18,15 @@ class Comment{
     var userId :String? = null
 
     var drawId :String? = null
+
+    var content :String? = null
+
+    var isRead :Boolean = false
+
+    @CreatedDate
+    var createDate: Date = Date()
+
+    @LastModifiedDate
+    var modifiedDate: Date = Date()
+
 }

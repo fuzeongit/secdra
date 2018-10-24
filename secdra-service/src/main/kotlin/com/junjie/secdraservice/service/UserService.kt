@@ -5,11 +5,14 @@ import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.User
 import org.springframework.data.domain.Example
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
-class UserService(val userDao: IUserDao):IUserService {
+class UserService(val userDao: IUserDao) : IUserService {
+
+
     override fun register(user: User): User {
-        if(userDao.existsByPhone(user.phone!!)){
+        if (userDao.existsByPhone(user.phone!!)) {
             throw ProgramException("手机号已存在", 403)
         }
         return userDao.save(user)
@@ -19,11 +22,19 @@ class UserService(val userDao: IUserDao):IUserService {
         if (!userDao.existsByPhone(phone)) {
             throw ProgramException("手机号不存在", 403)
         }
-        return userDao.findOnByPhoneAndPassword(phone,password).orElseThrow { ProgramException("账号密码不正确", 401) }
+        return userDao.findOnByPhoneAndPassword(phone, password).orElseThrow { ProgramException("账号密码不正确", 401) }
+    }
+
+    override fun rePassword(phone: String, password: String, rePasswordTime: Date): User {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getInfo(id: String): User {
-        return userDao.findById(id).orElseThrow {ProgramException("用户信息不存在",404)}
+        return userDao.findById(id).orElseThrow { ProgramException("用户信息不存在", 404) }
+    }
+
+    override fun updateInfo(user: User): User {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
