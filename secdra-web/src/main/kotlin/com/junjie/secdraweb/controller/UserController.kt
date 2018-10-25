@@ -1,5 +1,6 @@
 package com.junjie.secdraweb.controller
 
+import com.corundumstudio.socketio.SocketIOServer
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
@@ -8,7 +9,7 @@ import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.JwtConfig
-import io.jsonwebtoken.Claims
+import com.junjie.secdraweb.base.component.SocketIOEventHandler
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("user")
-class UserController(private val userService: IUserService, private val jwtConfig: JwtConfig,private val redisTemplate : StringRedisTemplate) {
+class UserController(private val userService: IUserService, private val jwtConfig: JwtConfig,private val redisTemplate : StringRedisTemplate,private var socketIoServer: SocketIOServer) {
     /**
      * 注册
      */
@@ -82,6 +83,11 @@ class UserController(private val userService: IUserService, private val jwtConfi
 
     @GetMapping("/get")
     fun getInfo(): String {
+        for (clientId in SocketIOEventHandler.listClient) {
+            if (socketIoServer.getClient(clientId) == null) continue;
+
+            socketIoServer.getClient(clientId).sendEvent("send", "fuck");
+        }
         return "1"
     }
 }
