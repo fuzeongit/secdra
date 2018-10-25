@@ -80,4 +80,8 @@ class UserController(private val userService: IUserService, private val jwtConfi
         return userService.getInfo(userId)
     }
 
+    @GetMapping("/get")
+    fun getInfo(): String {
+        return "1"
+    }
 }

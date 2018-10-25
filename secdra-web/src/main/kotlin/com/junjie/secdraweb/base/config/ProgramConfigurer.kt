@@ -11,6 +11,9 @@ import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.socket.server.standard.ServerEndpointExporter
+
+
 
 
 @Configuration
@@ -47,4 +50,10 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate,private v
     internal fun redisComponent(): RedisComponent {
         return RedisComponent(StringRedisTemplate())
     }
+
+    @Bean
+    fun serverEndpointExporter(): ServerEndpointExporter {
+        return ServerEndpointExporter()
+    }
+
 }
