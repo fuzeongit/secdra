@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -29,6 +30,20 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
         argumentResolvers.add(currentUserMethodArgumentResolver())
         super.addArgumentResolvers(argumentResolvers);
     }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        //设置允许跨域的路径
+        registry.addMapping("/**")
+                //设置允许跨域请求的域名
+                .allowedOrigins("*")
+                //是否允许证书 不再默认开启
+                .allowCredentials(true)
+                //设置允许的方法
+                .allowedMethods("*")
+                //跨域允许时间
+                .maxAge(3600);
+    }
+
 
     @Bean
     fun socketIOServer(): SocketIOServer {
