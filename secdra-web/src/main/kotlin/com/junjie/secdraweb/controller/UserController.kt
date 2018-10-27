@@ -24,7 +24,7 @@ class UserController(private val userService: IUserService, private val jwtConfi
      * 注册
      */
     @PostMapping("/register")
-    fun register(phone: String, password: String, response: HttpServletResponse): Result<*> {
+    fun register(phone: String, password: String, response: HttpServletResponse): User {
         if (StringUtils.isEmpty(phone)) {
             throw ProgramException("输入手机为空", 404)
         }
@@ -38,9 +38,11 @@ class UserController(private val userService: IUserService, private val jwtConfi
         user = userService.register(user)
         //把修改密码时间放到redis
         redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, user.id),nowMillis.toString())
-        val cookie = Cookie("token", JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret))
-        response.addCookie(cookie)
-        return Result(user)
+        val token = JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
+//        val cookie = Cookie("token", token)
+//        response.addCookie(cookie)
+        response.setHeader("token",token)
+        return user
     }
 
     /**
@@ -48,12 +50,27 @@ class UserController(private val userService: IUserService, private val jwtConfi
      */
     @PostMapping("/login")
     fun login(phone: String, password: String, response: HttpServletResponse): User {
-        val user = userService.login(phone, password)
+        var user:User? = null
+        try{
+             user = userService.login(phone, password)
+        }catch (e:ProgramException){
+            if(e.status ==403){
+                return this.register(phone,password,response)
+            }
+        }
+
         val nowMillis = System.currentTimeMillis()
-        val token = JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
-        val cookie = Cookie("token", token)
-        response.addCookie(cookie)
+        val token = JwtUtil.createJWT(user?.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
+//        val cookie = Cookie("token", token)
+//        response.addCookie(cookie)
+        response.setHeader("token",token)
         return user
+    }
+
+    @Auth
+    @PostMapping("/checkLogin")
+    fun checkLogin(): Boolean {
+        return true
     }
 
     /**

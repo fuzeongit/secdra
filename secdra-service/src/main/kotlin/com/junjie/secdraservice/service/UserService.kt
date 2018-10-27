@@ -30,7 +30,7 @@ class UserService(val userDao: IUserDao) : IUserService {
     }
 
     override fun getInfo(id: String): User {
-        return userDao.findById(id).orElseThrow { ProgramException("用户信息不存在", 404) }
+        return userDao.findById(id).orElseThrow { ProgramException("用户信息不存在", 401) }
     }
 
     override fun updateInfo(user: User): User {
