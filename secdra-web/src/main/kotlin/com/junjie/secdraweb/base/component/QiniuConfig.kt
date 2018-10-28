@@ -5,12 +5,12 @@ import org.springframework.context.annotation.PropertySource
 import org.springframework.stereotype.Component
 
 @Component
-@PropertySource("jwt.yml")
-@ConfigurationProperties("jwt")
-class JwtConfig {
-    var expiresSecond: Long = 0
+//@PropertySource("qiniu.yml")
+@ConfigurationProperties("qiniu")
+class QiniuConfig {
+    var accessKey: String = ""
 
-    var base64Secret: String = ""
+    var secretKey: String = ""
 
-    var redisPrefix: String = ""
+    var bucket: String = ""
 }

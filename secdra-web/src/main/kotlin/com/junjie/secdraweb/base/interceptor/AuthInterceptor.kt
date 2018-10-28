@@ -36,9 +36,9 @@ class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplat
                     val claims = JwtUtil.parseJWT(token!!.value, jwtConfig.base64Secret)
                     val userId = claims["userId"]
                     //过期时间
-                    val exp = Date(claims["exp"]?.toString()?.toLong()!!*1000)
+                    val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
                     //生成时间
-                    val nbf = Date(claims["nbf"]?.toString()?.toLong()!!*1000)
+                    val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
                     //最后更改密码时间
                     val rePasswordDateStr = redisTemplate.opsForValue()[String.format(jwtConfig.redisPrefix, userId)]
                     var rePasswordDate: Date? = null
@@ -46,19 +46,19 @@ class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplat
                     rePasswordDate = if (StringUtils.isEmpty(rePasswordDateStr)) {
                         val info = userService.getInfo(userId.toString())
                         //最后更改密码时间写入redis
-                        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, userId),info.rePasswordDate?.time.toString())
+                        redisTemplate.opsForValue().set(jwtConfig.redisPrefix + userId, info.rePasswordDate?.time.toString())
                         info.rePasswordDate!!
                     } else {
                         Date(rePasswordDateStr?.toLong()!!)
                     }
-                    if (DateUtil.getDistanceTimestamp(Date(),exp) < 0) {
+                    if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
                         throw ProgramException("用户登录已过期", 401)
                     }
                     if (StringUtils.isEmpty(userId)) {
                         throw ProgramException("请重新登录", 401)
                     }
                     if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-                        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, userId),"")
+                        redisTemplate.opsForValue().set(jwtConfig.redisPrefix + userId, "")
                         throw ProgramException("请重新登录", 401)
                     }
                     request.setAttribute("userId", userId)

@@ -11,7 +11,7 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: true
 #  mvc:
 #    static-path-pattern: /static/**

@@ -1,4 +1,4 @@
-package com.junjie.secdraservice.qiniu
+package com.junjie.secdraweb.base.qiniu
 
 import com.qiniu.http.Client
 import com.qiniu.util.*
@@ -8,16 +8,16 @@ import javax.crypto.spec.SecretKeySpec
 import java.net.URI
 import java.security.GeneralSecurityException
 
-class UploadAuth(private val accessKey: String, private val secretKey: SecretKeySpec) {
+class Auth(private val accessKey: String, private val secretKey: SecretKeySpec) {
 
     companion object {
-        fun create(accessKey: String, secretKey: String): UploadAuth {
+        fun create(accessKey: String, secretKey: String): Auth {
             if (StringUtils.isNullOrEmpty(accessKey) || StringUtils.isNullOrEmpty(secretKey)) {
                 throw IllegalArgumentException("empty key")
             }
             val sk = StringUtils.utf8Bytes(secretKey)
             val secretKeySpec = SecretKeySpec(sk, "HmacSHA1")
-            return UploadAuth(accessKey, secretKeySpec)
+            return Auth(accessKey, secretKeySpec)
         }
     }
     /**
@@ -237,7 +237,7 @@ class UploadAuth(private val accessKey: String, private val secretKey: SecretKey
         return signWithData(StringUtils.utf8Bytes(s))
     }
 
-    private fun authorization(url: String, body: ByteArray?, contentType: String?): StringMap {
+    fun authorization(url: String, body: ByteArray?, contentType: String?): StringMap {
         val authorization = "QBox " + signRequest(url, body, contentType)
         return StringMap().put("Authorization", authorization)
     }
