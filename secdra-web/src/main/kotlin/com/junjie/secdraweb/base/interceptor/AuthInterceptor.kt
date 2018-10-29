@@ -41,12 +41,12 @@ class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplat
                     val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
                     //最后更改密码时间
                     val rePasswordDateStr = redisTemplate.opsForValue()[String.format(jwtConfig.redisPrefix, userId)]
-                    var rePasswordDate: Date? = null
+                    val rePasswordDate: Date?
                     //缓存穿透
                     rePasswordDate = if (StringUtils.isEmpty(rePasswordDateStr)) {
                         val info = userService.getInfo(userId.toString())
                         //最后更改密码时间写入redis
-                        redisTemplate.opsForValue().set(jwtConfig.redisPrefix + userId, info.rePasswordDate?.time.toString())
+                        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix,userId), info.rePasswordDate?.time.toString())
                         info.rePasswordDate!!
                     } else {
                         Date(rePasswordDateStr?.toLong()!!)
@@ -58,7 +58,7 @@ class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplat
                         throw ProgramException("请重新登录", 401)
                     }
                     if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-                        redisTemplate.opsForValue().set(jwtConfig.redisPrefix + userId, "")
+                        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix,userId), "")
                         throw ProgramException("请重新登录", 401)
                     }
                     request.setAttribute("userId", userId)

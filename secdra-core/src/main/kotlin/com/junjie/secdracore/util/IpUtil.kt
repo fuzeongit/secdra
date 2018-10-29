@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest
 
 object IpUtil {
     fun getIpAddress(request: HttpServletRequest): String? {
-        var ipAddress: String? = null
+        var ipAddress: String?
         try {
             ipAddress = request.getHeader("x-forwarded-for")
             if (ipAddress == null || ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {

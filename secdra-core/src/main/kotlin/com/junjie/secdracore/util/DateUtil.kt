@@ -78,14 +78,14 @@ object DateUtil {
         // 指定要解析的时间格式
         val f = SimpleDateFormat("yyyy-MM")
         // 返回的月份列表
-        var sRet = ""
+        var sRet: String
 
         // 定义一些变量
-        var beginDate: Date? = null
-        var endDate: Date? = null
+        val beginDate: Date?
+        val endDate: Date?
 
-        var beginGC: GregorianCalendar? = null
-        var endGC: GregorianCalendar? = null
+        val beginGC: GregorianCalendar?
+        val endGC: GregorianCalendar?
         val list = ArrayList<String>()
 
         try {
@@ -128,11 +128,11 @@ object DateUtil {
         val f = SimpleDateFormat("yyyy-MM-dd")
 
         // 定义一些变量
-        var beginDate: Date? = null
-        var endDate: Date? = null
+        val beginDate: Date?
+        val endDate: Date?
 
-        var beginGC: Calendar? = null
-        var endGC: Calendar? = null
+        val beginGC: Calendar?
+        val endGC: Calendar?
         val list = ArrayList<String>()
 
         try {
@@ -192,8 +192,8 @@ object DateUtil {
         val count = getWeekOfYear(c.time)
 
         val sdf = SimpleDateFormat("yyyy-MM-dd")
-        var dayOfWeekStart = ""
-        var dayOfWeekEnd = ""
+        var dayOfWeekStart :String
+        var dayOfWeekEnd :String
         for (i in 1..count) {
             dayOfWeekStart = sdf.format(getFirstDayOfWeek(year, i))
             dayOfWeekEnd = sdf.format(getLastDayOfWeek(year, i))

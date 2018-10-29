@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource
 import org.springframework.stereotype.Component
 
 @Component
-@PropertySource("jwt.yml")
+//@PropertySource("jwt.yml")
 @ConfigurationProperties("jwt")
 class JwtConfig {
     var expiresSecond: Long = 0
