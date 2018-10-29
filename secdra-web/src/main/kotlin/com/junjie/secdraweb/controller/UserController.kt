@@ -72,6 +72,9 @@ class UserController(private val userService: IUserService, private val jwtConfi
         return true
     }
 
+
+
+
     /**
      * 修改密码
      */
@@ -89,8 +92,14 @@ class UserController(private val userService: IUserService, private val jwtConfi
      * 获取用户信息
      */
     @Auth
+    @GetMapping("/getSelfInfo")
+    fun getSelfInfo(@CurrentUserId userId: String): User {
+        return userService.getInfo(userId)
+    }
+
+
     @GetMapping("/getInfo")
-    fun getInfo(@CurrentUserId userId: String): User {
+    fun getInfo(userId: String): User {
         return userService.getInfo(userId)
     }
 
