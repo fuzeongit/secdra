@@ -3,7 +3,6 @@ package com.junjie.secdraservice.service
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.User
-import org.springframework.data.domain.Example
 import org.springframework.stereotype.Service
 import java.util.*
 

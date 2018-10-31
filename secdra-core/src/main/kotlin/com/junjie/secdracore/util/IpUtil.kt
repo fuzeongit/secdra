@@ -9,13 +9,13 @@ object IpUtil {
         var ipAddress: String?
         try {
             ipAddress = request.getHeader("x-forwarded-for")
-            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
+            if (ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
                 ipAddress = request.getHeader("Proxy-Client-IP")
             }
-            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
+            if (ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
                 ipAddress = request.getHeader("WL-Proxy-Client-IP")
             }
-            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
+            if (ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
                 ipAddress = request.remoteAddr
                 if (ipAddress == "127.0.0.1") {
                     // 根据网卡取本机配置的IP
