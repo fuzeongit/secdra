@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
@@ -43,7 +48,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!--<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>-->
-        <!--<testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>-->
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
     </build>
 </project>
