@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.service.IDrawService
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +13,7 @@ import java.io.File
 
 @RestController
 @RequestMapping("draw")
-class DrawController(val drawService: IDrawService) {
+class DrawController(val drawService: IDrawService,val drawDao: IDrawDao) {
     @GetMapping("/get")
     fun get(id: String?, @CurrentUserId userId: String?): Draw {
         return drawService.get(id!!, userId)
@@ -41,6 +42,10 @@ class DrawController(val drawService: IDrawService) {
             println(e.message)
             throw e
         }
+    }
 
+    @GetMapping("/test")
+    fun getName(): MutableList<Draw> {
+        return drawDao.findAll()
     }
 }

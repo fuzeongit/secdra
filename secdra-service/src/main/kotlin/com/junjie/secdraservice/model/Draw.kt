@@ -5,9 +5,7 @@ import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 class Draw {
@@ -35,6 +33,9 @@ class Draw {
     var width: Int = 0;
 
     var height: Int = 0;
+
+    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "drawList")
+    var tagList: Set<Tag>? = null
 
     @CreatedDate
     var createDate: Date = Date()
