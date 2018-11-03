@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 
 
 @RestController
-@RequestMapping("statistical")
+@RequestMapping("/statistical")
 class StatisticalController(private val statisticalService: IStatisticalService) {
     @PostMapping("/save")
     fun save(@CurrentUserId userId: String,path:String,request: HttpServletRequest): Statistical {

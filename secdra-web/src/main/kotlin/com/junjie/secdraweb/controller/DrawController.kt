@@ -18,15 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 import java.io.File
 
 @RestController
-@RequestMapping("draw")
+@RequestMapping("/draw")
 class DrawController(val drawService: IDrawService, val drawDao: IDrawDao) {
-    @GetMapping("/get")
-    fun get(id: String?, @CurrentUserId userId: String?): Draw {
-        return drawService.get(id!!, userId)
-    }
-
+    /**
+     * 根据标签获取
+     */
     @GetMapping("/pagingByTag")
-    fun get(tag: String?, @PageableDefault(value = 20) pageable: Pageable): Page<Draw> {
+    fun pagingByTag(tag: String?, @PageableDefault(value = 20) pageable: Pageable): Page<Draw> {
         return if (tag != null && !StringUtils.isNullOrEmpty(tag)) {
             drawService.pagingByTag(pageable, tag)
         } else {
@@ -34,12 +32,39 @@ class DrawController(val drawService: IDrawService, val drawDao: IDrawDao) {
         }
     }
 
-    @PostMapping("/save")
+    /**
+     * 自己获取
+     */
     @Auth
-    fun save(@CurrentUserId userId: String, url: String, desc: String, isPrivate: Boolean): Draw {
-        return drawService.save(userId, url, desc, isPrivate)
+    @GetMapping("/pagingBySelf")
+    fun pagingBySelf(@CurrentUserId userId: String, @PageableDefault(value = 20) pageable: Pageable) {
+        drawService.pagingByUserId(pageable, userId, true)
     }
 
+    /**
+     * 获取他人
+     */
+    @GetMapping("/pagingByOthers")
+    fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable) {
+        drawService.pagingByUserId(pageable, userId, false)
+    }
+
+    /**
+     * 获取图片
+     */
+    @GetMapping("/get")
+    fun get(id: String, @CurrentUserId userId: String?): Draw {
+        return drawService.get(id, userId)
+    }
+
+    /**
+     * 更新
+     */
+    @PostMapping("/update")
+    @Auth
+    fun update(@CurrentUserId userId: String, drawId: String, desc: String?, isPrivate: Boolean?): Draw {
+        return drawService.update(userId, drawId, desc!!, isPrivate!!)
+    }
 
     @GetMapping("/getName")
     fun getName(path: String): Boolean {
@@ -48,7 +73,7 @@ class DrawController(val drawService: IDrawService, val drawDao: IDrawDao) {
             val fileNameList = file.list()
             for (fileName in fileNameList) {
                 if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
-                    drawService.save("13760029486", fileName)
+                    drawService.save("13760029486", fileName, "小可爱")
                 }
             }
             return true
@@ -57,22 +82,4 @@ class DrawController(val drawService: IDrawService, val drawDao: IDrawDao) {
             throw e
         }
     }
-
-    @GetMapping("/test")
-    fun test(): MutableList<Draw> {
-        val draw = Draw()
-        draw.userId = "123"
-        draw.isPrivate = false
-        val tag = Tag()
-        draw.tagList = setOf(tag)
-        drawDao.save(draw)
-        return drawDao.findAll()
-    }
-
-    @GetMapping("/test1")
-    fun test1(): MutableList<Draw> {
-        return drawDao.findAll()
-    }
-
-
 }

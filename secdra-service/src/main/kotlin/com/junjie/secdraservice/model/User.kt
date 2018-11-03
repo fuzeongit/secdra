@@ -37,7 +37,7 @@ class User{
 
     var rePasswordDate: Date? = null
 
-    var userState: UserState? = null
+    var userState: UserState? = UserState.PASS
 
     @CreatedDate
     var createDate: Date = Date()

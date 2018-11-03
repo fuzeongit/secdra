@@ -37,7 +37,7 @@ class UserController(private val userService: IUserService, private val jwtConfi
         //注册
         user = userService.register(user)
         //把修改密码时间放到redis
-        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix,user.id), nowMillis.toString())
+        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, user.id), nowMillis.toString())
         val token = JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
 //        val cookie = Cookie("token", token)
 //        response.addCookie(cookie)
@@ -73,8 +73,6 @@ class UserController(private val userService: IUserService, private val jwtConfi
     }
 
 
-
-
     /**
      * 修改密码
      */
@@ -82,7 +80,7 @@ class UserController(private val userService: IUserService, private val jwtConfi
     fun rePassword(phone: String, password: String, response: HttpServletResponse): User {
         val nowMillis = System.currentTimeMillis()
         val user = userService.rePassword(phone, password, Date(nowMillis))
-        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix,user.id), nowMillis.toString())
+        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix, user.id), nowMillis.toString())
 //        val token = JwtUtil.createJWT(user.id!!, nowMillis, jwtConfig.expiresSecond, jwtConfig.base64Secret)
 //        val cookie = Cookie("token", token)
         return user

@@ -22,8 +22,6 @@ class Draw {
 
     var isPrivate: Boolean = false
 
-    var addTime: Date? = null
-
     var drawState: DrawState? = null
 
     var viewAmount: Int = 0
@@ -36,7 +34,7 @@ class Draw {
 
     @OneToMany(cascade = [CascadeType.ALL],fetch = FetchType.LAZY)
     @JoinColumn(name="draw_id")
-    var tagList: Set<Tag>? = null
+    var tagList: MutableSet<Tag>? = null
 
     @CreatedDate
     var createDate: Date = Date()
