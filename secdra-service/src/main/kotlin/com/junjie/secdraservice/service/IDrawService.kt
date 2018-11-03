@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable
 interface IDrawService {
     fun paging(pageable: Pageable): Page<Draw>
 
-    fun pagingByUserId(pageable: Pageable, userId: String,idPrivate:Boolean): Page<Draw>
+    fun pagingByTag(pageable: Pageable, tag: String): Page<Draw>
+
+    fun pagingByUserId(pageable: Pageable, userId: String, isSelf: Boolean): Page<Draw>
 
     fun get(id: String, userId: String?): Draw
 

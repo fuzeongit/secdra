@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 
-interface IDrawDao : JpaRepository<Draw, String>, JpaSpecificationExecutor<Draw> {
-//    @Query("select draw.* fROM draw INNER JOIN tag where draw_id = draw.id && tag.name= %?1")
+interface ITagDao : JpaRepository<Tag, String>, JpaSpecificationExecutor<Tag> {
+//    @Query("select t.* fROM tag as t INNER JOIN draw as d t.draw_id = d.id group by t.name order by sum(d.likeAmount)")
 //    fun findByTag(@Param("introduction") introduction: String): List<Draw>
 }

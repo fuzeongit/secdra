@@ -34,7 +34,8 @@ class Draw {
 
     var height: Int = 0;
 
-    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "drawList")
+    @OneToMany(cascade = [CascadeType.ALL],fetch = FetchType.LAZY)
+    @JoinColumn(name="draw_id")
     var tagList: Set<Tag>? = null
 
     @CreatedDate

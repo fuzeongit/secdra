@@ -4,11 +4,18 @@ import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
+import com.junjie.secdraservice.model.Tag
 import org.springframework.data.domain.Example
 import org.springframework.data.domain.ExampleMatcher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.util.*
+import javax.persistence.criteria.Join
+import javax.persistence.criteria.JoinType
+import javax.persistence.criteria.Predicate
+
 
 @Service
 class DrawService(val drawDao: IDrawDao) : IDrawService {
@@ -17,12 +24,36 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         query.drawState = DrawState.PASS
         val matcher = ExampleMatcher.matching()
                 .withMatcher("drawState", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withIgnorePaths("viewAmount")
+                .withIgnorePaths("likeAmount")
+                .withIgnorePaths("width")
+                .withIgnorePaths("height")
         val example = Example.of(query, matcher)
         return drawDao.findAll(example, pageable)
     }
 
-    override fun pagingByUserId(pageable: Pageable, userId: String, idPrivate: Boolean): Page<Draw> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun pagingByTag(pageable: Pageable, tag: String): Page<Draw> {
+        val specification = Specification<Draw> { root, criteriaQuery, criteriaBuilder ->
+            val predicatesList = ArrayList<Predicate>()
+            val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
+            predicatesList.add(criteriaBuilder.equal(joinTag.get<String>("name"), tag))
+            criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
+        }
+        return drawDao.findAll(specification, pageable)
+    }
+
+
+    override fun pagingByUserId(pageable: Pageable, userId: String, isSelf: Boolean): Page<Draw> {
+        val query = Draw()
+        query.drawState = DrawState.PASS
+        var matcher = ExampleMatcher.matching()
+                .withMatcher("drawState", ExampleMatcher.GenericPropertyMatchers.exact())
+        //如果是自己排除
+        if (isSelf) {
+            matcher = matcher.withIgnorePaths("isPrivate");
+        }
+        val example = Example.of(query, matcher)
+        return drawDao.findAll(example, pageable)
     }
 
     override fun get(id: String, userId: String?): Draw {
@@ -39,7 +70,6 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         draw.url = url
         draw.introduction = introduction
         draw.isPrivate = isPrivate
-
         return drawDao.save(draw)
     }
 }

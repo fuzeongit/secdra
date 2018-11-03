@@ -1,6 +1,10 @@
 server:
   port: 8080
+
 spring:
+  devtools:
+    restart:
+      enabled: true
   redis:
     host: 127.0.0.1
     port: 6379
@@ -11,8 +15,8 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: create-drop
-#    show-sql: true
+      ddl-auto: create
+    show-sql: true
 #  mvc:
 #    static-path-pattern: /static/**
 
