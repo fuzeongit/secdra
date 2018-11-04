@@ -6,7 +6,7 @@ import com.junjie.secdracore.util.CookieUtil
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.base.component.JwtConfig
+import com.junjie.secdraweb.base.component.BaseConfig
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.lang.Nullable
 import org.springframework.util.StringUtils
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplate: StringRedisTemplate, val userService: IUserService) : HandlerInterceptor {
+class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, val userService: IUserService) : HandlerInterceptor {
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod) {
@@ -33,20 +33,22 @@ class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplat
                 try {
                     val cookieMap = CookieUtil.readCookieMap(request)
                     val token = cookieMap["token"]
-                    val claims = JwtUtil.parseJWT(token!!.value, jwtConfig.base64Secret)
+                    val claims = JwtUtil.parseJWT(token!!.value, baseConfig.jwtBase64Secret)
                     val userId = claims["userId"]
                     //过期时间
                     val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
                     //生成时间
                     val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
                     //最后更改密码时间
-                    val rePasswordDateStr = redisTemplate.opsForValue()[String.format(jwtConfig.redisPrefix, userId)]
+                    val rePasswordDateStr = redisTemplate.opsForValue()[String.format(baseConfig.updatePasswordTimePrefix, userId)]
                     val rePasswordDate: Date?
                     //缓存穿透
                     rePasswordDate = if (StringUtils.isEmpty(rePasswordDateStr)) {
                         val info = userService.getInfo(userId.toString())
                         //最后更改密码时间写入redis
-                        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix,userId), info.rePasswordDate?.time.toString())
+                        redisTemplate.opsForValue().set(
+                                String.format(baseConfig.updatePasswordTimePrefix, userId),
+                                info.rePasswordDate?.time.toString())
                         info.rePasswordDate!!
                     } else {
                         Date(rePasswordDateStr?.toLong()!!)
@@ -58,7 +60,7 @@ class AuthInterceptor(private val jwtConfig: JwtConfig, private val redisTemplat
                         throw ProgramException("请重新登录", 401)
                     }
                     if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-                        redisTemplate.opsForValue().set(String.format(jwtConfig.redisPrefix,userId), "")
+                        redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, userId), "")
                         throw ProgramException("请重新登录", 401)
                     }
                     request.setAttribute("userId", userId)

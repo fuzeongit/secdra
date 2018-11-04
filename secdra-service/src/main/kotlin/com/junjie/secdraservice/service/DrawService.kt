@@ -71,7 +71,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     }
 
     override fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean): Draw {
-        val draw = drawDao.findById(drawId).orElseThrow { ProgramException("图片不存在") }
+        val draw = drawDao.findById(drawId).orElseThrow { ProgramException("图片不存在", 404) }
         if (draw.drawState != DrawState.PASS) {
             ProgramException("该图片已被屏蔽", 403)
         }

@@ -3,8 +3,7 @@ package com.junjie.secdraweb.base.config
 import com.corundumstudio.socketio.SocketIOServer
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner
 import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.base.component.JwtConfig
-import com.junjie.secdraweb.base.component.QiniuConfig
+import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.RedisComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
@@ -61,7 +60,7 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
 
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
-        return AuthInterceptor(jwtConfig(), redisTemplate, userService)
+        return AuthInterceptor(baseConfig(), redisTemplate, userService)
     }
 
     @Bean
@@ -70,13 +69,8 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
     }
 
     @Bean
-    internal fun jwtConfig(): JwtConfig {
-        return JwtConfig()
-    }
-
-    @Bean
-    internal fun qiniuConfig(): QiniuConfig {
-        return QiniuConfig()
+    internal fun baseConfig(): BaseConfig {
+        return BaseConfig()
     }
 
     @Bean

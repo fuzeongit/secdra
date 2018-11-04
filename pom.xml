@@ -15,6 +15,7 @@
         <module>secdra-core</module>
         <module>secdra-service</module>
         <module>secdra-web</module>
+        <module>secdra-admin</module>
     </modules>
 
     <parent>
@@ -46,6 +47,11 @@
             <dependency>
                 <groupId>com.junjie</groupId>
                 <artifactId>secdra-web</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.junjie</groupId>
+                <artifactId>secdra-admin</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>

@@ -1,10 +1,6 @@
 server:
-  port: 8080
-
+  port: 8081
 spring:
-  devtools:
-    restart:
-      enabled: true
   redis:
     host: 127.0.0.1
     port: 6379
@@ -12,13 +8,10 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/secdra
     username: root
-    password: root
+    password: ASDasd+-*/00
   jpa:
     hibernate:
       ddl-auto: none
-#    show-sql: true
+    show-sql: true
 #  mvc:
 #    static-path-pattern: /static/**
-
-
-

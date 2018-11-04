@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
+/**
+ * 图片收藏的
+ */
 @RestController
 @RequestMapping("/focusDraw")
 class FocusDrawController(private val focusDrawService: IFocusDrawService) {

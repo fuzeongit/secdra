@@ -27,17 +27,17 @@ class User{
 
     var name: String? = null
 
-    var gender: Gender? = null
+    var gender: Gender = Gender.MALE
 
     var head: String? = null
 
-    var birthday: Date? = null
+    var birthday: Date? = Date()
 
     var introduction: String? = null
 
-    var rePasswordDate: Date? = null
+    var rePasswordDate: Date? = Date()
 
-    var userState: UserState? = UserState.PASS
+    var userState: UserState = UserState.PASS
 
     @CreatedDate
     var createDate: Date = Date()
