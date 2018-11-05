@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : mysql
-Source Server Version : 50709
+Source Server         : localhost
+Source Server Version : 50720
 Source Host           : localhost:3306
 Source Database       : secdra
 
 Target Server Type    : MYSQL
-Target Server Version : 50709
+Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2018-11-04 23:20:50
+Date: 2018-11-05 19:09:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1659,7 +1659,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('402880e566ddba740166ddbce0b70000', '2018-11-04 16:00:35', '2018-11-04 16:00:35', '0', '055a8006b83e49c4858ff49d6ddba4d7!400x400.jpg', null, '2018-11-04 16:00:35', '下雨', '123456', '13760029486', '2018-11-04 16:00:35', '1');
+INSERT INTO `user` VALUES ('402880e566ddba740166ddbce0b70000', '2018-11-04 16:00:35', '2018-11-04 16:00:35', '0', '3df3bb5b0d744a01896ed36e0ea21fef!400x400.jpg', null, '2018-11-04 16:00:35', '下雨', '123456', '13760029486', '2018-11-04 16:00:35', '1');
 INSERT INTO `user` VALUES ('402880e566dde4860166dde4bc380000', '2018-11-04 16:44:07', '2018-11-04 16:44:07', '1', '055a8006b83e49c4858ff49d6ddba4d7!400x400.jpg', null, '2018-11-04 16:44:07', '北梦木兮', '123456', '13760029487', '2018-11-04 16:44:07', '1');
 INSERT INTO `user` VALUES ('402880e566dde4860166dde4bc720001', '2018-11-04 16:44:07', '2018-11-04 16:44:07', '0', '089646557eab49a5a486ccf0a6c7c027!400x400.jpg', null, '2018-11-04 16:44:07', '南国旧事', '123456', '13760029488', '2018-11-04 16:44:07', '1');
 INSERT INTO `user` VALUES ('402880e566dde4860166dde4bc740002', '2018-11-04 16:44:07', '2018-11-04 16:44:07', '1', '1124a85be627495993f06eed70d9d672!400x400.jpg', null, '2018-11-04 16:44:07', '醉酒盛唐', '123456', '13760029489', '2018-11-04 16:44:07', '1');

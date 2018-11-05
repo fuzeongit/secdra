@@ -33,7 +33,11 @@ class TagService(private val tagDao: ITagDao) : ITagService {
                 criteriaQuery.orderBy(criteriaBuilder.desc(joinDraw.get<Number>("likeAmount")))
                 criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
             }
-            tagList.add(tagDao.findAll(specificationItem)[0])
+            try{
+                tagList.add(tagDao.findAll(specificationItem)[0])
+            }catch (e:Exception){
+                println(e.message)
+            }
             index++
         }
         return tagList
