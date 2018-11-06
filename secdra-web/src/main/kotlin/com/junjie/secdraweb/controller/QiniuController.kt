@@ -1,7 +1,9 @@
 package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.model.Result
+import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdraweb.form.QiniuImageInfo
 import com.qiniu.util.UrlSafeBase64
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -19,7 +21,7 @@ import com.junjie.secdraweb.base.qiniu.Auth as QiniuAuth
 
 @RestController
 @RequestMapping("/qiniu")
-class QiniuController(private val baseConfig: BaseConfig) {
+class QiniuController(private val baseConfig: BaseConfig, private val drawDao: IDrawDao) {
     @GetMapping("/getUploadToken")
     fun get(): Result<String> {
         val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
@@ -59,6 +61,29 @@ class QiniuController(private val baseConfig: BaseConfig) {
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    @GetMapping("getImageInfo")
+    fun getImageInfo(): Boolean {
+        val all = drawDao.findAll()
+        val client = RestTemplate()
+        for (item in all) {
+            if (item.width == 0) {
+                val qiniuImageInfo = client.getForObject("http://ph9jy186h.bkt.clouddn.com/${item.url}?imageInfo", QiniuImageInfo::class.java)
+                item.height = qiniuImageInfo!!.height
+                item.width = qiniuImageInfo.width
+                drawDao.save(item)
+            }
+        }
+        return true
+    }
+
+    @GetMapping("testGetImageInfo")
+    fun testGetImageInfo(): QiniuImageInfo? {
+        val client = RestTemplate()
+        val qiniuImageInfo = client.getForObject("http://ph9jy186h.bkt.clouddn.com/32740714_p0.jpg?imageInfo", QiniuImageInfo::class.java)
+        println(qiniuImageInfo!!.size)
+        return qiniuImageInfo
     }
 }
 

@@ -29,15 +29,17 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
                 .withIgnorePaths("likeAmount")
                 .withIgnorePaths("width")
                 .withIgnorePaths("height")
+                .withIgnorePaths("createDate")
+                .withIgnorePaths("modifiedDate")
         val example = Example.of(query, matcher)
         return drawDao.findAll(example, pageable)
     }
 
-    override fun pagingByTag(pageable: Pageable, tag: String): Page<Draw> {
+    override fun pagingByTag(pageable: Pageable, name: String): Page<Draw> {
         val specification = Specification<Draw> { root, criteriaQuery, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
             val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
-            predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$tag%"))
+            predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$name%"))
             predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
             predicatesList.add(criteriaBuilder.equal(root.get<String>("isPrivate"), false))
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))

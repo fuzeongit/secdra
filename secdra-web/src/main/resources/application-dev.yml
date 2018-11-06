@@ -12,7 +12,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-#    show-sql: true
+    show-sql: true
 #  mvc:
 #    static-path-pattern: /static/**
 

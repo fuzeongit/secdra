@@ -22,9 +22,9 @@ class DrawController(val drawService: IDrawService, val drawDao: IDrawDao) {
      * 根据标签获取
      */
     @GetMapping("/pagingByTag")
-    fun pagingByTag(tag: String?, @PageableDefault(value = 20) pageable: Pageable): Page<Draw> {
-        return if (tag != null && !StringUtils.isNullOrEmpty(tag)) {
-            drawService.pagingByTag(pageable, tag)
+    fun pagingByTag(name: String?, @PageableDefault(value = 20) pageable: Pageable): Page<Draw> {
+        return if (name != null && !StringUtils.isNullOrEmpty(name)) {
+            drawService.pagingByTag(pageable, name)
         } else {
             drawService.paging(pageable)
         }
