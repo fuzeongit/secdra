@@ -42,4 +42,10 @@ class TagController(private val tagService: ITagService, private val drawDao: ID
         }
         return true
     }
+
+    @GetMapping("/getFirst")
+    fun get(): Tag {
+        val id = "402880e566dd80a90166ddb27bc100e8"
+        return tagDao.getOne(id)
+    }
 }

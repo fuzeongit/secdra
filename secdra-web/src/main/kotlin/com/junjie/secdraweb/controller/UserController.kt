@@ -10,6 +10,8 @@ import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.SocketIOEventHandler
+import com.junjie.secdraweb.vo.UserVo
+import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.*
@@ -40,7 +42,7 @@ class UserController(private val userService: IUserService, private val baseConf
      * 注册
      */
     @PostMapping("/register")
-    fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): User {
+    fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVo {
         if (StringUtils.isEmpty(phone)) {
             throw ProgramException("输入手机为空", 404)
         }
@@ -61,19 +63,24 @@ class UserController(private val userService: IUserService, private val baseConf
         //生成token
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
         response.setHeader("token", token)
-        return user
+        val userVo = UserVo()
+        BeanUtils.copyProperties(user, userVo)
+        return userVo
+
     }
 
     /**
      * 登录
      */
     @PostMapping("/login")
-    fun login(phone: String, password: String, response: HttpServletResponse): User {
+    fun login(phone: String, password: String, response: HttpServletResponse): UserVo {
         val user = userService.login(phone, password)
         val nowMillis = System.currentTimeMillis()
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
         response.setHeader("token", token)
-        return user
+        val userVo = UserVo()
+        BeanUtils.copyProperties(user, userVo)
+        return userVo
     }
 
     @Auth
@@ -86,11 +93,13 @@ class UserController(private val userService: IUserService, private val baseConf
      * 修改密码
      */
     @PostMapping("/rePassword")
-    fun rePassword(phone: String, password: String, response: HttpServletResponse): User {
+    fun rePassword(phone: String, password: String, response: HttpServletResponse): UserVo {
         val nowMillis = System.currentTimeMillis()
         val user = userService.rePassword(phone, password, Date(nowMillis))
         redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
-        return user
+        val userVo = UserVo()
+        BeanUtils.copyProperties(user, userVo)
+        return userVo
     }
 
     /**
@@ -98,16 +107,22 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @Auth
     @GetMapping("/getSelfInfo")
-    fun getSelfInfo(@CurrentUserId userId: String): User {
-        return userService.getInfo(userId)
+    fun getSelfInfo(@CurrentUserId userId: String): UserVo {
+        val user = userService.getInfo(userId)
+        val userVo = UserVo()
+        BeanUtils.copyProperties(user, userVo)
+        return userVo
     }
 
     /**
      * 获取随意一个的用户信息
      */
     @GetMapping("/getInfo")
-    fun getInfo(userId: String): User {
-        return userService.getInfo(userId)
+    fun getInfo(userId: String): UserVo {
+        val user = userService.getInfo(userId)
+        val userVo = UserVo()
+        BeanUtils.copyProperties(user, userVo)
+        return userVo
     }
 
     @GetMapping("/get")

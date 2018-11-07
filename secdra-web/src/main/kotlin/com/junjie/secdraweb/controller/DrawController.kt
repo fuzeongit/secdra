@@ -80,4 +80,10 @@ class DrawController(val drawService: IDrawService, val drawDao: IDrawDao) {
             throw e
         }
     }
+
+    @GetMapping("/getFirst")
+    fun get(): Draw {
+        val id = "402880e566bb5cc60166bb601bfe0373"
+        return drawDao.getOne(id)
+    }
 }

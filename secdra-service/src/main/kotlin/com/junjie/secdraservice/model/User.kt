@@ -15,7 +15,7 @@ import javax.persistence.*
  * @author fjj
  */
 @Entity
-class User{
+class User {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
@@ -34,6 +34,10 @@ class User{
     var birthday: Date? = Date()
 
     var introduction: String? = null
+
+    var address: String? = null
+
+    var background: String? = null
 
     var rePasswordDate: Date? = Date()
 

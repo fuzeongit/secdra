@@ -12,6 +12,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
 #  mvc:
 #    static-path-pattern: /static/**
