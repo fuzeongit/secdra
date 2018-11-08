@@ -20,5 +20,5 @@ interface IDrawService {
 
     fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean = false): Draw
 
-    fun save(userId: String, url: String, introduction: String?, isPrivate: Boolean = false): Draw
+    fun save(draw: Draw): Draw
 }

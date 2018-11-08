@@ -87,14 +87,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.save(draw)
     }
 
-    override fun save(userId: String, url: String, introduction: String?, isPrivate: Boolean): Draw {
-        val draw = Draw()
-
-        draw.userId = userId;
-        draw.url = url;
-        draw.introduction = introduction;
-        draw.isPrivate = isPrivate;
-
+    override fun save(draw: Draw): Draw {
         return drawDao.save(draw)
     }
 

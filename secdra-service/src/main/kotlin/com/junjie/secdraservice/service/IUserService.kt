@@ -10,6 +10,11 @@ import java.util.*
  */
 interface IUserService {
     /**
+     * 保存
+     */
+    fun save(user: User): User
+
+    /**
      * 注册
      */
     fun register(user: User): User

@@ -5,28 +5,33 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.util.JwtUtil
+import com.junjie.secdraservice.contant.Gender
 import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.SocketIOEventHandler
 import com.junjie.secdraweb.vo.UserVo
+import com.qiniu.util.StringUtils
 import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.util.StringUtils
+
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("user")
-class UserController(private val userService: IUserService, private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, private var socketIoServer: SocketIOServer) {
+class UserController(private val userService: IUserService, private val baseConfig: BaseConfig,
+                     private val qiniuComponent: QiniuComponent, private val redisTemplate: StringRedisTemplate,
+                     private var socketIoServer: SocketIOServer) {
     /**
      * 发送验证码
      */
     @PostMapping("sendCode")
     fun sendCode(phone: String): Boolean {
-        if (StringUtils.isEmpty(phone)) {
+        if (StringUtils.isNullOrEmpty(phone)) {
             throw ProgramException("输入手机为空", 404)
         }
         var verificationCode = ""
@@ -43,7 +48,7 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @PostMapping("/register")
     fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVo {
-        if (StringUtils.isEmpty(phone)) {
+        if (StringUtils.isNullOrEmpty(phone)) {
             throw ProgramException("输入手机为空", 404)
         }
         val redisCode = redisTemplate.opsForValue()[String.format(baseConfig.verificationCodePrefix, phone)]
@@ -63,10 +68,7 @@ class UserController(private val userService: IUserService, private val baseConf
         //生成token
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
         response.setHeader("token", token)
-        val userVo = UserVo()
-        BeanUtils.copyProperties(user, userVo)
-        return userVo
-
+        return getVo(user)
     }
 
     /**
@@ -78,9 +80,7 @@ class UserController(private val userService: IUserService, private val baseConf
         val nowMillis = System.currentTimeMillis()
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
         response.setHeader("token", token)
-        val userVo = UserVo()
-        BeanUtils.copyProperties(user, userVo)
-        return userVo
+        return getVo(user)
     }
 
     @Auth
@@ -97,9 +97,7 @@ class UserController(private val userService: IUserService, private val baseConf
         val nowMillis = System.currentTimeMillis()
         val user = userService.rePassword(phone, password, Date(nowMillis))
         redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
-        val userVo = UserVo()
-        BeanUtils.copyProperties(user, userVo)
-        return userVo
+        return getVo(user)
     }
 
     /**
@@ -108,10 +106,7 @@ class UserController(private val userService: IUserService, private val baseConf
     @Auth
     @GetMapping("/getSelfInfo")
     fun getSelfInfo(@CurrentUserId userId: String): UserVo {
-        val user = userService.getInfo(userId)
-        val userVo = UserVo()
-        BeanUtils.copyProperties(user, userVo)
-        return userVo
+        return getVo(userService.getInfo(userId))
     }
 
     /**
@@ -119,7 +114,52 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @GetMapping("/getInfo")
     fun getInfo(userId: String): UserVo {
-        val user = userService.getInfo(userId)
+        return getVo(userService.getInfo(userId))
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @Auth
+    @PostMapping("/update")
+    fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?) {
+        val info = userService.getInfo(userId)
+        if (!StringUtils.isNullOrEmpty(name)) info.name = name
+        if (gender != null) info.gender = gender
+        if (birthday != null) info.birthday = birthday
+        if (!StringUtils.isNullOrEmpty(introduction)) info.introduction = introduction
+        if (!StringUtils.isNullOrEmpty(address)) info.address = address
+        getVo(userService.save(info))
+    }
+
+
+    /**
+     * 修改头像
+     */
+    @Auth
+    @PostMapping("/updateHead")
+    fun updateHead(@CurrentUserId userId: String, url: String): UserVo {
+        qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
+        val info = userService.getInfo(userId)
+        info.head = url;
+        return getVo(userService.save(info))
+    }
+
+
+    /**
+     * 修改背景墙
+     */
+    @Auth
+    @PostMapping("/updateBack")
+    fun updateBack(@CurrentUserId userId: String, url: String): UserVo {
+        qiniuComponent.move(url, baseConfig.qiniuBackBucket)
+        val info = userService.getInfo(userId)
+        info.background = url;
+        return getVo(userService.save(info))
+    }
+
+
+    private fun getVo(user: User): UserVo {
         val userVo = UserVo()
         BeanUtils.copyProperties(user, userVo)
         return userVo
@@ -134,6 +174,4 @@ class UserController(private val userService: IUserService, private val baseConf
         }
         return true
     }
-
-
 }

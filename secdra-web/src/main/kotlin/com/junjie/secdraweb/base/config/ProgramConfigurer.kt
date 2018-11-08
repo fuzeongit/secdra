@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.RedisComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
@@ -76,5 +77,10 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
     @Bean
     internal fun redisComponent(): RedisComponent {
         return RedisComponent(StringRedisTemplate())
+    }
+
+    @Bean
+    internal fun qiniuComponent(): QiniuComponent {
+        return QiniuComponent(baseConfig())
     }
 }

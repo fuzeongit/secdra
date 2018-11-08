@@ -14,9 +14,23 @@ class BaseConfig {
 
     var updatePasswordTimePrefix: String = ""
 
-    var qiniuAccessKey :String = ""
+    var qiniuAccessKey: String = ""
 
-    var qiniuSecretKey :String = ""
-
-    var qiniuBucket :String = ""
+    var qiniuSecretKey: String = ""
+    //临时储存空间
+    var qiniuTempBucket: String = ""
+    //头像储存空间
+    var qiniuHeadBucket: String = ""
+    //背景储存空间
+    var qiniuBackBucket: String = ""
+    //主储存空间
+    var qiniuBucket: String = ""
+    //临时储存空间
+    var qiniuTempBucketUrl: String = ""
+    //头像储存空间
+    var qiniuHeadBucketUrl: String = ""
+    //背景储存空间
+    var qiniuBackBucketUrl: String = ""
+    //主储存空间
+    var qiniuBucketUrl: String = ""
 }

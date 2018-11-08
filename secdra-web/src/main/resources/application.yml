@@ -11,4 +11,13 @@ base:
   updatePasswordTimePrefix: update_password_time:%s
   qiniuAccessKey: _I-tvI9XSNEzwjzeEWz3KxfBQwL9mk3GOcDbNKST
   qiniuSecretKey: DMEfYejDMunmcgz07VfUraR9OhEvRX_ekY58H-2w
+  qiniuTempBucket: temporary
+  qiniuHeadBucket: head
+  qiniuBackBucket: background
   qiniuBucket: secdra
+  qiniuTempBucketUrl: http://phnqxaco3.bkt.clouddn.com
+  qiniuHeadBucketUrl: http://phnqizf7z.bkt.clouddn.com
+  qiniuBackBucketUrl: http://phnqlj10o.bkt.clouddn.com
+  qiniuBucketUrl: http://ph9jy186h.bkt.clouddn.com
+
+

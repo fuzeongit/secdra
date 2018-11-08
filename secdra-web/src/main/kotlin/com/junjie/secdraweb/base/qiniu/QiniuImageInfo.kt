@@ -1,4 +1,4 @@
-package com.junjie.secdraweb.form
+package com.junjie.secdraweb.base.qiniu
 
 class QiniuImageInfo() {
     var size:Int = 0

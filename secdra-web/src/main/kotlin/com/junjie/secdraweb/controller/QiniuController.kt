@@ -1,9 +1,11 @@
 package com.junjie.secdraweb.controller
 
+import com.junjie.secdracore.annotations.Auth
+import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.model.Result
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraweb.base.component.BaseConfig
-import com.junjie.secdraweb.form.QiniuImageInfo
+import com.junjie.secdraweb.base.qiniu.QiniuImageInfo
 import com.qiniu.util.UrlSafeBase64
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -28,13 +30,13 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDao: I
         return Result(200, "", auth.uploadToken("images").toString());
     }
 
-    //    @Auth
+    @Auth
     @PostMapping("move")
     fun move(
-//        @CurrentUserId userId: String,
+            @CurrentUserId userId: String,
             name: String): Boolean {
         //空间名前缀
-        val sourceBucket = "images"
+        val sourceBucket = baseConfig.qiniuTempBucket
         val bucket = baseConfig.qiniuBucket
         val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$name")
         val nameEncodeBase64 = UrlSafeBase64.encodeToString("$bucket:$name")

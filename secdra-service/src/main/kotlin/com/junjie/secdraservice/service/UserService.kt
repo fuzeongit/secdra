@@ -8,7 +8,9 @@ import java.util.*
 
 @Service
 class UserService(val userDao: IUserDao) : IUserService {
-
+    override fun save(user: User): User {
+        return userDao.save(user)
+    }
 
     override fun register(user: User): User {
         if (userDao.existsByPhone(user.phone!!)) {

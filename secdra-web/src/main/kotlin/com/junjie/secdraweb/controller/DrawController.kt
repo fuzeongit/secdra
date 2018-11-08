@@ -4,9 +4,11 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
+import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.IDrawService
 import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
 import com.qiniu.util.StringUtils
@@ -20,11 +22,12 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 @RestController
 @RequestMapping("/draw")
-class DrawController(private val drawService: IDrawService, private val userService: IUserService, val drawDao: IDrawDao) {
+class DrawController(private val drawService: IDrawService, private val userService: IUserService,
+                     private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig, val drawDao: IDrawDao) {
     /**
      * 根据标签获取
      */
@@ -67,6 +70,31 @@ class DrawController(private val drawService: IDrawService, private val userServ
     }
 
     /**
+     * 保存图片
+     */
+    @PostMapping("/save")
+    @Auth
+    fun save(@CurrentUserId userId: String, url: String, desc: String?, isPrivate: Boolean, tagList: ArrayList<String>): DrawVo {
+        val draw = Draw()
+        draw.url = url
+        draw.userId = userId
+        draw.introduction = desc
+        draw.isPrivate = isPrivate
+        if (tagList.size > 0) {
+            for (tagName in tagList) {
+                val tag = Tag()
+                tag.name = tagName
+                draw.tagList?.add(tag)
+            }
+        }
+        qiniuComponent.move(url, baseConfig.qiniuBucket)
+        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
+        draw.width = imageInfo!!.width
+        draw.height = imageInfo.height
+        return getVo(drawService.save(draw))
+    }
+
+    /**
      * 更新
      */
     @PostMapping("/update")
@@ -101,7 +129,11 @@ class DrawController(private val drawService: IDrawService, private val userServ
             val fileNameList = file.list()
             for (fileName in fileNameList) {
                 if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
-                    drawService.save("13760029486", fileName, "小可爱")
+                    val draw = Draw()
+                    draw.userId = "123"
+                    draw.url = fileName
+                    draw.introduction = "小可爱"
+                    drawService.save(draw)
                 }
             }
             return true
@@ -109,11 +141,5 @@ class DrawController(private val drawService: IDrawService, private val userServ
             println(e.message)
             throw e
         }
-    }
-
-    @GetMapping("/getFirst")
-    fun get(): Draw {
-        val id = "402880e566bb5cc60166bb601bfe0373"
-        return drawDao.getOne(id)
     }
 }
