@@ -19,4 +19,6 @@ class UserVo {
     var introduction: String? = null
 
     var address: String? = null
+
+    var background: String? = null
 }
