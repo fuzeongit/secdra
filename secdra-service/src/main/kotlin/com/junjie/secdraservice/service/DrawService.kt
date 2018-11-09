@@ -1,6 +1,7 @@
 package com.junjie.secdraservice.service
 
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
@@ -20,26 +21,19 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class DrawService(val drawDao: IDrawDao) : IDrawService {
-    override fun paging(pageable: Pageable): Page<Draw> {
-        val query = Draw()
-        query.drawState = DrawState.PASS
-        val matcher = ExampleMatcher.matching()
-                .withMatcher("drawState", ExampleMatcher.GenericPropertyMatchers.exact())
-                .withIgnorePaths("viewAmount")
-                .withIgnorePaths("likeAmount")
-                .withIgnorePaths("width")
-                .withIgnorePaths("height")
-                .withIgnorePaths("createDate")
-                .withIgnorePaths("modifiedDate")
-        val example = Example.of(query, matcher)
-        return drawDao.findAll(example, pageable)
-    }
-
-    override fun pagingByTag(pageable: Pageable, name: String): Page<Draw> {
-        val specification = Specification<Draw> { root, criteriaQuery, criteriaBuilder ->
+    override fun paging(pageable: Pageable, name: String?, startDate: Date?, endDate: Date?): Page<Draw> {
+        val specification = Specification<Draw> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
-            val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
-            predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$name%"))
+            if (!StringUtils.isNullOrEmpty(name)) {
+                val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
+                predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$name%"))
+            }
+            if (startDate != null) {
+                predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), startDate))
+            }
+            if (endDate != null) {
+                predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), endDate))
+            }
             predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
             predicatesList.add(criteriaBuilder.equal(root.get<String>("isPrivate"), false))
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
@@ -47,18 +41,23 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.findAll(specification, pageable)
     }
 
-
-    override fun pagingByUserId(pageable: Pageable, userId: String, isSelf: Boolean): Page<Draw> {
-        val query = Draw()
-        query.drawState = DrawState.PASS
-        var matcher = ExampleMatcher.matching()
-                .withMatcher("drawState", ExampleMatcher.GenericPropertyMatchers.exact())
-        //如果是自己排除
-        if (isSelf) {
-            matcher = matcher.withIgnorePaths("isPrivate");
+    override fun pagingByUserId(pageable: Pageable, userId: String, startDate: Date?, endDate: Date?, isSelf: Boolean): Page<Draw> {
+        val specification = Specification<Draw> { root, _, criteriaBuilder ->
+            val predicatesList = ArrayList<Predicate>()
+            if (startDate != null) {
+                predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), startDate))
+            }
+            if (endDate != null) {
+                predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), endDate))
+            }
+            predicatesList.add(criteriaBuilder.equal(root.get<String>("userId"), userId))
+            predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
+            if(!isSelf){
+                predicatesList.add(criteriaBuilder.equal(root.get<String>("isPrivate"), false))
+            }
+            criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
-        val example = Example.of(query, matcher)
-        return drawDao.findAll(example, pageable)
+        return drawDao.findAll(specification, pageable)
     }
 
     override fun get(id: String, userId: String?): Draw {
@@ -90,5 +89,4 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     override fun save(draw: Draw): Draw {
         return drawDao.save(draw)
     }
-
 }

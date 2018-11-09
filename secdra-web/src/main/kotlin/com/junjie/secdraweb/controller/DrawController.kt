@@ -31,13 +31,19 @@ class DrawController(private val drawService: IDrawService, private val userServ
     /**
      * 根据标签获取
      */
-    @GetMapping("/pagingByTag")
-    fun pagingByTag(name: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
-        val page = if (name != null && !StringUtils.isNullOrEmpty(name)) {
-            drawService.pagingByTag(pageable, name)
-        } else {
-            drawService.paging(pageable)
-        }
+    @GetMapping("/paging")
+    fun paging(name: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+        val page = drawService.paging(pageable, name, startDate, endDate)
+        return getPageVo(page)
+    }
+
+    /**
+     * 获取推荐
+     */
+    @GetMapping("/pagingByRecommend")
+    fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+        //由于不会算法，暂时这样写
+        val page = drawService.paging(pageable, null, startDate, endDate)
         return getPageVo(page)
     }
 
@@ -46,8 +52,8 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @Auth
     @GetMapping("/pagingBySelf")
-    fun pagingBySelf(@CurrentUserId userId: String, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
-        val page = drawService.pagingByUserId(pageable, userId, true)
+    fun pagingBySelf(@CurrentUserId userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+        val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, true)
         return getPageVo(page)
     }
 
@@ -55,8 +61,8 @@ class DrawController(private val drawService: IDrawService, private val userServ
      * 获取他人
      */
     @GetMapping("/pagingByOthers")
-    fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
-        val page = drawService.pagingByUserId(pageable, userId, false)
+    fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+        val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, false)
         return getPageVo(page)
     }
 
