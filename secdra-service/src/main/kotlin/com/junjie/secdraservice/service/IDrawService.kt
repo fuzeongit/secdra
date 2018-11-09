@@ -21,5 +21,5 @@ interface IDrawService {
 
     fun save(draw: Draw): Draw
 
-    fun findRand(): List<Draw>
+    fun pagingRand(pageable:Pageable): Page<Draw>
 }

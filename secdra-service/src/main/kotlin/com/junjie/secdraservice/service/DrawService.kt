@@ -7,10 +7,7 @@ import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.qiniu.util.StringUtils
-import org.springframework.data.domain.Example
-import org.springframework.data.domain.ExampleMatcher
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.*
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
@@ -90,7 +87,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.save(draw)
     }
 
-    override fun findRand(): List<Draw> {
-        return drawDao.findRand()
+    override fun pagingRand(pageable:Pageable): Page<Draw> {
+        return drawDao.pagingRand(pageable)
     }
 }

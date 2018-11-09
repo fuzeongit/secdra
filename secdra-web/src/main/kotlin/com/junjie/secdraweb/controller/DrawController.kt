@@ -15,6 +15,7 @@ import com.qiniu.util.StringUtils
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.GetMapping
@@ -44,13 +45,15 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @GetMapping("/pagingByRecommend")
     fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         //由于不会算法，暂时这样写
-        val page = drawService.paging(pageable, null, startDate, endDate)
+//        val page = drawService.paging(pageable, null, startDate, endDate)
+        val page = drawService.pagingRand(pageable)
         return getPageVo(page)
     }
 
     @GetMapping("/listByRecommend")
     fun listByRecommend(): ArrayList<DrawVo> {
-        val drawList = drawService.findRand()
+        val pageable = PageRequest.of(0, 4)
+        val drawList = drawService.pagingRand(pageable).content
         val drawVoList = ArrayList<DrawVo>()
         for (draw in drawList) {
             drawVoList.add(getVo(draw))
