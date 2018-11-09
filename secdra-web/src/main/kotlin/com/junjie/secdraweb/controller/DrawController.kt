@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 @RestController
 @RequestMapping("/draw")
@@ -45,6 +46,16 @@ class DrawController(private val drawService: IDrawService, private val userServ
         //由于不会算法，暂时这样写
         val page = drawService.paging(pageable, null, startDate, endDate)
         return getPageVo(page)
+    }
+
+    @GetMapping("/listByRecommend")
+    fun listByRecommend(): ArrayList<DrawVo> {
+        val drawList = drawService.findRand()
+        val drawVoList = ArrayList<DrawVo>()
+        for (draw in drawList) {
+            drawVoList.add(getVo(draw))
+        }
+        return drawVoList
     }
 
     /**

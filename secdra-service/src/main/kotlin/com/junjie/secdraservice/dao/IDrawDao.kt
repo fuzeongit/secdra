@@ -11,4 +11,8 @@ import org.springframework.data.jpa.repository.Query
 
 interface IDrawDao : JpaRepository<Draw, String>, JpaSpecificationExecutor<Draw> {
     fun findAllByUserId(pageable: Pageable): Page<Draw>
+
+    @Query(value = "select * FROM draw ORDER BY RAND() LIMIT 0,4")
+    fun findRand(): List<Draw>
+
 }

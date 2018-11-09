@@ -20,4 +20,6 @@ interface IDrawService {
     fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean = false): Draw
 
     fun save(draw: Draw): Draw
+
+    fun findRand(): List<Draw>
 }

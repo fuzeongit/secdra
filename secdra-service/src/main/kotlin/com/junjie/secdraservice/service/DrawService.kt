@@ -52,7 +52,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
             }
             predicatesList.add(criteriaBuilder.equal(root.get<String>("userId"), userId))
             predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
-            if(!isSelf){
+            if (!isSelf) {
                 predicatesList.add(criteriaBuilder.equal(root.get<String>("isPrivate"), false))
             }
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
@@ -88,5 +88,9 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
 
     override fun save(draw: Draw): Draw {
         return drawDao.save(draw)
+    }
+
+    override fun findRand(): List<Draw> {
+        return drawDao.findRand()
     }
 }
