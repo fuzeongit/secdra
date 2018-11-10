@@ -117,6 +117,11 @@ class UserController(private val userService: IUserService, private val baseConf
         return getVo(userService.getInfo(userId))
     }
 
+    @GetMapping("/getInfoByDrawId")
+    fun getInfoByDrawId(drawId:String):UserVo{
+        return getVo(userService.getInfoByDrawId(drawId))
+    }
+
     /**
      * 修改用户信息
      */

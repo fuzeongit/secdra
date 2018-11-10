@@ -8,6 +8,8 @@ import java.util.*
 
 @Service
 class UserService(val userDao: IUserDao) : IUserService {
+
+
     override fun save(user: User): User {
         return userDao.save(user)
     }
@@ -23,7 +25,7 @@ class UserService(val userDao: IUserDao) : IUserService {
         if (!userDao.existsByPhone(phone)) {
             throw ProgramException("手机号不存在", 403)
         }
-        return userDao.findOnByPhoneAndPassword(phone, password).orElseThrow { ProgramException("账号密码不正确", 401) }
+        return userDao.findOneByPhoneAndPassword(phone, password).orElseThrow { ProgramException("账号密码不正确", 401) }
     }
 
     override fun rePassword(phone: String, password: String, rePasswordTime: Date): User {
@@ -32,6 +34,10 @@ class UserService(val userDao: IUserDao) : IUserService {
 
     override fun getInfo(id: String): User {
         return userDao.findById(id).orElseThrow { ProgramException("用户信息不存在", 403) }
+    }
+
+    override fun getInfoByDrawId(drawId: String): User {
+        return userDao.findByDrawId(drawId).orElseThrow { ProgramException("用户信息不存在", 403) }
     }
 
     override fun updateInfo(user: User): User {

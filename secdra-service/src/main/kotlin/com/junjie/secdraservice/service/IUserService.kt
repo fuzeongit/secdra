@@ -35,6 +35,11 @@ interface IUserService {
     fun getInfo(id: String): User
 
     /**
+     * 根据画的id获取用户信息
+     */
+    fun getInfoByDrawId(drawId: String): User
+
+    /**
      * 修改用户信息
      */
     fun updateInfo(user: User): User

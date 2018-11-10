@@ -10,6 +10,10 @@ class DrawVo() {
 
     var url: String? = null
 
+    var userId: String? = null
+
+    var name: String? = null
+
     var isPrivate: Boolean = false
 
     var viewAmount: Int = 0

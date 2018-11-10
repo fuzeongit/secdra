@@ -137,7 +137,9 @@ class DrawController(private val drawService: IDrawService, private val userServ
     private fun getPageVo(page: Page<Draw>): Page<DrawVo> {
         val drawVoList = ArrayList<DrawVo>()
         for (draw in page.content) {
-            drawVoList.add(getVo(draw))
+            val drawVo = DrawVo()
+            BeanUtils.copyProperties(draw, drawVo)
+            drawVoList.add(drawVo)
         }
         return PageImpl<DrawVo>(drawVoList, page.pageable, page.totalElements)
     }

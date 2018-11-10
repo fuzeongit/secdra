@@ -20,6 +20,8 @@ class Draw {
 
     var userId: String? = null
 
+    var name: String? = null
+
     var isPrivate: Boolean = false
 
     var drawState: DrawState = DrawState.PASS

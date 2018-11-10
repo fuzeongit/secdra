@@ -2,10 +2,14 @@ package com.junjie.secdraservice.dao
 
 import com.junjie.secdraservice.model.User
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.util.*
 
 interface IUserDao : JpaRepository<User, String> {
-    abstract fun existsByPhone(phone: String): Boolean
+    fun existsByPhone(phone: String): Boolean
 
-    abstract fun findOnByPhoneAndPassword(phone: String,password:String) :Optional<User>
+    fun findOneByPhoneAndPassword(phone: String, password: String): Optional<User>
+
+    @Query("SELECT `USER`.* FROM `USER` JOIN draw ON `USER`.id = draw.user_id WHERE draw.id = ?",nativeQuery = true)
+    fun findByDrawId(drawId: String): Optional<User>
 }
