@@ -8,6 +8,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
+@NamedEntityGraph(name = "Draw.Tag", attributeNodes = [NamedAttributeNode("tagList")])
 class Draw {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID

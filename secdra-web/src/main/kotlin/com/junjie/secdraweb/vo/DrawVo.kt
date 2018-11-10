@@ -16,6 +16,8 @@ class DrawVo() {
 
     var isPrivate: Boolean = false
 
+    var isFocus: Boolean = false
+
     var viewAmount: Int = 0
 
     var likeAmount: Int = 0

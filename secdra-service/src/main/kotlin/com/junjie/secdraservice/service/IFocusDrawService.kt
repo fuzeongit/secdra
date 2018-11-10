@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service
  */
 
 interface IFocusDrawService {
+    fun exists(userId: String, drawId: String): Boolean
+
     fun get(userId: String, drawId: String): FocusDraw
 
     fun save(userId: String, drawId: String): FocusDraw

@@ -6,6 +6,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class FocusDrawService(private val focusDrawDao: IFocusDrawDao) : IFocusDrawService {
+
+    override fun exists(userId: String, drawId: String): Boolean {
+        return focusDrawDao.existsByUserIdAndDrawId(userId, drawId)
+    }
+
+
     override fun get(userId: String, drawId: String): FocusDraw {
         return focusDrawDao.findFirstByUserIdAndDrawId(userId, drawId)
     }

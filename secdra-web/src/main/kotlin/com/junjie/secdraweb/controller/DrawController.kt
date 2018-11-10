@@ -6,6 +6,7 @@ import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.IDrawService
+import com.junjie.secdraservice.service.IFocusDrawService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
@@ -29,14 +30,16 @@ import kotlin.collections.ArrayList
 @RestController
 @RequestMapping("/draw")
 class DrawController(private val drawService: IDrawService, private val userService: IUserService,
-                     private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig, val drawDao: IDrawDao) {
+                     private val focusDrawService: IFocusDrawService,
+                     private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig,
+                     val drawDao: IDrawDao) {
     /**
      * 根据标签获取
      */
     @GetMapping("/paging")
-    fun paging(name: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+    fun paging(@CurrentUserId userId: String?,name: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         val page = drawService.paging(pageable, name, startDate, endDate)
-        return getPageVo(page)
+        return getPageVo(page,userId)
     }
 
     /**
@@ -47,16 +50,16 @@ class DrawController(private val drawService: IDrawService, private val userServ
         //由于不会算法，暂时这样写
 //        val page = drawService.paging(pageable, null, startDate, endDate)
         val page = drawService.pagingRand(pageable)
-        return getPageVo(page)
+        return getPageVo(page,userId)
     }
 
     @GetMapping("/listByRecommend")
-    fun listByRecommend(): ArrayList<DrawVo> {
+    fun listByRecommend(@CurrentUserId userId: String?): ArrayList<DrawVo> {
         val pageable = PageRequest.of(0, 4)
         val drawList = drawService.pagingRand(pageable).content
         val drawVoList = ArrayList<DrawVo>()
         for (draw in drawList) {
-            drawVoList.add(getVo(draw))
+            drawVoList.add(getVo(draw,userId))
         }
         return drawVoList
     }
@@ -77,7 +80,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @GetMapping("/pagingByOthers")
     fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, false)
-        return getPageVo(page)
+        return getPageVo(page,userId)
     }
 
     /**
@@ -86,7 +89,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @GetMapping("/get")
     fun get(id: String, @CurrentUserId userId: String?): DrawVo {
         val draw = drawService.get(id, userId)
-        return getVo(draw)
+        return getVo(draw,userId)
     }
 
     /**
@@ -124,22 +127,23 @@ class DrawController(private val drawService: IDrawService, private val userServ
         return getVo(draw)
     }
 
-    private fun getVo(draw: Draw): DrawVo {
+    private fun getVo(draw: Draw, userId: String? = null): DrawVo {
         val user = userService.getInfo(draw.userId!!)
         val drawVo = DrawVo()
         val userVo = UserVo()
         BeanUtils.copyProperties(draw, drawVo)
         BeanUtils.copyProperties(user, userVo)
+        if(!StringUtils.isNullOrEmpty(userId)){
+            drawVo.isFocus = focusDrawService.exists(userId!!,draw.id!!)
+        }
         drawVo.user = userVo
         return drawVo
     }
 
-    private fun getPageVo(page: Page<Draw>): Page<DrawVo> {
+    private fun getPageVo(page: Page<Draw>,userId: String? = null): Page<DrawVo> {
         val drawVoList = ArrayList<DrawVo>()
         for (draw in page.content) {
-            val drawVo = DrawVo()
-            BeanUtils.copyProperties(draw, drawVo)
-            drawVoList.add(drawVo)
+            drawVoList.add(getVo(draw,userId))
         }
         return PageImpl<DrawVo>(drawVoList, page.pageable, page.totalElements)
     }
