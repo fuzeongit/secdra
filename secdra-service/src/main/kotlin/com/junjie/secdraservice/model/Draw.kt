@@ -27,13 +27,13 @@ class Draw {
 
     var drawState: DrawState = DrawState.PASS
 
-    var viewAmount: Int = 0
+    var viewAmount: Long = 0
 
-    var likeAmount: Int = 0
+    var likeAmount: Long = 0
 
-    var width: Int = 0;
+    var width: Long = 0;
 
-    var height: Int = 0;
+    var height: Long = 0;
 
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "draw_id")

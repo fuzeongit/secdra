@@ -83,11 +83,22 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.save(draw)
     }
 
+    override fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw {
+        val draw = drawDao.findById(drawId).orElseThrow { ProgramException("图片不存在", 404) }
+        if (viewAmount != null) {
+            draw.viewAmount = viewAmount
+        }
+        if (likeAmount != null) {
+            draw.likeAmount = likeAmount
+        }
+        return drawDao.save(draw)
+    }
+
     override fun save(draw: Draw): Draw {
         return drawDao.save(draw)
     }
 
-    override fun pagingRand(pageable:Pageable): Page<Draw> {
+    override fun pagingRand(pageable: Pageable): Page<Draw> {
         return drawDao.pagingRand(pageable)
     }
 }

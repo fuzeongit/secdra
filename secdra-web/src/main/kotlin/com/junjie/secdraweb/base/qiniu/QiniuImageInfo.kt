@@ -5,9 +5,9 @@ class QiniuImageInfo() {
 
     var format:String? = null
 
-    var width:Int = 0
+    var width:Long = 0
 
-    var height:Int = 0
+    var height:Long = 0
 
     var colorModel:String? = null
 }

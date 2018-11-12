@@ -18,13 +18,13 @@ class DrawVo() {
 
     var isFocus: Boolean = false
 
-    var viewAmount: Int = 0
+    var viewAmount: Long = 0
 
-    var likeAmount: Int = 0
+    var likeAmount: Long = 0
 
-    var width: Int = 0;
+    var width: Long = 0;
 
-    var height: Int = 0;
+    var height: Long = 0;
 
     var tagList: MutableSet<Tag>? = null
 

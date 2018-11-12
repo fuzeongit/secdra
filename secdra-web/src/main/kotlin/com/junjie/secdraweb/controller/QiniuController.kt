@@ -70,7 +70,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDao: I
         val all = drawDao.findAll()
         val client = RestTemplate()
         for (item in all) {
-            if (item.width == 0) {
+            if (item.width == 0.toLong()) {
                 val qiniuImageInfo = client.getForObject("http://ph9jy186h.bkt.clouddn.com/${item.url}?imageInfo", QiniuImageInfo::class.java)
                 item.height = qiniuImageInfo!!.height
                 item.width = qiniuImageInfo.width

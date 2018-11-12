@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 @EnableJpaAuditing
 class SecdraWebApplication : SpringBootServletInitializer() {
     override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
-        // 设置启动类,用于独立tomcat运行的入口
+        // 设置启动类，用于独立tomcat运行的入口
         return builder.sources(SecdraWebApplication::class.java)
     }
 

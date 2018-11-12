@@ -17,4 +17,6 @@ interface IFocusDrawService {
     fun save(userId: String, drawId: String): FocusDraw
 
     fun remove(userId: String, drawId: String): Boolean
+
+    fun countByDrawId(drawId: String):Long
 }

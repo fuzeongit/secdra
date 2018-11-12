@@ -19,7 +19,9 @@ interface IDrawService {
 
     fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean = false): Draw
 
+    fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw
+
     fun save(draw: Draw): Draw
 
-    fun pagingRand(pageable:Pageable): Page<Draw>
+    fun pagingRand(pageable: Pageable): Page<Draw>
 }

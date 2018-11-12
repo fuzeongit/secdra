@@ -89,6 +89,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @GetMapping("/get")
     fun get(id: String, @CurrentUserId userId: String?): DrawVo {
         val draw = drawService.get(id, userId)
+
         return getVo(draw,userId)
     }
 
