@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2018-11-11 03:37:54
+Date: 2018-11-12 17:37:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -590,6 +590,23 @@ CREATE TABLE `focus_user` (
 
 -- ----------------------------
 -- Records of focus_user
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for footprint
+-- ----------------------------
+DROP TABLE IF EXISTS `footprint`;
+CREATE TABLE `footprint` (
+  `id` varchar(255) NOT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `draw_id` varchar(255) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `user_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of footprint
 -- ----------------------------
 
 -- ----------------------------
