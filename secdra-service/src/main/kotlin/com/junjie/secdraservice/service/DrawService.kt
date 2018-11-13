@@ -1,13 +1,14 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdracore.util.DateUtil
+import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.qiniu.util.StringUtils
-import org.springframework.data.domain.*
+import javassist.NotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
@@ -31,8 +32,8 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
             if (endDate != null) {
                 predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), endDate))
             }
-            predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
-            predicatesList.add(criteriaBuilder.equal(root.get<String>("isPrivate"), false))
+            predicatesList.add(criteriaBuilder.equal(root.get<Int>("drawState"), DrawState.PASS))
+            predicatesList.add(criteriaBuilder.equal(root.get<Int>("isPrivate"), false))
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return drawDao.findAll(specification, pageable)
@@ -58,23 +59,23 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     }
 
     override fun get(id: String, userId: String?): Draw {
-        val draw = drawDao.findById(id).orElseThrow { ProgramException("图片不存在", 404) }
+        val draw = drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
         if (draw.drawState != DrawState.PASS) {
-            ProgramException("该图片已被屏蔽", 403)
+            PermissionException("该图片已被屏蔽")
         }
         if (draw.isPrivate && draw.userId != userId) {
-            throw ProgramException("您无权查看该图片", 403)
+            throw PermissionException("您无权查看该图片")
         }
         return draw
     }
 
     override fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean): Draw {
-        val draw = drawDao.findById(drawId).orElseThrow { ProgramException("图片不存在", 404) }
+        val draw = drawDao.findById(drawId).orElseThrow { NotFoundException("图片不存在") }
         if (draw.drawState != DrawState.PASS) {
-            ProgramException("该图片已被屏蔽", 403)
+            PermissionException("该图片已被屏蔽")
         }
         if (draw.userId != userId) {
-            throw ProgramException("您无权修改该图片", 403)
+            throw PermissionException("您无权修改该图片")
         }
         if (StringUtils.isNullOrEmpty(introduction)) {
             draw.introduction = introduction
@@ -84,7 +85,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     }
 
     override fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw {
-        val draw = drawDao.findById(drawId).orElseThrow { ProgramException("图片不存在", 404) }
+        val draw = drawDao.findById(drawId).orElseThrow { NotFoundException("图片不存在") }
         if (viewAmount != null) {
             draw.viewAmount = viewAmount
         }

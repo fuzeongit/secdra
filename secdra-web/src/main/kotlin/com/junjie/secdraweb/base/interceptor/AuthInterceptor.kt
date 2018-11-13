@@ -2,6 +2,7 @@ package com.junjie.secdraweb.base.interceptor
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.CookieUtil
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
@@ -28,47 +29,6 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
             //运行的方法
             val m = hm.method
 
-            //如果存在auth则需验证进入
-//            if (m.isAnnotationPresent(Auth::class.java)) {
-//                try {
-//                    val cookieMap = CookieUtil.readCookieMap(request)
-//                    val token = cookieMap["token"]
-//                    val claims = JwtUtil.parseJWT(token!!.value, baseConfig.jwtBase64Secret)
-//                    val userId = claims["userId"]
-//                    //过期时间
-//                    val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
-//                    //生成时间
-//                    val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
-//                    //最后更改密码时间
-//                    val rePasswordDateStr = redisTemplate.opsForValue()[String.format(baseConfig.updatePasswordTimePrefix, userId)]
-//                    val rePasswordDate: Date?
-//                    //缓存穿透
-//                    rePasswordDate = if (StringUtils.isEmpty(rePasswordDateStr)) {
-//                        val info = userService.getInfo(userId.toString())
-//                        //最后更改密码时间写入redis
-//                        redisTemplate.opsForValue().set(
-//                                String.format(baseConfig.updatePasswordTimePrefix, userId),
-//                                info.rePasswordDate?.time.toString())
-//                        info.rePasswordDate!!
-//                    } else {
-//                        Date(rePasswordDateStr?.toLong()!!)
-//                    }
-//                    if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
-//                        throw ProgramException("用户登录已过期", 401)
-//                    }
-//                    if (StringUtils.isEmpty(userId)) {
-//                        throw ProgramException("请重新登录", 401)
-//                    }
-//                    if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-//                        redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, userId), "")
-//                        throw ProgramException("请重新登录", 401)
-//                    }
-//                    request.setAttribute("userId", userId)
-//                } catch (e: Exception) {
-//                    throw  e as? ProgramException ?: ProgramException("请重新登录", 401)
-//                }
-//            }
-
             try {
                 val cookieMap = CookieUtil.readCookieMap(request)
                 val token = cookieMap["token"]
@@ -93,19 +53,19 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                     Date(rePasswordDateStr?.toLong()!!)
                 }
                 if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
-                    throw ProgramException("用户登录已过期", 401)
+                    throw SignInException("用户登录已过期")
                 }
                 if (StringUtils.isEmpty(userId)) {
-                    throw ProgramException("请重新登录", 401)
+                    throw SignInException("请重新登录")
                 }
                 if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
                     redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, userId), "")
-                    throw ProgramException("请重新登录", 401)
+                    throw SignInException("请重新登录")
                 }
                 request.setAttribute("userId", userId)
             } catch (e: Exception) {
                 if(m.isAnnotationPresent(Auth::class.java)){
-                    throw  e as? ProgramException ?: ProgramException("请重新登录", 401)
+                    throw  e as? SignInException ?: SignInException("请重新登录")
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.User
 import org.springframework.stereotype.Service
@@ -16,16 +17,16 @@ class UserService(val userDao: IUserDao) : IUserService {
 
     override fun register(user: User): User {
         if (userDao.existsByPhone(user.phone!!)) {
-            throw ProgramException("手机号已存在", 403)
+            throw PermissionException("手机号已存在")
         }
         return userDao.save(user)
     }
 
     override fun login(phone: String, password: String): User {
         if (!userDao.existsByPhone(phone)) {
-            throw ProgramException("手机号不存在", 403)
+            throw PermissionException("手机号不存在")
         }
-        return userDao.findOneByPhoneAndPassword(phone, password).orElseThrow { ProgramException("账号密码不正确", 401) }
+        return userDao.findOneByPhoneAndPassword(phone, password).orElseThrow { SignInException("账号密码不正确") }
     }
 
     override fun rePassword(phone: String, password: String, rePasswordTime: Date): User {
@@ -33,11 +34,11 @@ class UserService(val userDao: IUserDao) : IUserService {
     }
 
     override fun getInfo(id: String): User {
-        return userDao.findById(id).orElseThrow { ProgramException("用户信息不存在", 403) }
+        return userDao.findById(id).orElseThrow { PermissionException("用户信息不存在") }
     }
 
     override fun getInfoByDrawId(drawId: String): User {
-        return userDao.findByDrawId(drawId).orElseThrow { ProgramException("用户信息不存在", 403) }
+        return userDao.findByDrawId(drawId).orElseThrow { PermissionException("用户信息不存在") }
     }
 
     override fun updateInfo(user: User): User {

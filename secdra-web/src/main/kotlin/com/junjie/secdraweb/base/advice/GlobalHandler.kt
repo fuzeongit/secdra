@@ -1,6 +1,8 @@
 package com.junjie.secdraweb.base.advice
 
+import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.model.Result
 import javassist.NotFoundException
 import org.springframework.core.MethodParameter
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
+import java.sql.SQLException
 
 @ControllerAdvice
 class GlobalHandler : ResponseBodyAdvice<Any?> {
@@ -37,6 +40,13 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
         return Result(500, e.message!!);
     }
 
+    //sql查询异常
+    @ResponseBody
+    @ExceptionHandler(SQLException::class)
+    fun sqlExceptionHandler(e: SQLException): Result<Any?> {
+        return Result(500, e.message!!);
+    }
+
     //找不到异常
     @ResponseBody
     @ExceptionHandler(NotFoundException::class)
@@ -44,12 +54,33 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
         return Result(404, e.message!!);
     }
 
+    /**
+     * 权限异常
+     */
+    @ResponseBody
+    @ExceptionHandler(PermissionException::class)
+    fun permissionExceptionHandler(e:PermissionException):Result<Any?>{
+        return Result(e.status, e.message!!,e.data);
+    }
+
+
+    /**
+     * 登录异常
+     */
+    @ResponseBody
+    @ExceptionHandler(SignInException::class)
+    fun signInExceptionHandler(e:SignInException):Result<Any?>{
+        return Result(e.status, e.message!!,e.data);
+    }
+
+
     //自定义异常
     @ResponseBody
     @ExceptionHandler(ProgramException::class)
     fun programExceptionHandler(e: ProgramException): Result<Any?> {
         return Result(e.status, e.message!!,e.data);
     }
+
 
     //系统异常
     @ResponseBody

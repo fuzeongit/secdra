@@ -3,10 +3,9 @@ package com.junjie.secdraweb.controller
 import com.corundumstudio.socketio.SocketIOServer
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.contant.Gender
-import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
@@ -14,10 +13,13 @@ import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.SocketIOEventHandler
 import com.junjie.secdraweb.vo.UserVo
 import com.qiniu.util.StringUtils
+import javassist.NotFoundException
 import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
-
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import java.util.*
 import javax.servlet.http.HttpServletResponse
 
@@ -32,7 +34,7 @@ class UserController(private val userService: IUserService, private val baseConf
     @PostMapping("sendCode")
     fun sendCode(phone: String): Boolean {
         if (StringUtils.isNullOrEmpty(phone)) {
-            throw ProgramException("输入手机为空", 404)
+            throw NotFoundException("输入手机为空")
         }
         var verificationCode = ""
         while (verificationCode.length < 6) {
@@ -49,11 +51,11 @@ class UserController(private val userService: IUserService, private val baseConf
     @PostMapping("/register")
     fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVo {
         if (StringUtils.isNullOrEmpty(phone)) {
-            throw ProgramException("输入手机为空", 404)
+            throw NotFoundException("输入手机为空")
         }
         val redisCode = redisTemplate.opsForValue()[String.format(baseConfig.verificationCodePrefix, phone)]
         if (verificationCode != redisCode && verificationCode != "888888") {
-            throw ProgramException("验证码无效", 403)
+            throw PermissionException("验证码无效")
         }
         //获取系统时间
         val nowMillis = System.currentTimeMillis()
@@ -118,7 +120,7 @@ class UserController(private val userService: IUserService, private val baseConf
     }
 
     @GetMapping("/getInfoByDrawId")
-    fun getInfoByDrawId(drawId:String):UserVo{
+    fun getInfoByDrawId(drawId: String): UserVo {
         return getVo(userService.getInfoByDrawId(drawId))
     }
 

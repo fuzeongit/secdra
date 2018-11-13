@@ -1,7 +1,7 @@
 package com.junjie.secdracore.exception
 
-class ProgramException : Exception {
-    var status: Int = 500
+class SignInException : Exception {
+    var status: Int = 401
 
     var data : Any? = null
 
