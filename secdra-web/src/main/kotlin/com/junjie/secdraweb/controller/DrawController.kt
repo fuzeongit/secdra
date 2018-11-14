@@ -123,8 +123,8 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @PostMapping("/update")
     @Auth
-    fun update(@CurrentUserId userId: String, drawId: String, desc: String?, isPrivate: Boolean?): DrawVo {
-        val draw = drawService.update(userId, drawId, desc!!, isPrivate!!)
+    fun update(@CurrentUserId userId: String, id: String, desc: String?, isPrivate: Boolean?): DrawVo {
+        val draw = drawService.update(userId, id, desc!!, isPrivate!!)
         return getVo(draw)
     }
 
