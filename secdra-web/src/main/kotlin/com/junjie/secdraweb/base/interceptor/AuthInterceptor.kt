@@ -18,7 +18,10 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
+/**
+ * @author fjj
+ * 登录验证拦截器
+ */
 class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, val userService: IUserService) : HandlerInterceptor {
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {

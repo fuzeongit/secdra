@@ -27,6 +27,10 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * @author fjj
+ * 画像的控制器
+ */
 @RestController
 @RequestMapping("/draw")
 class DrawController(private val drawService: IDrawService, private val userService: IUserService,
@@ -48,7 +52,6 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @GetMapping("/pagingByRecommend")
     fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         //由于不会算法，暂时这样写
-//        val page = drawService.paging(pageable, null, startDate, endDate)
         val page = drawService.pagingRand(pageable)
         return getPageVo(page,userId)
     }

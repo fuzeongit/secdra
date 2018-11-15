@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 
 
+/**
+ * @author fjj
+ * 统计的控制器
+ */
 @RestController
 @RequestMapping("/statistical")
 class StatisticalController(private val statisticalService: IStatisticalService) {

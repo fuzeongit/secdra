@@ -1,5 +1,9 @@
 package com.junjie.secdraweb.base.qiniu
 
+/**
+ * @author fjj
+ * 七牛图片信息实体
+ */
 class QiniuImageInfo() {
     var size:Int = 0
 

@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
+/**
+ * @author fjj
+ * 过滤器
+ */
 @Component
 @WebFilter(filterName = "ResponseFilter", urlPatterns = ["/*"])
 class AnonymousFilter : Filter {

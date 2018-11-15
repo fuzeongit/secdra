@@ -22,11 +22,3 @@ class SecdraWebApplication : SpringBootServletInitializer() {
         }
     }
 }
-
-
-//@SpringBootApplication
-//@EnableJpaAuditing
-//class SecdraWebApplication fun main(args: Array<String>) {
-//    runApplication<SecdraWebApplication>(*args)
-//}
-

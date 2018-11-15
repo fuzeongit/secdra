@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
+/**
+ * @author fjj
+ * 标签的控制器
+ */
 @RestController
 @RequestMapping("/tag")
 class TagController(private val tagService: ITagService, private val drawDao: IDrawDao, private val tagDao: ITagDao) {

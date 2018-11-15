@@ -10,11 +10,15 @@ import org.springframework.stereotype.Component
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * @author fjj
+ * socketIo事件处理
+ */
 @Component
 class SocketIOEventHandler(private var socketIoServer: SocketIOServer) {
     companion object {
         var listClient = ArrayList<UUID>()
-        var sessionId:UUID? = null
+        var sessionId: UUID? = null
         var limitSeconds = 60
     }
 

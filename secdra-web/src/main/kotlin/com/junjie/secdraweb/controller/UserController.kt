@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * @author fjj
+ * 用户的控制器
+ */
 @RestController
 @RequestMapping("user")
 class UserController(private val userService: IUserService, private val baseConfig: BaseConfig,

@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
 import java.sql.SQLException
 
+/**
+ * @author fjj
+ * 相应体的处理
+ */
 @ControllerAdvice
 class GlobalHandler : ResponseBodyAdvice<Any?> {
     override fun supports(methodParameter: MethodParameter, clazz: Class<out HttpMessageConverter<*>>): Boolean {

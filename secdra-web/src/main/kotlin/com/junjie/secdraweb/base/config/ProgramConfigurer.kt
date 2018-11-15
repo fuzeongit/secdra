@@ -16,9 +16,15 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-
+/**
+ * @author fjj
+ * 程序的配置清单
+ */
 @Configuration
 class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private val userService: IUserService) : WebMvcConfigurer {
+    /**
+     * 拦截器
+     */
     override fun addInterceptors(registry: InterceptorRegistry) {
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
@@ -27,6 +33,9 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
         super.addInterceptors(registry)
     }
 
+    /**
+     * 解析器
+     */
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(currentUserMethodArgumentResolver())
         super.addArgumentResolvers(argumentResolvers);

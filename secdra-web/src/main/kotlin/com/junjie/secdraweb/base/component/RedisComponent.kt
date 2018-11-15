@@ -1,15 +1,13 @@
 package com.junjie.secdraweb.base.component
 
-import com.junjie.secdracore.constant.RedisConstant
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
-
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
-import java.util.HashMap
 import java.util.concurrent.TimeUnit
 
+/**
+ * @author fjj
+ * redis服务
+ */
 @Component
 class RedisComponent(val redisTemplate: StringRedisTemplate)
 {

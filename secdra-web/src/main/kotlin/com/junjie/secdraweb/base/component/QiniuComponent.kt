@@ -7,10 +7,16 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 
+/**
+ * @author fjj
+ * 七牛云的服务
+ */
+@Component
 class QiniuComponent(private val baseConfig: BaseConfig) {
     /**
      * 移动目标

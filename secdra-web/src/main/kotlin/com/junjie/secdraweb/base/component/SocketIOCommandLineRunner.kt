@@ -4,6 +4,10 @@ import com.corundumstudio.socketio.SocketIOServer
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
+/**
+ * @author fjj
+ * socketIo 服务
+ */
 @Component
 class SocketIOCommandLineRunner(private val server: SocketIOServer) : CommandLineRunner {
     @Throws(Exception::class)
