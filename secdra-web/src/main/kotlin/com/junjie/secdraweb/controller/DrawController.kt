@@ -7,6 +7,7 @@ import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.IDrawService
 import com.junjie.secdraservice.service.IFocusDrawService
+import com.junjie.secdraservice.service.IFocusUserService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
@@ -34,7 +35,7 @@ import kotlin.collections.ArrayList
 @RestController
 @RequestMapping("/draw")
 class DrawController(private val drawService: IDrawService, private val userService: IUserService,
-                     private val focusDrawService: IFocusDrawService,
+                     private val focusDrawService: IFocusDrawService, private val focusUserService: IFocusUserService,
                      private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig,
                      val drawDao: IDrawDao) {
     /**
@@ -149,6 +150,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
         val userVo = UserVo()
         BeanUtils.copyProperties(draw, drawVo)
         BeanUtils.copyProperties(user, userVo)
+        userVo.isFocus = focusUserService.exists(userId,user.id!!)
         if (!StringUtils.isNullOrEmpty(userId)) {
             drawVo.isFocus = focusDrawService.exists(userId!!, draw.id!!)
         }

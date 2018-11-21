@@ -21,4 +21,6 @@ class UserVo {
     var address: String? = null
 
     var background: String? = null
+
+    var isFocus: Boolean? = null
 }
