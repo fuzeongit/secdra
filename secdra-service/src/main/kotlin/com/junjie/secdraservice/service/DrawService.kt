@@ -8,7 +8,9 @@ import com.junjie.secdraservice.model.Tag
 import com.qiniu.util.StringUtils
 import javassist.NotFoundException
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
@@ -19,12 +21,12 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class DrawService(val drawDao: IDrawDao) : IDrawService {
-    override fun paging(pageable: Pageable, name: String?, startDate: Date?, endDate: Date?): Page<Draw> {
+    override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
-            if (!StringUtils.isNullOrEmpty(name)) {
+            if (!StringUtils.isNullOrEmpty(tag)) {
                 val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
-                predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$name%"))
+                predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$tag%"))
             }
             if (startDate != null) {
                 predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), startDate))
@@ -101,5 +103,10 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
 
     override fun pagingRand(pageable: Pageable): Page<Draw> {
         return drawDao.pagingRand(pageable)
+    }
+
+    override fun getFirstByTag(tag: String): Draw {
+        return paging(PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")), tag, null, null)
+                .content[0]
     }
 }

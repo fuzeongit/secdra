@@ -11,7 +11,7 @@ import java.util.*
  * @author fjj
  */
 interface IDrawService {
-    fun paging(pageable: Pageable, name: String?, startDate: Date?, endDate: Date?): Page<Draw>
+    fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw>
 
     fun pagingByUserId(pageable: Pageable, userId: String, startDate: Date?, endDate: Date?, isSelf: Boolean): Page<Draw>
 
@@ -24,4 +24,6 @@ interface IDrawService {
     fun save(draw: Draw): Draw
 
     fun pagingRand(pageable: Pageable): Page<Draw>
+
+    fun getFirstByTag(tag:String): Draw
 }

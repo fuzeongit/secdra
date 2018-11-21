@@ -41,9 +41,9 @@ class DrawController(private val drawService: IDrawService, private val userServ
      * 根据标签获取
      */
     @GetMapping("/paging")
-    fun paging(@CurrentUserId userId: String?,name: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
-        val page = drawService.paging(pageable, name, startDate, endDate)
-        return getPageVo(page,userId)
+    fun paging(@CurrentUserId userId: String?, tag: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+        val page = drawService.paging(pageable, tag, startDate, endDate)
+        return getPageVo(page, userId)
     }
 
     /**
@@ -53,16 +53,19 @@ class DrawController(private val drawService: IDrawService, private val userServ
     fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         //由于不会算法，暂时这样写
         val page = drawService.pagingRand(pageable)
-        return getPageVo(page,userId)
+        return getPageVo(page, userId)
     }
 
+    /**
+     * 随机获取
+     */
     @GetMapping("/listByRecommend")
     fun listByRecommend(@CurrentUserId userId: String?): ArrayList<DrawVo> {
         val pageable = PageRequest.of(0, 4)
         val drawList = drawService.pagingRand(pageable).content
         val drawVoList = ArrayList<DrawVo>()
         for (draw in drawList) {
-            drawVoList.add(getVo(draw,userId))
+            drawVoList.add(getVo(draw, userId))
         }
         return drawVoList
     }
@@ -83,7 +86,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @GetMapping("/pagingByOthers")
     fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, false)
-        return getPageVo(page,userId)
+        return getPageVo(page, userId)
     }
 
     /**
@@ -93,7 +96,16 @@ class DrawController(private val drawService: IDrawService, private val userServ
     fun get(id: String, @CurrentUserId userId: String?): DrawVo {
         val draw = drawService.get(id, userId)
 
-        return getVo(draw,userId)
+        return getVo(draw, userId)
+    }
+
+    /**
+     * 获取tag第一张
+     */
+    @GetMapping("getFirstByTag")
+    fun getFirstByTag(tag: String): DrawVo {
+        val draw = drawService.getFirstByTag(tag)
+        return getVo(draw, null)
     }
 
     /**
@@ -137,17 +149,17 @@ class DrawController(private val drawService: IDrawService, private val userServ
         val userVo = UserVo()
         BeanUtils.copyProperties(draw, drawVo)
         BeanUtils.copyProperties(user, userVo)
-        if(!StringUtils.isNullOrEmpty(userId)){
-            drawVo.isFocus = focusDrawService.exists(userId!!,draw.id!!)
+        if (!StringUtils.isNullOrEmpty(userId)) {
+            drawVo.isFocus = focusDrawService.exists(userId!!, draw.id!!)
         }
         drawVo.user = userVo
         return drawVo
     }
 
-    private fun getPageVo(page: Page<Draw>,userId: String? = null): Page<DrawVo> {
+    private fun getPageVo(page: Page<Draw>, userId: String? = null): Page<DrawVo> {
         val drawVoList = ArrayList<DrawVo>()
         for (draw in page.content) {
-            drawVoList.add(getVo(draw,userId))
+            drawVoList.add(getVo(draw, userId))
         }
         return PageImpl<DrawVo>(drawVoList, page.pageable, page.totalElements)
     }
