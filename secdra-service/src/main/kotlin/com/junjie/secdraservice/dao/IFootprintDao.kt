@@ -1,6 +1,5 @@
 package com.junjie.secdraservice.dao
 
-import com.junjie.secdraservice.model.FocusDraw
 import com.junjie.secdraservice.model.Footprint
 import org.springframework.data.jpa.repository.JpaRepository
 

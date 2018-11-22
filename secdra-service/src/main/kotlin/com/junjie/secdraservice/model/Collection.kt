@@ -9,15 +9,15 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class FocusUser {
+class Collection {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
+    var id :String? = null
 
-    var userId: String? = null
+    var userId:String? = null
 
-    var focusUserId :String? = null
+    var drawId :String? = null
 
     @CreatedDate
     var createDate: Date = Date()
