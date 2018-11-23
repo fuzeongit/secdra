@@ -10,10 +10,27 @@ Target Server Type    : MYSQL
 Target Server Version : 50709
 File Encoding         : 65001
 
-Date: 2018-11-18 14:44:50
+Date: 2018-11-23 22:25:49
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for collection
+-- ----------------------------
+DROP TABLE IF EXISTS `collection`;
+CREATE TABLE `collection` (
+  `id` varchar(255) NOT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `draw_id` varchar(255) DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `user_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of collection
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for comment
@@ -1392,38 +1409,47 @@ INSERT INTO `draw` VALUES ('402880e5672087880167209077830a6c', '2018-11-17 15:26
 INSERT INTO `draw` VALUES ('402880e5672087880167209077980a6e', '2018-11-17 15:26:38', '1', '1051', null, '\0', '0', '2018-11-17 15:26:38', '61194611_p0.jpg', '402880e566dde4860166dde4bcfb002c', '0', '537', '中国风');
 
 -- ----------------------------
--- Table structure for focus_draw
+-- Table structure for follower
 -- ----------------------------
-DROP TABLE IF EXISTS `focus_draw`;
-CREATE TABLE `focus_draw` (
+DROP TABLE IF EXISTS `follower`;
+CREATE TABLE `follower` (
   `id` varchar(255) NOT NULL,
   `create_date` datetime DEFAULT NULL,
-  `draw_id` varchar(255) DEFAULT NULL,
+  `follower_id` varchar(255) DEFAULT NULL,
   `modified_date` datetime DEFAULT NULL,
   `user_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of focus_draw
+-- Records of follower
 -- ----------------------------
-
--- ----------------------------
--- Table structure for focus_user
--- ----------------------------
-DROP TABLE IF EXISTS `focus_user`;
-CREATE TABLE `focus_user` (
-  `id` varchar(255) NOT NULL,
-  `create_date` datetime DEFAULT NULL,
-  `focus_user_id` varchar(255) DEFAULT NULL,
-  `modified_date` datetime DEFAULT NULL,
-  `user_id` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of focus_user
--- ----------------------------
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e445560000', '2018-11-23 22:06:01', '402880e566dde4860166dde4bce20023', '2018-11-23 22:06:01', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e44bb90001', '2018-11-23 22:06:03', '402880e566dde4860166dde4bc7b0004', '2018-11-23 22:06:03', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e451890002', '2018-11-23 22:06:04', '402880e566dde4860166dde4bcbc0016', '2018-11-23 22:06:04', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e458230003', '2018-11-23 22:06:06', '402880e566dde4860166dde4bcc50019', '2018-11-23 22:06:06', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e462f60004', '2018-11-23 22:06:09', '402880e566dde4860166dde4bcca001a', '2018-11-23 22:06:09', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e4674c0005', '2018-11-23 22:06:10', '402880e566dde4860166dde4bd180036', '2018-11-23 22:06:10', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e46a9e0006', '2018-11-23 22:06:11', '402880e566dde4860166dde4bd03002f', '2018-11-23 22:06:11', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e46ddb0007', '2018-11-23 22:06:11', '402880e566dde4860166dde4bcd2001d', '2018-11-23 22:06:11', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e4710f0008', '2018-11-23 22:06:12', '402880e566dde4860166dde4bcfd002d', '2018-11-23 22:06:12', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e4776d0009', '2018-11-23 22:06:14', '402880e566dde4860166dde4bccc001b', '2018-11-23 22:06:14', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e47a29000a', '2018-11-23 22:06:15', '402880e566dde4860166dde4bcab0011', '2018-11-23 22:06:15', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e47cfb000b', '2018-11-23 22:06:15', '402880e566dde4860166dde4bc960009', '2018-11-23 22:06:15', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e48054000c', '2018-11-23 22:06:16', '402880e566dde4860166dde4bcdf0022', '2018-11-23 22:06:16', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740e48387000d', '2018-11-23 22:06:17', '402880e566dde4860166dde4bcd5001e', '2018-11-23 22:06:17', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740eab7e5000e', '2018-11-23 22:13:04', '402880e566dde4860166dde4bd100034', '2018-11-23 22:13:04', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740eaba44000f', '2018-11-23 22:13:04', '402880e566dde4860166dde4bcdd0021', '2018-11-23 22:13:04', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740eabcfd0010', '2018-11-23 22:13:05', '402880e566dde4860166dde4bce90025', '2018-11-23 22:13:05', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740eac3530011', '2018-11-23 22:13:07', '402880e566dde4860166dde4bceb0026', '2018-11-23 22:13:07', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740eac9920012', '2018-11-23 22:13:08', '402880e566dde4860166dde4bc9f000d', '2018-11-23 22:13:08', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740ead1cf0013', '2018-11-23 22:13:10', '402880e566dde4860166dde4bcda0020', '2018-11-23 22:13:10', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740ead82e0014', '2018-11-23 22:13:12', '402880e566dde4860166dde4bc380000', '2018-11-23 22:13:12', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740eadf4a0015', '2018-11-23 22:13:14', '402880e566dde4860166dde4bc98000a', '2018-11-23 22:13:14', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740f3bf330016', '2018-11-23 22:22:55', '402880e566dde4860166dde4bcbf0017', '2018-11-23 22:22:55', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740f3c23b0017', '2018-11-23 22:22:56', '402880e566dde4860166dde4bcee0027', '2018-11-23 22:22:56', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740f3c5cb0018', '2018-11-23 22:22:57', '402880e566dde4860166dde4bcfb002c', '2018-11-23 22:22:57', '402880e566ddba740166ddbce0b70000');
+INSERT INTO `follower` VALUES ('402880e56740e1f9016740f3cb1b0019', '2018-11-23 22:22:58', '402880e566dde4860166dde4bc740002', '2018-11-23 22:22:58', '402880e566ddba740166ddbce0b70000');
 
 -- ----------------------------
 -- Table structure for footprint
