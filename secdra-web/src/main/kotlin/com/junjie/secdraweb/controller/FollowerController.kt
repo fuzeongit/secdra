@@ -45,7 +45,7 @@ class FollowerController(private val followerService: IFollowerService, private 
     @Auth
     @GetMapping("/paging")
     fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVo> {
-        val page = if (StringUtils.isNullOrEmpty(id)) {
+        val page = if (StringUtils.isNullOrEmpty(id) || id == userId) {
             followerService.paging(userId, pageable)
         } else {
             followerService.paging(id!!, pageable)
@@ -55,10 +55,10 @@ class FollowerController(private val followerService: IFollowerService, private 
             val user = userService.getInfo(follower.followerId!!)
             val userVo = UserVo()
             BeanUtils.copyProperties(user, userVo)
-            if (StringUtils.isNullOrEmpty(id)) {
-                userVo.isFocus = true;
+            userVo.isFocus = if (StringUtils.isNullOrEmpty(id) || id == userId) {
+                true;
             } else {
-                userVo.isFocus = followerService.exists(userId, userVo.id!!)
+                followerService.exists(userId, userVo.id!!)
             }
             userVoList.add(userVo)
         }

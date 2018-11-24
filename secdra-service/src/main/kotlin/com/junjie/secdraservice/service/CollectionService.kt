@@ -2,7 +2,10 @@ package com.junjie.secdraservice.service
 
 import com.junjie.secdraservice.dao.ICollectionDao
 import com.junjie.secdraservice.model.Collection
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+
 
 @Service
 class CollectionService(private val collectionDao: ICollectionDao) : ICollectionService {
@@ -32,5 +35,9 @@ class CollectionService(private val collectionDao: ICollectionDao) : ICollection
 
     override fun countByDrawId(drawId: String): Long {
         return collectionDao.countByDrawId(drawId)
+    }
+
+    override fun paging(userId: String, pageable: Pageable): Page<Collection> {
+        return collectionDao.findAllByUserId(userId, pageable)
     }
 }

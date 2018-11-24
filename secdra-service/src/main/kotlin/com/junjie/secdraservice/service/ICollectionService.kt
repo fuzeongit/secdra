@@ -1,6 +1,9 @@
 package com.junjie.secdraservice.service
 
 import com.junjie.secdraservice.model.Collection
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+
 
 /**
  * 画的收藏服务
@@ -18,4 +21,6 @@ interface ICollectionService {
     fun remove(userId: String, drawId: String): Boolean
 
     fun countByDrawId(drawId: String):Long
+
+    fun paging(userId:String, pageable: Pageable): Page<Collection>
 }
