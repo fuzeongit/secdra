@@ -50,9 +50,9 @@ class CollectionController(private val collectionService: ICollectionService, pr
     @GetMapping("/paging")
     fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
         val page = if (StringUtils.isNullOrEmpty(id) || id == userId) {
-            collectionService.paging(id!!, pageable)
-        } else {
             collectionService.paging(userId, pageable)
+        } else {
+            collectionService.paging(id!!, pageable)
         }
 
         val drawVoList = ArrayList<DrawVo>()
