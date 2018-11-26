@@ -16,9 +16,9 @@ base:
   qiniuHeadBucket: head
   qiniuBackBucket: background
   qiniuBucket: secdra
-  qiniuTempBucketUrl: http://phnqxaco3.bkt.clouddn.com
-  qiniuHeadBucketUrl: http://phnqizf7z.bkt.clouddn.com
-  qiniuBackBucketUrl: http://phnqlj10o.bkt.clouddn.com
-  qiniuBucketUrl: http://ph9jy186h.bkt.clouddn.com
+  qiniuTempBucketUrl: http://secdratemp.secdra.com
+  qiniuHeadBucketUrl: http://secdrahead.secdra.com
+  qiniuBackBucketUrl: http://secdraback.secdra.com
+  qiniuBucketUrl: http://secdraimg.secdra.com
 
 
