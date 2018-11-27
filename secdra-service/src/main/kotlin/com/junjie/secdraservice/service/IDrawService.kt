@@ -26,4 +26,6 @@ interface IDrawService {
     fun pagingRand(pageable: Pageable): Page<Draw>
 
     fun getFirstByTag(tag:String): Draw
+
+    fun countByTag(tag:String):Long
 }

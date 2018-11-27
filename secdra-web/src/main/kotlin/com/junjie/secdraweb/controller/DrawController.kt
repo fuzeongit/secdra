@@ -110,6 +110,14 @@ class DrawController(private val drawService: IDrawService, private val userServ
     }
 
     /**
+     * 按tag统计图片
+     */
+    @GetMapping("countByTag")
+    fun countByTag(tag:String):Long{
+        return drawService.countByTag(tag)
+    }
+
+    /**
      * 保存图片
      */
     @PostMapping("/save")

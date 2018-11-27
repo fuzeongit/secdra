@@ -109,4 +109,15 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return paging(PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")), tag, null, null)
                 .content[0]
     }
+
+    override fun countByTag(tag: String): Long {
+        val specification = Specification<Draw> { root, _, criteriaBuilder ->
+            val predicatesList = ArrayList<Predicate>()
+            val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
+            predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$tag%"))
+            predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
+            criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
+        }
+        return drawDao.count(specification)
+    }
 }
