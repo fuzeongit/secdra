@@ -72,12 +72,16 @@ class DrawController(private val drawService: IDrawService, private val userServ
     }
 
     /**
-     * 自己获取
+     * 按userId获取
      */
     @Auth
-    @GetMapping("/pagingBySelf")
-    fun pagingBySelf(@CurrentUserId userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
-        val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, true)
+    @GetMapping("/pagingByUserId")
+    fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+        val page = if (StringUtils.isNullOrEmpty(id) || id == userId) {
+            drawService.pagingByUserId(pageable, userId, startDate, endDate, true)
+        } else {
+            drawService.pagingByUserId(pageable, id!!, startDate, endDate, false)
+        }
         return getPageVo(page)
     }
 
@@ -113,7 +117,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
      * 按tag统计图片
      */
     @GetMapping("countByTag")
-    fun countByTag(tag:String):Long{
+    fun countByTag(tag: String): Long {
         return drawService.countByTag(tag)
     }
 
@@ -158,7 +162,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
         val userVo = UserVo()
         BeanUtils.copyProperties(draw, drawVo)
         BeanUtils.copyProperties(user, userVo)
-        userVo.isFocus = followerService.exists(userId,user.id!!)
+        userVo.isFocus = followerService.exists(userId, user.id!!)
         if (!StringUtils.isNullOrEmpty(userId)) {
             drawVo.isFocus = collectionService.exists(userId!!, draw.id!!)
         }

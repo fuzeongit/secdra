@@ -3,9 +3,10 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.service.IDrawService
 import com.junjie.secdraservice.service.ICollectionService
+import com.junjie.secdraservice.service.IDrawService
 import com.junjie.secdraservice.service.IFollowerService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.DrawVo
@@ -17,10 +18,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * @author fjj
@@ -34,8 +32,10 @@ class CollectionController(private val collectionService: ICollectionService, pr
     @PostMapping("/focus")
     fun focus(@CurrentUserId userId: String, drawId: String): Boolean {
         val draw = drawService.get(drawId, userId)
-        var flag = false
-        flag = if (!collectionService.exists(userId, drawId)) {
+        if (draw.userId == userId) {
+            throw ProgramException("不能收藏自己")
+        }
+        val flag = if (!collectionService.exists(userId, drawId)) {
             collectionService.save(userId, drawId)
             true
         } else {
@@ -44,6 +44,25 @@ class CollectionController(private val collectionService: ICollectionService, pr
         }
         drawService.update(drawId, null, collectionService.countByDrawId(drawId))
         return flag;
+    }
+
+    /**
+     * 取消收藏一组
+     */
+    @Auth
+    @PostMapping("/unFocus")
+    fun unFocus(@CurrentUserId userId: String, drawIdList: Array<String>?): Boolean {
+        if (drawIdList == null || drawIdList.isEmpty()) {
+            throw ProgramException("请选择一张图片")
+        }
+        for (drawId in drawIdList) {
+            try {
+                collectionService.remove(userId, drawId)
+            } catch (e: Exception) {
+
+            }
+        }
+        return false;
     }
 
     @Auth
@@ -57,7 +76,7 @@ class CollectionController(private val collectionService: ICollectionService, pr
 
         val drawVoList = ArrayList<DrawVo>()
         for (collection in page.content) {
-            var draw: Draw? = null
+            var draw: Draw?
             try {
                 draw = drawService.get(collection.drawId!!, null)
             } catch (e: Exception) {

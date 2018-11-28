@@ -27,16 +27,36 @@ class FollowerController(private val followerService: IFollowerService, private 
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId userId: String, followerId: String): Boolean {
-        var flag = false
+        if (followerId == userId) {
+            throw ProgramException("不能关注自己")
+        }
         val isFocus = followerService.exists(userId, followerId) ?: throw ProgramException("不能关注")
-        flag = if (!isFocus) {
+        return if (!isFocus) {
             followerService.save(userId, followerId)
             true
         } else {
             followerService.remove(userId, followerId)
             false
         }
-        return flag;
+    }
+
+    /**
+     * 取消关注一组
+     */
+    @Auth
+    @PostMapping("/unFocus")
+    fun unFocus(@CurrentUserId userId: String, followerIdList: Array<String>?): Boolean {
+        if (followerIdList == null || followerIdList.isEmpty()) {
+            throw ProgramException("请选择一个关注")
+        }
+        for (followerId in followerIdList) {
+            try {
+                followerService.remove(userId, followerId)
+            } catch (e: Exception) {
+
+            }
+        }
+        return false;
     }
 
     /**
