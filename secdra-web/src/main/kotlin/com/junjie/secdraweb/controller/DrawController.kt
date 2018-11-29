@@ -124,25 +124,27 @@ class DrawController(private val drawService: IDrawService, private val userServ
     /**
      * 保存图片
      */
-    @PostMapping("/save")
     @Auth
-    fun save(@CurrentUserId userId: String, url: String, desc: String?, isPrivate: Boolean, tagList: ArrayList<String>): DrawVo {
+    @PostMapping("/save")
+    fun save(@CurrentUserId userId: String, url: String, name: String, desc: String?, isPrivate: Boolean, tagList: Array<String>?): DrawVo {
         val draw = Draw()
         draw.url = url
         draw.userId = userId
+        draw.name = name
         draw.introduction = desc
         draw.isPrivate = isPrivate
-        if (tagList.size > 0) {
+        if (tagList != null && !tagList.isEmpty()) {
             for (tagName in tagList) {
                 val tag = Tag()
                 tag.name = tagName
-                draw.tagList?.add(tag)
+                draw.tagList.add(tag)
             }
         }
-        qiniuComponent.move(url, baseConfig.qiniuBucket)
-        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
-        draw.width = imageInfo!!.width
-        draw.height = imageInfo.height
+
+//        qiniuComponent.move(url, baseConfig.qiniuBucket)
+//        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
+//        draw.width = imageInfo!!.width
+//        draw.height = imageInfo.height
         return getVo(drawService.save(draw))
     }
 

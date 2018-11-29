@@ -26,7 +26,7 @@ class DrawVo() {
 
     var height: Long = 0;
 
-    var tagList: MutableSet<Tag>? = null
+    var tagList: MutableSet<Tag> = mutableSetOf<Tag>()
 
     var user: UserVo? = null
 

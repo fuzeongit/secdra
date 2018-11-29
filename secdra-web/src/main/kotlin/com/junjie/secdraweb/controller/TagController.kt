@@ -39,7 +39,7 @@ class TagController(private val tagService: ITagService, private val drawDao: ID
             while (i < random) {
                 val tag = Tag()
                 tag.name = arr[i]
-                item.tagList!!.add(tag)
+                item.tagList.add(tag)
                 drawDao.save(item)
                 i++
             }
