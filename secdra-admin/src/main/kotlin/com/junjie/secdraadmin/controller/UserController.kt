@@ -42,4 +42,28 @@ class UserController(private var userDao: IUserDao) {
             throw e
         }
     }
+
+
+    @PostMapping("save")
+    fun save(path: String): Boolean {
+        val userList = userDao.findAll()
+        var i = 0;
+        try {
+            val file = File(path)
+            val fileNameList = file.list()
+
+            for (fileName in fileNameList) {
+                if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
+                    userList[i].background = fileName
+                    userDao.save(userList[i])
+                    i++;
+                }
+            }
+            return true
+        } catch (e: Exception) {
+            println(i)
+            println(e.message)
+            throw e
+        }
+    }
 }
