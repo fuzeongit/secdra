@@ -158,6 +158,43 @@ class DrawController(private val drawService: IDrawService, private val userServ
         return getVo(draw)
     }
 
+
+    @PostMapping("/batchUpdate")
+    @Auth
+    fun batchUpdate(@CurrentUserId userId: String, idList: Array<String>, name: String?, introduction: String?, isPrivate: Boolean?, tagList: Array<String>?): Boolean {
+        for (id in idList) {
+            try {
+                val draw = drawService.get(id, userId)
+                if (userId != draw.userId) {
+                    continue
+                }
+                if (!name.isNullOrEmpty()) {
+                    draw.name = name
+                }
+                if (!introduction.isNullOrEmpty()) {
+                    draw.introduction = introduction
+                }
+                if (isPrivate != null) {
+                    draw.isPrivate = isPrivate
+                }
+                if (!tagList!!.isEmpty()){
+                    val tagNameList = draw.tagList.map { it.name }
+                    for (addTagName in tagList){
+                        if(tagNameList.indexOf(addTagName) == -1){
+                            val tag = Tag()
+                            tag.name = addTagName
+                            draw.tagList.add(tag)
+                        }
+                    }
+                }
+                drawService.save(draw)
+            } catch (e: Exception) {
+                println(e.message)
+            }
+        }
+        return true
+    }
+
     private fun getVo(draw: Draw, userId: String? = null): DrawVo {
         val user = userService.getInfo(draw.userId!!)
         val drawVo = DrawVo()
@@ -178,26 +215,5 @@ class DrawController(private val drawService: IDrawService, private val userServ
             drawVoList.add(getVo(draw, userId))
         }
         return PageImpl<DrawVo>(drawVoList, page.pageable, page.totalElements)
-    }
-
-    @GetMapping("/getName")
-    fun getName(path: String): Boolean {
-        try {
-            val file = File(path)
-            val fileNameList = file.list()
-            for (fileName in fileNameList) {
-                if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
-                    val draw = Draw()
-                    draw.userId = "123"
-                    draw.url = fileName
-                    draw.introduction = "小可爱"
-                    drawService.save(draw)
-                }
-            }
-            return true
-        } catch (e: Exception) {
-            println(e.message)
-            throw e
-        }
     }
 }
