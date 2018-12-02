@@ -20,7 +20,6 @@ class DrawController(private var drawDao: IDrawDao, private var userDao: IUserDa
         var i = 0
         val map = HashMap<String, Array<String>>()
         val userList = userDao.findAll()
-        userList.toMutableList()
         try {
             val typeNameList = File(folderPath).list()
             for (typeName in typeNameList) {
