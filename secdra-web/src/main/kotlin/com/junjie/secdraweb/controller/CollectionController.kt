@@ -53,18 +53,26 @@ class CollectionController(private val collectionService: ICollectionService, pr
      */
     @Auth
     @PostMapping("/unFocus")
-    fun unFocus(@CurrentUserId userId: String, drawIdList: Array<String>?): Boolean {
+    fun unFocus(@CurrentUserId userId: String, drawIdList: Array<String>?): List<String> {
         if (drawIdList == null || drawIdList.isEmpty()) {
             throw ProgramException("请选择一张图片")
         }
+        val newDrawIdList = mutableListOf<String>()
         for (drawId in drawIdList) {
+            if(!collectionService.exists(userId, drawId)){
+                continue
+            }
             try {
+                val draw = drawService.get(drawId, userId)
                 collectionService.remove(userId, drawId)
+                draw.likeAmount = collectionService.countByDrawId(drawId)
+                drawService.save(draw)
+                newDrawIdList.add(draw.id!!)
             } catch (e: Exception) {
 
             }
         }
-        return false;
+        return newDrawIdList;
     }
 
     @Auth
