@@ -5,15 +5,14 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
-import com.junjie.secdraservice.service.IDrawService
 import com.junjie.secdraservice.service.ICollectionService
+import com.junjie.secdraservice.service.IDrawService
 import com.junjie.secdraservice.service.IFollowerService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
-import com.qiniu.util.StringUtils
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -77,7 +75,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @Auth
     @GetMapping("/pagingByUserId")
     fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
-        val page = if (StringUtils.isNullOrEmpty(id) || id == userId) {
+        val page = if (id.isNullOrEmpty() || id == userId) {
             drawService.pagingByUserId(pageable, userId, startDate, endDate, true)
         } else {
             drawService.pagingByUserId(pageable, id!!, startDate, endDate, false)
@@ -137,7 +135,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
             for (tagName in tagList) {
                 val tag = Tag()
                 tag.name = tagName
-                draw.tagList.add(tag)
+                draw.tagList.toMutableSet().add(tag)
             }
         }
 
@@ -177,13 +175,13 @@ class DrawController(private val drawService: IDrawService, private val userServ
                 if (isPrivate != null) {
                     draw.isPrivate = isPrivate
                 }
-                if (!tagList!!.isEmpty()){
+                if (!tagList!!.isEmpty()) {
                     val tagNameList = draw.tagList.map { it.name }
-                    for (addTagName in tagList){
-                        if(tagNameList.indexOf(addTagName) == -1){
+                    for (addTagName in tagList) {
+                        if (tagNameList.indexOf(addTagName) == -1) {
                             val tag = Tag()
                             tag.name = addTagName
-                            draw.tagList.add(tag)
+                            draw.tagList.toMutableSet().add(tag)
                         }
                     }
                 }
@@ -202,7 +200,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
         BeanUtils.copyProperties(draw, drawVo)
         BeanUtils.copyProperties(user, userVo)
         userVo.isFocus = followerService.exists(userId, user.id!!)
-        if (!StringUtils.isNullOrEmpty(userId)) {
+        if (!userId.isNullOrEmpty()) {
             drawVo.isFocus = collectionService.exists(userId!!, draw.id!!)
         }
         drawVo.user = userVo

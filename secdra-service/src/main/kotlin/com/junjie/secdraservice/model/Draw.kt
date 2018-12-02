@@ -37,7 +37,7 @@ class Draw {
 
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "draw_id")
-    var tagList: MutableSet<Tag> = mutableSetOf()
+    var tagList: Set<Tag> = setOf()
 
     @CreatedDate
     var createDate: Date = Date()

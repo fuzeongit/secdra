@@ -1,7 +1,6 @@
 package com.junjie.secdraweb.base.interceptor
 
 import com.junjie.secdracore.annotations.Auth
-import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.CookieUtil
 import com.junjie.secdracore.util.DateUtil
@@ -10,7 +9,6 @@ import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.lang.Nullable
-import org.springframework.util.StringUtils
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
@@ -36,7 +34,7 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 val cookieMap = CookieUtil.readCookieMap(request)
                 val token = cookieMap["token"]
                 val claims = JwtUtil.parseJWT(token!!.value, baseConfig.jwtBase64Secret)
-                val userId = claims["userId"]
+                val userId = claims["userId"] as String
                 //过期时间
                 val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
                 //生成时间
@@ -45,8 +43,8 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 val rePasswordDateStr = redisTemplate.opsForValue()[String.format(baseConfig.updatePasswordTimePrefix, userId)]
                 val rePasswordDate: Date?
                 //缓存穿透
-                rePasswordDate = if (StringUtils.isEmpty(rePasswordDateStr)) {
-                    val info = userService.getInfo(userId.toString())
+                rePasswordDate = if (rePasswordDateStr.isNullOrEmpty()) {
+                    val info = userService.getInfo(userId)
                     //最后更改密码时间写入redis
                     redisTemplate.opsForValue().set(
                             String.format(baseConfig.updatePasswordTimePrefix, userId),
@@ -58,7 +56,7 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
                     throw SignInException("用户登录已过期")
                 }
-                if (StringUtils.isEmpty(userId)) {
+                if (userId.isEmpty()) {
                     throw SignInException("请重新登录")
                 }
                 if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
@@ -67,7 +65,7 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 }
                 request.setAttribute("userId", userId)
             } catch (e: Exception) {
-                if(m.isAnnotationPresent(Auth::class.java)){
+                if (m.isAnnotationPresent(Auth::class.java)) {
                     throw  e as? SignInException ?: SignInException("请重新登录")
                 }
             }

@@ -11,14 +11,16 @@ import com.junjie.secdraservice.service.IFollowerService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
-import com.qiniu.util.StringUtils
 import javassist.NotFoundException
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * @author fjj
@@ -68,7 +70,7 @@ class CollectionController(private val collectionService: ICollectionService, pr
     @Auth
     @GetMapping("/paging")
     fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
-        val page = if (StringUtils.isNullOrEmpty(id) || id == userId) {
+        val page = if (id.isNullOrEmpty() || id == userId) {
             collectionService.paging(userId, pageable)
         } else {
             collectionService.paging(id!!, pageable)
@@ -91,12 +93,12 @@ class CollectionController(private val collectionService: ICollectionService, pr
             BeanUtils.copyProperties(draw!!, drawVo)
 
             val userVo = UserVo()
-            if (!StringUtils.isNullOrEmpty(draw.userId)) {
+            if (!draw.userId.isNullOrEmpty()) {
                 val user = userService.getInfo(draw.userId!!)
                 BeanUtils.copyProperties(user, userVo)
             }
             userVo.isFocus = followerService.exists(userId, draw.userId!!)
-            drawVo.isFocus = if (StringUtils.isNullOrEmpty(id) || id == userId) {
+            drawVo.isFocus = if (id.isNullOrEmpty() || id == userId) {
                 true
             } else {
                 collectionService.exists(userId, draw.id!!)

@@ -12,7 +12,6 @@ import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.SocketIOEventHandler
 import com.junjie.secdraweb.vo.UserVo
-import com.qiniu.util.StringUtils
 import javassist.NotFoundException
 import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -37,7 +36,7 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @PostMapping("sendCode")
     fun sendCode(phone: String): Boolean {
-        if (StringUtils.isNullOrEmpty(phone)) {
+        if (phone.isEmpty()) {
             throw NotFoundException("输入手机为空")
         }
         var verificationCode = ""
@@ -54,7 +53,7 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @PostMapping("/register")
     fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVo {
-        if (StringUtils.isNullOrEmpty(phone)) {
+        if (phone.isEmpty()) {
             throw NotFoundException("输入手机为空")
         }
         val redisCode = redisTemplate.opsForValue()[String.format(baseConfig.verificationCodePrefix, phone)]
@@ -135,13 +134,13 @@ class UserController(private val userService: IUserService, private val baseConf
     @PostMapping("/update")
     fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?) {
         val info = userService.getInfo(userId)
-        if (!StringUtils.isNullOrEmpty(name)) info.name = name
+        if (!name.isNullOrEmpty()) info.name = name
         if (gender != null) info.gender = gender
         if (birthday != null) info.birthday = birthday
-        if (!StringUtils.isNullOrEmpty(introduction)) info.introduction = introduction
-        if (!StringUtils.isNullOrEmpty(address)) info.address = address
+        if (introduction.isNullOrEmpty()) info.introduction = introduction
+        if (address.isNullOrEmpty()) info.address = address
         getVo(userService.save(info))
-    }
+}
 
 
     /**

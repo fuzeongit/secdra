@@ -5,7 +5,6 @@ import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
-import com.qiniu.util.StringUtils
 import javassist.NotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -24,7 +23,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
-            if (!StringUtils.isNullOrEmpty(tag)) {
+            if (!tag.isNullOrEmpty()) {
                 val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
                 predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$tag%"))
             }
@@ -79,7 +78,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         if (draw.userId != userId) {
             throw PermissionException("您无权修改该图片")
         }
-        if (StringUtils.isNullOrEmpty(introduction)) {
+        if (introduction.isNullOrEmpty()) {
             draw.introduction = introduction
         }
         draw.isPrivate = isPrivate
