@@ -28,7 +28,7 @@ class TagService(private val tagDao: ITagDao) : ITagService {
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
 
-        val tagListSource = tagDao.findAll(specification, PageRequest.of(0, 100))
+        val tagListSource = tagDao.findAll(specification, PageRequest.of(0, 30))
         return tagListSource.content
 //        val tagList = ArrayList<Tag>()
 //        for (tagSource in tagListSource.content) {

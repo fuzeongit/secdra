@@ -27,7 +27,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDao: I
     @GetMapping("/getUploadToken")
     fun get(): Result<String> {
         val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
-        return Result(200, "", auth.uploadToken("images").toString());
+        return Result(200, "", auth.uploadToken(baseConfig.qiniuTempBucket));
     }
 
     @Auth
