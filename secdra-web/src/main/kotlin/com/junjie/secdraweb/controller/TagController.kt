@@ -27,26 +27,6 @@ class TagController(private val tagService: ITagService, private val drawDao: ID
         return voList
     }
 
-    @GetMapping("/test")
-    fun test(): Boolean {
-        val arr = arrayOf("可爱", "小可爱", "女孩子", "pixiv", "p站", "插画", "黑发", "诱惑", "原创", "好看", "雪", "泳装", "新年", "恭喜发财", "魅惑", "创作", "旗袍").toList()
-        val list = drawDao.findAll()
-        for (item in list) {
-            val random = Random().nextInt(3) % 3 + 1;
-            Collections.shuffle(arr);
-
-            var i = 0
-            while (i < random) {
-                val tag = Tag()
-                tag.name = arr[i]
-                item.tagList.add(tag)
-                drawDao.save(item)
-                i++
-            }
-        }
-        return true
-    }
-
     @GetMapping("/getFirst")
     fun get(): Tag {
         val id = "402880e566dd80a90166ddb27bc100e8"

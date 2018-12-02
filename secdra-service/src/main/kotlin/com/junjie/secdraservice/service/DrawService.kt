@@ -107,7 +107,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
 
     override fun getFirstByTag(tag: String): Draw {
         return paging(PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")), tag, null, null)
-                .content[0]
+                .content.first()
     }
 
     override fun countByTag(tag: String): Long {
