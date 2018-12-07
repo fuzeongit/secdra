@@ -145,8 +145,9 @@ class UserController(private val userService: IUserService, private val baseConf
     @Auth
     @PostMapping("/updateHead")
     fun updateHead(@CurrentUserId userId: String, url: String): UserVo {
-        qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
         val info = userService.getInfo(userId)
+        qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket,baseConfig.qiniuHeadBucket)
+        qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
         info.head = url;
         return getVo(userService.save(info))
     }
@@ -158,8 +159,9 @@ class UserController(private val userService: IUserService, private val baseConf
     @Auth
     @PostMapping("/updateBack")
     fun updateBack(@CurrentUserId userId: String, url: String): UserVo {
-        qiniuComponent.move(url, baseConfig.qiniuBackBucket)
         val info = userService.getInfo(userId)
+        qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket,baseConfig.qiniuBackBucket)
+        qiniuComponent.move(url, baseConfig.qiniuBackBucket)
         info.background = url;
         return getVo(userService.save(info))
     }
