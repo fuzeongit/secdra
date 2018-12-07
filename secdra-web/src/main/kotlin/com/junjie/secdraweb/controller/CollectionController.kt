@@ -59,7 +59,7 @@ class CollectionController(private val collectionService: ICollectionService, pr
         }
         val newDrawIdList = mutableListOf<String>()
         for (drawId in drawIdList) {
-            if(!collectionService.exists(userId, drawId)){
+            if (!collectionService.exists(userId, drawId)) {
                 continue
             }
             try {
@@ -78,15 +78,15 @@ class CollectionController(private val collectionService: ICollectionService, pr
     @Auth
     @GetMapping("/paging")
     fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
-        val page = if (id.isNullOrEmpty() || id == userId) {
-            collectionService.paging(userId, pageable)
-        } else {
-            collectionService.paging(id!!, pageable)
-        }
-
+        val page = collectionService.paging(
+                if (id.isNullOrEmpty()) {
+                    userId
+                } else {
+                    id!!
+                }, pageable)
         val drawVoList = ArrayList<DrawVo>()
         for (collection in page.content) {
-            var draw: Draw?
+            var draw: Draw
             try {
                 draw = drawService.get(collection.drawId!!, null)
             } catch (e: Exception) {
@@ -98,13 +98,11 @@ class CollectionController(private val collectionService: ICollectionService, pr
                 }
             }
             val drawVo = DrawVo()
-            BeanUtils.copyProperties(draw!!, drawVo)
+            BeanUtils.copyProperties(draw, drawVo)
 
             val userVo = UserVo()
-            if (!draw.userId.isNullOrEmpty()) {
-                val user = userService.getInfo(draw.userId!!)
-                BeanUtils.copyProperties(user, userVo)
-            }
+            val user = userService.getInfo(draw.userId!!)
+            BeanUtils.copyProperties(user, userVo)
             userVo.isFocus = followerService.exists(userId, draw.userId!!)
             drawVo.isFocus = if (id.isNullOrEmpty() || id == userId) {
                 true

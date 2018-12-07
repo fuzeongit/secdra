@@ -106,20 +106,16 @@ class UserController(private val userService: IUserService, private val baseConf
     }
 
     /**
-     * 获取自己的用户信息
+     * 获取用户信息
      */
     @Auth
-    @GetMapping("/getSelfInfo")
-    fun getSelfInfo(@CurrentUserId userId: String): UserVo {
-        return getVo(userService.getInfo(userId))
-    }
-
-    /**
-     * 获取随意一个的用户信息
-     */
     @GetMapping("/getInfo")
-    fun getInfo(userId: String): UserVo {
-        return getVo(userService.getInfo(userId))
+    fun getInfo(@CurrentUserId userId: String, id: String?): UserVo {
+        return getVo(userService.getInfo(if (id.isNullOrEmpty()) {
+            userId
+        } else {
+            id!!
+        }))
     }
 
     @GetMapping("/getInfoByDrawId")
@@ -140,7 +136,7 @@ class UserController(private val userService: IUserService, private val baseConf
         if (introduction.isNullOrEmpty()) info.introduction = introduction
         if (address.isNullOrEmpty()) info.address = address
         getVo(userService.save(info))
-}
+    }
 
 
     /**
