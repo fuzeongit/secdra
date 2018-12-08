@@ -19,10 +19,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -75,7 +72,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @Auth
     @GetMapping("/pagingByUserId")
     fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
-        val page =  drawService.pagingByUserId(pageable, userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
+        val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
         return getPageVo(page)
     }
 
@@ -120,7 +117,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @Auth
     @PostMapping("/save")
-    fun save(@CurrentUserId userId: String, url: String, name: String, desc: String?, isPrivate: Boolean, tagList: Array<String>?): DrawVo {
+    fun save(@CurrentUserId userId: String, url: String, name: String, desc: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
         val draw = Draw()
         draw.url = url
         draw.userId = userId
@@ -131,7 +128,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
             for (tagName in tagList) {
                 val tag = Tag()
                 tag.name = tagName
-                draw.tagList.toMutableSet().add(tag)
+                draw.tagList.add(tag)
             }
         }
 
@@ -155,7 +152,8 @@ class DrawController(private val drawService: IDrawService, private val userServ
 
     @PostMapping("/batchUpdate")
     @Auth
-    fun batchUpdate(@CurrentUserId userId: String, idList: Array<String>, name: String?, introduction: String?, isPrivate: Boolean?, tagList: Array<String>?): Boolean {
+    fun batchUpdate(@CurrentUserId userId: String, idList: Array<String>, name: String?, introduction: String?, isPrivate: Boolean?, @RequestParam("tagList") tagList: Array<String>?): MutableList<Draw> {
+        var drawList = mutableListOf<Draw>()
         for (id in idList) {
             try {
                 val draw = drawService.get(id, userId)
@@ -177,16 +175,17 @@ class DrawController(private val drawService: IDrawService, private val userServ
                         if (tagNameList.indexOf(addTagName) == -1) {
                             val tag = Tag()
                             tag.name = addTagName
-                            draw.tagList.toMutableSet().add(tag)
+                            draw.tagList.add(tag)
                         }
                     }
                 }
-                drawService.save(draw)
+
+                drawList.add(drawService.save(draw))
             } catch (e: Exception) {
                 println(e.message)
             }
         }
-        return true
+        return drawList
     }
 
     private fun getVo(draw: Draw, userId: String? = null): DrawVo {

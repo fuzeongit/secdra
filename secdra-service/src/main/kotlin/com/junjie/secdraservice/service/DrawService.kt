@@ -65,7 +65,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
             PermissionException("该图片已被屏蔽")
         }
         if (draw.isPrivate && draw.userId != userId) {
-            throw PermissionException("您无权查看该图片")
+            draw.url = ""
         }
         return draw
     }
