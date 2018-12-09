@@ -117,12 +117,12 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @Auth
     @PostMapping("/save")
-    fun save(@CurrentUserId userId: String, url: String, name: String, desc: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
+    fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
         val draw = Draw()
         draw.url = url
         draw.userId = userId
         draw.name = name
-        draw.introduction = desc
+        draw.introduction = introduction
         draw.isPrivate = isPrivate
         if (tagList != null && !tagList.isEmpty()) {
             for (tagName in tagList) {
@@ -132,10 +132,10 @@ class DrawController(private val drawService: IDrawService, private val userServ
             }
         }
 
-//        qiniuComponent.move(url, baseConfig.qiniuBucket)
-//        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
-//        draw.width = imageInfo!!.width
-//        draw.height = imageInfo.height
+        qiniuComponent.move(url, baseConfig.qiniuBucket)
+        val imageInfo = qiniuComponent.getImageInfo( url, baseConfig.qiniuBucketUrl)
+        draw.width = imageInfo!!.width
+        draw.height = imageInfo.height
         return getVo(drawService.save(draw))
     }
 
@@ -153,7 +153,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @PostMapping("/batchUpdate")
     @Auth
     fun batchUpdate(@CurrentUserId userId: String, idList: Array<String>, name: String?, introduction: String?, isPrivate: Boolean?, @RequestParam("tagList") tagList: Array<String>?): MutableList<Draw> {
-        var drawList = mutableListOf<Draw>()
+        val drawList = mutableListOf<Draw>()
         for (id in idList) {
             try {
                 val draw = drawService.get(id, userId)
