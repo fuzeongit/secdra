@@ -1,6 +1,7 @@
 package com.junjie.secdraweb.controller
 
 import com.corundumstudio.socketio.SocketIOServer
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
@@ -15,6 +16,7 @@ import com.junjie.secdraweb.vo.UserVo
 import javassist.NotFoundException
 import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -128,14 +130,14 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @Auth
     @PostMapping("/update")
-    fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?) {
+    fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVo {
         val info = userService.getInfo(userId)
         if (!name.isNullOrEmpty()) info.name = name
         if (gender != null) info.gender = gender
         if (birthday != null) info.birthday = birthday
         if (introduction.isNullOrEmpty()) info.introduction = introduction
         if (address.isNullOrEmpty()) info.address = address
-        getVo(userService.save(info))
+        return getVo(userService.save(info))
     }
 
 

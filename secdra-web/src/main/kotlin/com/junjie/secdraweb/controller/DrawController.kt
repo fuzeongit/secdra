@@ -2,6 +2,8 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
@@ -13,6 +15,7 @@ import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
+import javassist.NotFoundException
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -72,7 +75,8 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @Auth
     @GetMapping("/pagingByUserId")
     fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
-        val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
+        val page = drawService.pagingByUserId(pageable, id
+                ?: userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
         return getPageVo(page)
     }
 
@@ -133,7 +137,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
         }
 
         qiniuComponent.move(url, baseConfig.qiniuBucket)
-        val imageInfo = qiniuComponent.getImageInfo( url, baseConfig.qiniuBucketUrl)
+        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
         draw.width = imageInfo!!.width
         draw.height = imageInfo.height
         return getVo(drawService.save(draw))
@@ -144,9 +148,35 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @PostMapping("/update")
     @Auth
-    fun update(@CurrentUserId userId: String, id: String, desc: String?, isPrivate: Boolean?): DrawVo {
-        val draw = drawService.update(userId, id, desc!!, isPrivate!!)
-        return getVo(draw)
+    fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
+        val draw = drawService.get(id, userId)
+        if (draw.userId != userId) {
+            throw PermissionException("您无权修改该图片")
+        }
+        if (!name.isNullOrEmpty()) {
+            draw.name = name
+        }
+        if (!introduction.isNullOrEmpty()) {
+            draw.introduction = introduction
+        }
+        draw.isPrivate = isPrivate
+
+        if (!tagList!!.isEmpty()) {
+            val tagNameList = draw.tagList.map { it.name }
+            for (addTagName in tagList) {
+                if (tagNameList.indexOf(addTagName) == -1) {
+                    val tag = Tag()
+                    tag.name = addTagName
+                    draw.tagList.add(tag)
+                }
+            }
+            for (tag in draw.tagList.toList()){
+                if (tagList.indexOf(tag.name) == -1) {
+                    draw.tagList.remove(tag)
+                }
+            }
+        }
+        return getVo(drawService.save(draw))
     }
 
 
@@ -179,7 +209,6 @@ class DrawController(private val drawService: IDrawService, private val userServ
                         }
                     }
                 }
-
                 drawList.add(drawService.save(draw))
             } catch (e: Exception) {
                 println(e.message)
