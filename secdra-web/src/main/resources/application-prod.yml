@@ -8,10 +8,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/secdra
     username: root
-    password: ASDasd+-*/00
+    password: XXX
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: false
-#  mvc:
-#    static-path-pattern: /static/**
