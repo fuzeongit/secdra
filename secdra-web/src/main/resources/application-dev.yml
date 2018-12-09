@@ -18,8 +18,8 @@ base:
   jwtExpiresSecond: 5184000000
   jwtBase64Secret: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMiLCJleHAiOjE1NDA0MzYxMzYsIm5iZiI6MTU0MDI2MzMzNn0.Q7FKiYp2W-V8cBIP9zEkxO7cpH9MER-aM6q_0lOZeHA=
   updatePasswordTimePrefix: base:update_password_time:%s
-  qiniuAccessKey: XXX
-  qiniuSecretKey: XXX
+  qiniuAccessKey: _I-tvI9XSNEzwjzeEWz3KxfBQwL9mk3GOcDbNKST
+  qiniuSecretKey: DMEfYejDMunmcgz07VfUraR9OhEvRX_ekY58H-2w
   qiniuTempBucket: temporary
   qiniuHeadBucket: head
   qiniuBackBucket: background
