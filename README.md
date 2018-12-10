@@ -1,4 +1,5 @@
 
+
 # Secdra  
 一个类似**pixiv**（下称p站）的网站的后台接口，项目实现是spring boot框架，但是使用的语言不是java而是基于kotlin的。     
 项目大致利用idea初始化基于kotlin的spring boot，需求分析，设计具体风格，规划目录结构，开撸。    
@@ -22,11 +23,26 @@
  - Redis
   
 #### 项目结构  
- 
+![](https://github.com/JunJieFu/static-image/blob/master/secdra/catalog.png)
   
 #### 数据处理  
+统一返回接口
 
-#### 交互体验  
+	class Result<T> {  
+		 var status: Int? = null  
+		 var message: String? = null  
+		 var data: T? = null  
+	}
+
+
+
+前端返回
+
+    {
+    	status:200,
+    	data:null,
+    	message:""
+    }
 
 #### 开源协议  
 [MIT](https://opensource.org/licenses/MIT)
