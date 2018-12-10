@@ -29,9 +29,9 @@
 统一返回接口
 
 	class Result<T> {  
-		 var status: Int? = null  
-		 var message: String? = null  
-		 var data: T? = null  
+        var status: Int? = null  
+	    var message: String? = null  
+	    var data: T? = null  
 	}
 
 
@@ -39,7 +39,7 @@
 前端返回
 
     {
-    	status:200,
+        status:200,
     	data:null,
     	message:""
     }
