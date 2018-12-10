@@ -13,8 +13,20 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-#  mvc:
-#    static-path-pattern: /static/**
-
+base:
+  verificationCodePrefix: verification_code:%s
+  jwtExpiresSecond: 5184000000
+  jwtBase64Secret: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMiLCJleHAiOjE1NDA0MzYxMzYsIm5iZiI6MTU0MDI2MzMzNn0.Q7FKiYp2W-V8cBIP9zEkxO7cpH9MER-aM6q_0lOZeHA=
+  updatePasswordTimePrefix: base:update_password_time:%s
+  qiniuAccessKey: _I-tvI9XSNEzwjzeEWz3KxfBQwL9mk3GOcDbNKST
+  qiniuSecretKey: DMEfYejDMunmcgz07VfUraR9OhEvRX_ekY58H-2w
+  qiniuTempBucket: temporary
+  qiniuHeadBucket: head
+  qiniuBackBucket: background
+  qiniuBucket: secdra
+  qiniuTempBucketUrl: http://secdratemp.secdra.com
+  qiniuHeadBucketUrl: http://secdrahead.secdra.com
+  qiniuBackBucketUrl: http://secdraback.secdra.com
+  qiniuBucketUrl: http://secdraimg.secdra.com
 
 

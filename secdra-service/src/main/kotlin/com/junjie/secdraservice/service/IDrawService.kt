@@ -17,15 +17,13 @@ interface IDrawService {
 
     fun get(id: String, userId: String?): Draw
 
-    fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean = false): Draw
-
     fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw
 
     fun save(draw: Draw): Draw
 
     fun pagingRand(pageable: Pageable): Page<Draw>
 
-    fun getFirstByTag(tag:String): Draw
+    fun getFirstByTag(tag: String): Draw
 
-    fun countByTag(tag:String):Long
+    fun countByTag(tag: String): Long
 }

@@ -10,11 +10,15 @@ import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.convert.converter.Converter
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 /**
  * @author fjj
@@ -91,5 +95,17 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
     @Bean
     internal fun qiniuComponent(): QiniuComponent {
         return QiniuComponent(baseConfig())
+    }
+
+    @Bean
+    fun dateConvert(): Converter<String, Date> {
+        return Converter { source ->
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            var date: Date? = null
+            try {
+                date = sdf.parse(source)
+            } catch (e: Exception) { }
+            date
+        }
     }
 }

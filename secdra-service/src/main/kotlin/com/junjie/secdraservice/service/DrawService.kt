@@ -65,24 +65,9 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
             PermissionException("该图片已被屏蔽")
         }
         if (draw.isPrivate && draw.userId != userId) {
-            throw PermissionException("您无权查看该图片")
+            draw.url = ""
         }
         return draw
-    }
-
-    override fun update(userId: String, drawId: String, introduction: String?, isPrivate: Boolean): Draw {
-        val draw = drawDao.findById(drawId).orElseThrow { NotFoundException("图片不存在") }
-        if (draw.drawState != DrawState.PASS) {
-            PermissionException("该图片已被屏蔽")
-        }
-        if (draw.userId != userId) {
-            throw PermissionException("您无权修改该图片")
-        }
-        if (introduction.isNullOrEmpty()) {
-            draw.introduction = introduction
-        }
-        draw.isPrivate = isPrivate
-        return drawDao.save(draw)
     }
 
     override fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw {
