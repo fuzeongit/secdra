@@ -1,13 +1,13 @@
 package com.junjie.secdraweb.controller
 
 import com.corundumstudio.socketio.SocketIOServer
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.contant.Gender
 import com.junjie.secdraservice.model.User
+import com.junjie.secdraservice.service.IFollowerService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
@@ -16,7 +16,6 @@ import com.junjie.secdraweb.vo.UserVo
 import javassist.NotFoundException
 import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,7 +31,7 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("user")
 class UserController(private val userService: IUserService, private val baseConfig: BaseConfig,
                      private val qiniuComponent: QiniuComponent, private val redisTemplate: StringRedisTemplate,
-                     private var socketIoServer: SocketIOServer) {
+                     private val followerService: IFollowerService,private var socketIoServer: SocketIOServer) {
     /**
      * 发送验证码
      */
@@ -113,11 +112,18 @@ class UserController(private val userService: IUserService, private val baseConf
     @Auth
     @GetMapping("/getInfo")
     fun getInfo(@CurrentUserId userId: String, id: String?): UserVo {
-        return getVo(userService.getInfo(if (id.isNullOrEmpty()) {
+        val isSelf = id.isNullOrEmpty() || id == userId
+        val userVo = getVo(userService.getInfo(if (isSelf) {
             userId
         } else {
             id!!
         }))
+        userVo.isFocus = if (isSelf) {
+            null;
+        } else {
+            followerService.exists(userId, userVo.id!!)
+        }
+        return userVo
     }
 
     @GetMapping("/getInfoByDrawId")

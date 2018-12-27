@@ -73,7 +73,7 @@ class FollowerController(private val followerService: IFollowerService, private 
             val userVo = UserVo()
             BeanUtils.copyProperties(user, userVo)
             userVo.isFocus = if (id.isNullOrEmpty() || id == userId) {
-                true;
+                null;
             } else {
                 followerService.exists(userId, userVo.id!!)
             }
