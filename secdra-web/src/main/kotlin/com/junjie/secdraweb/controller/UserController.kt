@@ -112,17 +112,12 @@ class UserController(private val userService: IUserService, private val baseConf
     @Auth
     @GetMapping("/getInfo")
     fun getInfo(@CurrentUserId userId: String, id: String?): UserVo {
-        val isSelf = id.isNullOrEmpty() || id == userId
-        val userVo = getVo(userService.getInfo(if (isSelf) {
+        val userVo = getVo(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
             userId
         } else {
             id!!
         }))
-        userVo.isFocus = if (isSelf) {
-            null;
-        } else {
-            followerService.exists(userId, userVo.id!!)
-        }
+        userVo.isFocus = followerService.exists(userId, userVo.id!!)
         return userVo
     }
 

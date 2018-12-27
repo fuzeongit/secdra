@@ -72,11 +72,7 @@ class FollowerController(private val followerService: IFollowerService, private 
             val user = userService.getInfo(follower.followerId!!)
             val userVo = UserVo()
             BeanUtils.copyProperties(user, userVo)
-            userVo.isFocus = if (id.isNullOrEmpty() || id == userId) {
-                null;
-            } else {
-                followerService.exists(userId, userVo.id!!)
-            }
+            userVo.isFocus = followerService.exists(userId, userVo.id!!)
             userVoList.add(userVo)
         }
         return PageImpl<UserVo>(userVoList, page.pageable, page.totalElements)
