@@ -9,23 +9,23 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class Comment {
+class Reply {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
+    //评论id
+    var commentId: String? = null
     //图片作者id
     var authorId: String? = null
     //评论人id
     var criticId: String? = null
-
-    var drawId: String? = null
+    //回答者id
+    var answererId :String? = null
 
     var content: String? = null
 
     var isRead: Boolean = false
-//    //点赞数
-//    var like: Number = 0
 
     @CreatedDate
     var createDate: Date = Date()

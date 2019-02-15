@@ -1,6 +1,8 @@
 package com.junjie.secdraweb.vo
 
 import com.junjie.secdraservice.contant.Gender
+import com.junjie.secdraservice.model.User
+import org.springframework.beans.BeanUtils
 import java.util.*
 
 class UserVo {
@@ -23,4 +25,10 @@ class UserVo {
     var background: String? = null
 
     var isFocus: Boolean? = null
+
+    constructor(){
+    }
+    constructor(user: User){
+        BeanUtils.copyProperties(user,this)
+    }
 }

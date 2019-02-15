@@ -1,18 +1,12 @@
-package com.junjie.secdraservice.model
+package com.junjie.secdraweb.vo
 
-import org.hibernate.annotations.GenericGenerator
+import com.junjie.secdraservice.model.Comment
+import org.springframework.beans.BeanUtils
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
 
-@Entity
-class Comment {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
+class CommentVo {
     var id: String? = null
     //图片作者id
     var authorId: String? = null
@@ -32,4 +26,14 @@ class Comment {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    var author: UserVo? = null
+    
+    var critic: UserVo? = null
+
+    constructor() {}
+
+    constructor(comment: Comment) {
+        BeanUtils.copyProperties(comment, this)
+    }
 }

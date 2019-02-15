@@ -1,9 +1,12 @@
 package com.junjie.secdraweb.vo
 
+import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
+import com.junjie.secdraservice.model.User
+import org.springframework.beans.BeanUtils
 import java.util.*
 
-class DrawVo() {
+class DrawVo {
     var id: String? = null
 
     var introduction: String? = null
@@ -33,4 +36,11 @@ class DrawVo() {
     var createDate: Date = Date()
 
     var modifiedDate: Date = Date()
+
+    constructor() {
+    }
+
+    constructor(draw: Draw) {
+        BeanUtils.copyProperties(draw, this)
+    }
 }

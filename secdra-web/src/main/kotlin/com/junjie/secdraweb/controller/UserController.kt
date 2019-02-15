@@ -74,7 +74,7 @@ class UserController(private val userService: IUserService, private val baseConf
         //生成token
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
         response.setHeader("token", token)
-        return getVo(user)
+        return UserVo(user)
     }
 
     /**
@@ -86,7 +86,7 @@ class UserController(private val userService: IUserService, private val baseConf
         val nowMillis = System.currentTimeMillis()
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
         response.setHeader("token", token)
-        return getVo(user)
+        return UserVo(user)
     }
 
     @Auth
@@ -103,7 +103,7 @@ class UserController(private val userService: IUserService, private val baseConf
         val nowMillis = System.currentTimeMillis()
         val user = userService.rePassword(phone, password, Date(nowMillis))
         redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
-        return getVo(user)
+        return UserVo(user)
     }
 
     /**
@@ -112,7 +112,7 @@ class UserController(private val userService: IUserService, private val baseConf
     @Auth
     @GetMapping("/getInfo")
     fun getInfo(@CurrentUserId userId: String, id: String?): UserVo {
-        val userVo = getVo(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
+        val userVo = UserVo(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
             userId
         } else {
             id!!
@@ -123,7 +123,7 @@ class UserController(private val userService: IUserService, private val baseConf
 
     @GetMapping("/getInfoByDrawId")
     fun getInfoByDrawId(drawId: String): UserVo {
-        return getVo(userService.getInfoByDrawId(drawId))
+        return UserVo(userService.getInfoByDrawId(drawId))
     }
 
     /**
@@ -138,7 +138,7 @@ class UserController(private val userService: IUserService, private val baseConf
         if (birthday != null) info.birthday = birthday
         if (introduction.isNullOrEmpty()) info.introduction = introduction
         if (address.isNullOrEmpty()) info.address = address
-        return getVo(userService.save(info))
+        return UserVo(userService.save(info))
     }
 
 
@@ -152,7 +152,7 @@ class UserController(private val userService: IUserService, private val baseConf
         qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket,baseConfig.qiniuHeadBucket)
         qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
         info.head = url;
-        return getVo(userService.save(info))
+        return UserVo(userService.save(info))
     }
 
 
@@ -166,14 +166,7 @@ class UserController(private val userService: IUserService, private val baseConf
         qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket,baseConfig.qiniuBackBucket)
         qiniuComponent.move(url, baseConfig.qiniuBackBucket)
         info.background = url;
-        return getVo(userService.save(info))
-    }
-
-
-    private fun getVo(user: User): UserVo {
-        val userVo = UserVo()
-        BeanUtils.copyProperties(user, userVo)
-        return userVo
+        return UserVo(userService.save(info))
     }
 
     @GetMapping("/get")

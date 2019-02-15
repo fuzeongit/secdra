@@ -218,12 +218,9 @@ class DrawController(private val drawService: IDrawService, private val userServ
     }
 
     private fun getVo(draw: Draw, userId: String? = null): DrawVo {
-        val user = userService.getInfo(draw.userId!!)
-        val drawVo = DrawVo()
-        val userVo = UserVo()
-        BeanUtils.copyProperties(draw, drawVo)
-        BeanUtils.copyProperties(user, userVo)
-        userVo.isFocus = followerService.exists(userId, user.id!!)
+        val drawVo = DrawVo(draw)
+        val userVo = UserVo(userService.getInfo(draw.userId!!))
+        userVo.isFocus = followerService.exists(userId, userVo.id!!)
         if (!userId.isNullOrEmpty()) {
             drawVo.isFocus = collectionService.exists(userId!!, draw.id!!)
         }
