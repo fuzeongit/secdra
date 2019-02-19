@@ -6,6 +6,7 @@ import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import javassist.NotFoundException
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -59,6 +60,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.findAll(specification, pageable)
     }
 
+    @Cacheable("draw",key="#id+#userId")
     override fun get(id: String, userId: String?): Draw {
         val draw = drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
         if (draw.drawState != DrawState.PASS) {

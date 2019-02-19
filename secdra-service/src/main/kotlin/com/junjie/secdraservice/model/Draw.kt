@@ -4,12 +4,13 @@ import com.junjie.secdraservice.contant.DrawState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @NamedEntityGraph(name = "Draw.Tag", attributeNodes = [NamedAttributeNode("tagList")])
-class Draw {
+class Draw: Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")

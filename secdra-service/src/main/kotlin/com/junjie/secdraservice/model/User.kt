@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 
 import java.util.Date
+import java.io.Serializable
 import javax.persistence.*
 
 /**
@@ -15,7 +16,7 @@ import javax.persistence.*
  * @author fjj
  */
 @Entity
-class User {
+class User : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
