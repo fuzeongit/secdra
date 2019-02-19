@@ -5,6 +5,7 @@ import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.ITagDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class TagService(private val tagDao: ITagDao) : ITagService {
+    @Cacheable("tag::listTagOrderByLikeAmount")
     override fun listTagOrderByLikeAmount(): List<Tag> {
         val specification = Specification<Tag> { root, criteriaQuery, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()

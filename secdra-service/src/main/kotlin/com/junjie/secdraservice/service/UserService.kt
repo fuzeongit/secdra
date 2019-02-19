@@ -34,7 +34,7 @@ class UserService(val userDao: IUserDao) : IUserService {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    @Cacheable("userInfo",key="#id")
+    @Cacheable("userInfo")
     override fun getInfo(id: String): User {
         return userDao.findById(id).orElseThrow { PermissionException("用户信息不存在") }
     }

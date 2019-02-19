@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.junjie.secdraservice.contant.DrawState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
@@ -36,7 +37,8 @@ class Draw: Serializable {
 
     var height: Long = 0;
 
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     @JoinColumn(name = "draw_id")
     var tagList: MutableSet<Tag> = mutableSetOf()
 
