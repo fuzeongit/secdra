@@ -22,6 +22,7 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class DrawService(val drawDao: IDrawDao) : IDrawService {
+    @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
@@ -62,8 +63,12 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     }
 
     @Cacheable("draw::get")
-    override fun get(id: String, userId: String?): Draw {
-        val draw = drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
+    override fun get(id: String): Draw {
+        return drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
+    }
+
+    override fun get(id: String, userId: String): Draw {
+        val draw = get(id)
         if (draw.drawState != DrawState.PASS) {
             PermissionException("该图片已被屏蔽")
         }
@@ -85,6 +90,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.save(draw)
     }
 
+    @CachePut("draw::get", key = "#draw.id")
     override fun save(draw: Draw): Draw {
         return drawDao.save(draw)
     }

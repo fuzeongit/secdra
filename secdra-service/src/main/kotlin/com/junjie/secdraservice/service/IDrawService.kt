@@ -15,7 +15,9 @@ interface IDrawService {
 
     fun pagingByUserId(pageable: Pageable, userId: String, startDate: Date?, endDate: Date?, isSelf: Boolean): Page<Draw>
 
-    fun get(id: String, userId: String?): Draw
+    fun get(id: String): Draw
+
+    fun get(id: String, userId: String): Draw
 
     fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw
 

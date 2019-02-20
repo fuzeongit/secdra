@@ -4,6 +4,8 @@ import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.User
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.util.*
@@ -11,7 +13,7 @@ import java.util.*
 @Service
 class UserService(val userDao: IUserDao) : IUserService {
 
-
+    @CachePut("user::getInfo", key = "#user.id")
     override fun save(user: User): User {
         return userDao.save(user)
     }
@@ -34,7 +36,7 @@ class UserService(val userDao: IUserDao) : IUserService {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    @Cacheable("userInfo")
+    @Cacheable("user::getInfo")
     override fun getInfo(id: String): User {
         return userDao.findById(id).orElseThrow { PermissionException("用户信息不存在") }
     }

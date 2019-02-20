@@ -2,6 +2,8 @@ package com.junjie.secdraservice.service
 
 import com.junjie.secdraservice.dao.ICollectionDao
 import com.junjie.secdraservice.model.Collection
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

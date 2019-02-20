@@ -25,10 +25,14 @@ class RedisConfigurer : CachingConfigurerSupport() {
         val redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
         val cacheNames = HashSet<String>()
         val configMap = HashMap<String, RedisCacheConfiguration>()
+        //
         cacheNames.add("draw::pagingRand")
-
+        cacheNames.add("draw::paging")
+        cacheNames.add("tag::listTagOrderByLikeAmount")
         // 对每个缓存空间应用不同的配置
-        configMap["draw::pagingRand"] = redisCacheConfiguration.entryTtl(Duration.ofSeconds(120))
+        configMap["draw::pagingRand"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
+        configMap["draw::paging"] = redisCacheConfiguration.entryTtl(Duration.ofHours(1))
+        configMap["tag::listTagOrderByLikeAmount"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
                 .cacheDefaults(redisCacheConfiguration)

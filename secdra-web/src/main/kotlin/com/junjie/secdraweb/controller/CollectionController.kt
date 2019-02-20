@@ -85,7 +85,7 @@ class CollectionController(private val collectionService: ICollectionService, pr
         for (collection in page.content) {
             var draw: Draw
             try {
-                draw = drawService.get(collection.drawId!!, null)
+                draw = drawService.get(collection.drawId!!)
             } catch (e: Exception) {
                 if (e is PermissionException || e is NotFoundException) {
                     draw = Draw()
