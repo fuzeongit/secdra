@@ -62,7 +62,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return drawDao.findAll(specification, pageable)
     }
 
-    @Cacheable("draw::get")
+    @Cacheable("draw::get", key = "#id")
     override fun get(id: String): Draw {
         return drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
@@ -78,7 +78,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return draw
     }
 
-    @CachePut("draw::get")
+    @CachePut("draw::get", key = "#drawId")
     override fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw {
         val draw = drawDao.findById(drawId).orElseThrow { NotFoundException("图片不存在") }
         if (viewAmount != null) {
