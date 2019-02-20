@@ -73,7 +73,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
         return draw
     }
 
-    @CachePut("draw::get", key = "#drawId")
+    @CachePut("draw::get")
     override fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw {
         val draw = drawDao.findById(drawId).orElseThrow { NotFoundException("图片不存在") }
         if (viewAmount != null) {
@@ -88,8 +88,10 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
     override fun save(draw: Draw): Draw {
         return drawDao.save(draw)
     }
+
     @Cacheable("draw::pagingRand")
     override fun pagingRand(pageable: Pageable): Page<Draw> {
+
         return drawDao.pagingRand(pageable)
     }
 
