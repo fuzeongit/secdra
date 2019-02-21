@@ -29,9 +29,11 @@ class RedisConfigurer : CachingConfigurerSupport() {
         cacheNames.add("draw::pagingRand")
         cacheNames.add("draw::paging")
         cacheNames.add("tag::listTagOrderByLikeAmount")
+        cacheNames.add("draw::getFirstByTag")
         // 对每个缓存空间应用不同的配置
         configMap["draw::pagingRand"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         configMap["draw::paging"] = redisCacheConfiguration.entryTtl(Duration.ofHours(1))
+        configMap["draw::getFirstByTag"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         configMap["tag::listTagOrderByLikeAmount"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))

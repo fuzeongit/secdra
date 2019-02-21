@@ -21,7 +21,9 @@ class Reply {
     //评论人id
     var criticId: String? = null
     //回答者id
-    var answererId :String? = null
+    var answererId: String? = null
+    //图片id
+    var drawId: String? = null
 
     var content: String? = null
 

@@ -11,11 +11,11 @@ import org.springframework.data.domain.Pageable
  * @author fjj
  */
 interface IReplyService {
-    fun save(reply : Reply): Reply
+    fun save(reply: Reply): Reply
 
-    fun listIsRead(authorId: String): List<Comment>
+    fun list(commentId: String): List<Reply>
 
-    fun countIsRead(authorId: String): Long
+    fun listUnread(criticId: String): List<Reply>
 
-    fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Comment>
+    fun countUnread(criticId: String): Long
 }

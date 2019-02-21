@@ -97,10 +97,10 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
 
     @Cacheable("draw::pagingRand")
     override fun pagingRand(pageable: Pageable): Page<Draw> {
-
         return drawDao.pagingRand(pageable)
     }
 
+    @Cacheable("draw::getFirstByTag")
     override fun getFirstByTag(tag: String): Draw {
         return paging(PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")), tag, null, null)
                 .content.first()
