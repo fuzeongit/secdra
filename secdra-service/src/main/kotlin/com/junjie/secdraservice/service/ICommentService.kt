@@ -17,5 +17,11 @@ interface ICommentService {
 
     fun countUnread(authorId: String): Long
 
-    fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Comment>
+    fun count(drawId: String): Long
+
+    fun list(drawId: String):List<Comment>
+
+    fun listTop4(drawId:String):List<Comment>
+
+    fun paging(drawId: String, pageable: Pageable): Page<Comment>
 }

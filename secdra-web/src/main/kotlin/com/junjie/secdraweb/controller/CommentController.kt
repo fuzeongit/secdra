@@ -34,12 +34,13 @@ class CommentController(val commentService: ICommentService, val userService: IU
     @Auth
     @PostMapping("/save")
     fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVo {
+        content.isEmpty() && throw Exception("评论不能为空")
         val comment = Comment();
         comment.authorId = authorId;
         comment.criticId = criticId;
         comment.drawId = drawId;
         comment.content = content;
-        return getVo(comment)
+        return getVo(commentService.save(comment))
     }
 
     /**
@@ -67,11 +68,31 @@ class CommentController(val commentService: ICommentService, val userService: IU
     }
 
     /**
+     * 获取4条
+     */
+    @GetMapping("listTop4")
+    fun listTop4(drawId: String): List<CommentVo> {
+//        val map = HashMap<String,Any>()
+//        map["count"] = commentService.count(drawId)
+//        map["list"] = getListVo(commentService.listTop4(drawId))
+        return getListVo(commentService.listTop4(drawId))
+    }
+
+    /**
+     * 获取列表
+     */
+    @GetMapping("list")
+    fun list(drawId: String): List<CommentVo> {
+        return getListVo(commentService.list(drawId))
+    }
+
+
+    /**
      * 分页获取
      */
     @GetMapping("pagingByDrawId")
     fun pagingByDrawId(drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVo> {
-        return getPageVo(commentService.pagingByDrawId(drawId, pageable))
+        return getPageVo(commentService.paging(drawId, pageable))
     }
 
     private fun getVo(comment: Comment, user: User? = null): CommentVo {
@@ -91,5 +112,13 @@ class CommentController(val commentService: ICommentService, val userService: IU
             commentVoList.add(getVo(comment))
         }
         return PageImpl<CommentVo>(commentVoList, page.pageable, page.totalElements)
+    }
+
+    private fun getListVo(list: List<Comment>): List<CommentVo> {
+        val commentVoList = ArrayList<CommentVo>()
+        for (comment in list) {
+            commentVoList.add(getVo(comment))
+        }
+        return commentVoList
     }
 }

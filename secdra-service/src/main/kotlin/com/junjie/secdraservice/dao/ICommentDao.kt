@@ -8,7 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface ICommentDao : JpaRepository<Comment, String> {
     fun countByAuthorIdAndIsRead(authorId: String, unread: Boolean): Long
 
+    fun countByDrawId(drawId: String): Long
+
     fun findAllByAuthorIdAndIsRead(authorId: String, unread: Boolean): List<Comment>
+
+    fun findAllByDrawIdOrderByCreateDateDesc(drawId: String): List<Comment>
 
     fun findAllByDrawId(drawId: String, pageable: Pageable): Page<Comment>
 }
