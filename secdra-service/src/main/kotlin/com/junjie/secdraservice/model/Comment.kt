@@ -24,10 +24,6 @@ class Comment: Serializable {
 
     var content: String? = null
 
-    var isRead: Boolean = false
-//    //点赞数
-//    var like: Number = 0
-
     @CreatedDate
     var createDate: Date = Date()
 

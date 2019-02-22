@@ -13,10 +13,6 @@ import org.springframework.data.domain.Pageable
 interface ICommentService {
     fun save(comment: Comment): Comment
 
-    fun listUnread(authorId: String): List<Comment>
-
-    fun countUnread(authorId: String): Long
-
     fun count(drawId: String): Long
 
     fun list(drawId: String):List<Comment>

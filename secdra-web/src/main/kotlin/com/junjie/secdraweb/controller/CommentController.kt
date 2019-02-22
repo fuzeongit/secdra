@@ -2,10 +2,13 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdraservice.contant.NotifyType
 import com.junjie.secdraservice.model.Comment
 import com.junjie.secdraservice.model.Draw
+import com.junjie.secdraservice.model.Notify
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.ICommentService
+import com.junjie.secdraservice.service.INotifyService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.CommentVo
 import com.junjie.secdraweb.vo.DrawVo
@@ -26,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("comment")
-class CommentController(val commentService: ICommentService, val userService: IUserService) {
+class CommentController(val commentService: ICommentService, val userService: IUserService,val notifyService: INotifyService) {
 
     /**
      * 发表评论
@@ -35,36 +38,24 @@ class CommentController(val commentService: ICommentService, val userService: IU
     @PostMapping("/save")
     fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVo {
         content.isEmpty() && throw Exception("评论不能为空")
+        (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
         val comment = Comment();
         comment.authorId = authorId;
         comment.criticId = criticId;
         comment.drawId = drawId;
         comment.content = content;
-        return getVo(commentService.save(comment))
-    }
 
-    /**
-     * 获取未读
-     */
-    @Auth
-    @GetMapping("/listUnread")
-    fun listUnread(@CurrentUserId userId: String): List<CommentVo> {
-        val commentList = commentService.listUnread(userId)
-        val commentVoList = mutableListOf<CommentVo>()
-        val user = userService.getInfo(userId)
-        for (comment in commentList) {
-            commentVoList.add(getVo(comment, user))
-        }
-        return commentVoList
-    }
-
-    /**
-     * 获取未读数量
-     */
-    @Auth
-    @GetMapping("/countUnread")
-    fun countUnread(@CurrentUserId userId: String): Long {
-        return commentService.countUnread(userId)
+        val vo =  getVo(commentService.save(comment))
+        val notify = Notify();
+        notify.commentId = vo.id
+        notify.receiveId = vo.authorId
+        notify.authorId = vo.authorId
+        notify.drawId = vo.drawId
+        notify.criticId = vo.criticId
+        notify.notifyType = NotifyType.COMMENT
+        notify.content = vo.content
+        notifyService.save(notify)
+        return vo
     }
 
     /**
@@ -85,7 +76,6 @@ class CommentController(val commentService: ICommentService, val userService: IU
     fun list(drawId: String): List<CommentVo> {
         return getListVo(commentService.list(drawId))
     }
-
 
     /**
      * 分页获取

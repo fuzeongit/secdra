@@ -21,14 +21,6 @@ class CommentService(private val commentDao: ICommentDao) : ICommentService {
         return commentDao.save(comment)
     }
 
-    override fun listUnread(authorId: String): List<Comment> {
-        return commentDao.findAllByAuthorIdAndIsRead(authorId, false)
-    }
-
-    override fun countUnread(authorId: String): Long {
-        return commentDao.countByAuthorIdAndIsRead(authorId, false)
-    }
-
     @Cacheable("comment::count", key = "#drawId")
     override fun count(drawId: String): Long{
         return commentDao.countByDrawId(drawId)

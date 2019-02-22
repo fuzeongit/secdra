@@ -2,11 +2,10 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdraservice.model.Comment
-import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.model.Reply
-import com.junjie.secdraservice.model.User
+import com.junjie.secdraservice.contant.NotifyType
+import com.junjie.secdraservice.model.*
 import com.junjie.secdraservice.service.ICommentService
+import com.junjie.secdraservice.service.INotifyService
 import com.junjie.secdraservice.service.IReplyService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.CommentVo
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("reply")
-class ReplyController(val replyService: IReplyService, val userService: IUserService) {
+class ReplyController(val replyService: IReplyService, val userService: IUserService,val notifyService: INotifyService) {
 
     /**
      * 发表评论
@@ -37,6 +36,8 @@ class ReplyController(val replyService: IReplyService, val userService: IUserSer
     @Auth
     @PostMapping("/save")
     fun save(@CurrentUserId answererId: String, commentId: String, authorId: String, criticId: String, drawId: String, content: String): ReplyVo {
+        content.isEmpty() && throw Exception("回复不能为空")
+        (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
         val reply = Reply()
         reply.answererId = answererId
         reply.commentId = commentId
@@ -44,31 +45,18 @@ class ReplyController(val replyService: IReplyService, val userService: IUserSer
         reply.criticId = criticId
         reply.drawId = drawId
         reply.content = content
-        return getVo(replyService.save(reply))
-    }
-
-    /**
-     * 获取未读
-     */
-    @Auth
-    @GetMapping("/listUnread")
-    fun listUnread(@CurrentUserId userId: String): List<ReplyVo> {
-        val replyList = replyService.listUnread(userId)
-        val replyVoList = mutableListOf<ReplyVo>()
-        val user = userService.getInfo(userId)
-        for (reply in replyList) {
-            replyVoList.add(getVo(reply, user))
-        }
-        return replyVoList
-    }
-
-    /**
-     * 获取未读数量
-     */
-    @Auth
-    @GetMapping("/countUnread")
-    fun countUnread(@CurrentUserId userId: String): Long {
-        return replyService.countUnread(userId)
+        val vo =  getVo(replyService.save(reply))
+        val notify = Notify();
+        notify.commentId = vo.commentId
+        notify.receiveId = vo.criticId
+        notify.authorId = vo.authorId
+        notify.drawId = vo.drawId
+        notify.criticId = vo.criticId
+        notify.answererId = vo.answererId
+        notify.notifyType = NotifyType.REPLY
+        notify.content = vo.content
+        notifyService.save(notify)
+        return vo
     }
 
     /**

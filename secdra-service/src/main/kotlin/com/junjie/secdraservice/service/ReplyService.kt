@@ -13,12 +13,4 @@ class ReplyService(private val replyDao: IReplyDao) : IReplyService {
     override fun list(commentId: String): List<Reply> {
         return replyDao.findAllByCommentIdOrderByCreateDateDesc(commentId)
     }
-
-    override fun listUnread(criticId: String): List<Reply> {
-        return replyDao.findAllByCriticIdAndIsReadOrderByCreateDateDesc(criticId, false)
-    }
-
-    override fun countUnread(criticId: String): Long {
-        return replyDao.countByCriticIdAndIsRead(criticId, false)
-    }
 }

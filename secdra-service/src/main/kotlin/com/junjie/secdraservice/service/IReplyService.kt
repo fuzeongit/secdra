@@ -14,8 +14,4 @@ interface IReplyService {
     fun save(reply: Reply): Reply
 
     fun list(commentId: String): List<Reply>
-
-    fun listUnread(criticId: String): List<Reply>
-
-    fun countUnread(criticId: String): Long
 }
