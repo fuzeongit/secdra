@@ -3,8 +3,11 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdraservice.model.FollowMessage
+import com.junjie.secdraservice.service.IFollowMessageService
 import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
+import com.junjie.secdraservice.serviceimpl.FollowMessageService
 import com.junjie.secdraweb.vo.UserVo
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
@@ -19,7 +22,8 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping("/following")
-class FollowingController(private val followService: IFollowService, private val userService: IUserService) {
+class FollowingController(private val followService: IFollowService, private val userService: IUserService,
+                          private val followMessageService: IFollowMessageService) {
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId followerId: String, followingId: String): Boolean {
@@ -28,7 +32,11 @@ class FollowingController(private val followService: IFollowService, private val
         }
         val isFocus = followService.exists(followerId, followingId) ?: throw ProgramException("不能关注")
         return if (!isFocus) {
-            followService.save(followerId, followingId)
+            val follow = followService.save(followerId, followingId)
+            val followMessage = FollowMessage()
+            followMessage.followerId = follow.followerId
+            followMessage.followingId = follow.followingId
+            followMessageService.save(followMessage)
             true
         } else {
             followService.remove(followerId, followingId)

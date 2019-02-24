@@ -4,11 +4,14 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdraservice.contant.MessageType
 import com.junjie.secdraservice.model.CommentMessage
+import com.junjie.secdraservice.model.FollowMessage
 import com.junjie.secdraservice.model.ReplyMessage
 import com.junjie.secdraservice.service.ICommentMessageService
+import com.junjie.secdraservice.service.IFollowMessageService
 import com.junjie.secdraservice.service.IReplyMessageService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.CommentMessageVo
+import com.junjie.secdraweb.vo.FollowMessageVo
 import com.junjie.secdraweb.vo.ReplyMessageVo
 import com.junjie.secdraweb.vo.UserVo
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("message")
-class MessageController(private val userService: IUserService, private val commentMessageService: ICommentMessageService, private val replyMessageService: IReplyMessageService) {
+class MessageController(private val userService: IUserService, private val commentMessageService: ICommentMessageService,
+                        private val replyMessageService: IReplyMessageService,private val followMessageService: IFollowMessageService) {
     @Auth
     @GetMapping("/count")
     fun count(@CurrentUserId userId: String, messageType: MessageType?): Long {
@@ -27,6 +31,9 @@ class MessageController(private val userService: IUserService, private val comme
         }
         if (messageType == null || messageType == MessageType.REPLY) {
             count += replyMessageService.countUnread(userId)
+        }
+        if (messageType == null || messageType == MessageType.FOLLOW) {
+            count += followMessageService.countUnread(userId)
         }
         return count
     }
@@ -41,6 +48,9 @@ class MessageController(private val userService: IUserService, private val comme
         if (messageType == MessageType.REPLY) {
             return getReplyMessageListVo(replyMessageService.listUnread(userId))
         }
+        if (messageType == MessageType.FOLLOW) {
+            return getFollowMessageListVo(followMessageService.listUnread(userId))
+        }
         return listOf()
     }
 
@@ -52,6 +62,9 @@ class MessageController(private val userService: IUserService, private val comme
         }
         if (messageType == MessageType.REPLY) {
             return getReplyMessageListVo(replyMessageService.list(userId))
+        }
+        if (messageType == MessageType.FOLLOW) {
+            return getFollowMessageListVo(followMessageService.list(userId))
         }
         return listOf()
     }
@@ -78,6 +91,19 @@ class MessageController(private val userService: IUserService, private val comme
         val voList = mutableListOf<ReplyMessageVo>()
         for(replyMessage in list){
             voList.add(getReplyMessageVo(replyMessage))
+        }
+        return voList
+    }
+
+    private fun getFollowMessageVo(followMessage : FollowMessage): FollowMessageVo {
+        val vo = FollowMessageVo(followMessage)
+        vo.follower = UserVo(userService.getInfo(vo.followerId!!))
+        return vo
+    }
+    private fun getFollowMessageListVo(list :List<FollowMessage>):List<FollowMessageVo>{
+        val voList = mutableListOf<FollowMessageVo>()
+        for(followMessage in list){
+            voList.add(getFollowMessageVo(followMessage))
         }
         return voList
     }

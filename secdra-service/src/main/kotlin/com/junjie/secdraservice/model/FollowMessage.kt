@@ -15,6 +15,10 @@ class FollowMessage {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
+    var followerId: String? = null
+
+    var followingId: String? = null
+
     var isRead: Boolean = false
 
     @CreatedDate

@@ -19,12 +19,12 @@ class FollowerController(private var userDao: IUserDao, private var followDao: I
                 if (take.id.isNullOrEmpty() || user.id.isNullOrEmpty() || take.id == user.id) {
                     continue
                 }
-                if (followDao.existsByUserIdAndFollowerId(user.id!!, take.id!!)) {
+                if (followDao.existsByFollowerIdAndFollowingId(user.id!!, take.id!!)) {
                     continue
                 }
                 val follower = Follow()
-                follower.followerId = take.id
-                follower.userId = user.id
+                follower.followerId = user.id
+                follower.followingId = take.id
                 followDao.save(follower)
             }
         }
