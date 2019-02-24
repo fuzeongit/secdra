@@ -9,7 +9,7 @@ import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.ICollectionService
 import com.junjie.secdraservice.service.IDrawService
-import com.junjie.secdraservice.service.IFollowerService
+import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
@@ -33,7 +33,7 @@ import kotlin.collections.ArrayList
 @RestController
 @RequestMapping("/draw")
 class DrawController(private val drawService: IDrawService, private val userService: IUserService,
-                     private val collectionService: ICollectionService, private val followerService: IFollowerService,
+                     private val collectionService: ICollectionService, private val followService: IFollowService,
                      private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig,
                      val drawDao: IDrawDao) {
     /**
@@ -219,7 +219,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     private fun getVo(draw: Draw, userId: String? = null): DrawVo {
         val drawVo = DrawVo(draw)
         val userVo = UserVo(userService.getInfo(draw.userId!!))
-        userVo.isFocus = followerService.exists(userId, userVo.id!!)
+        userVo.isFocus = followService.exists(userId, userVo.id!!)
         if (!userId.isNullOrEmpty()) {
             drawVo.isFocus = collectionService.exists(userId!!, draw.id!!)
         }

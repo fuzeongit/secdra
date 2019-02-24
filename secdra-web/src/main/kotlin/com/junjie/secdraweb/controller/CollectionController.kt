@@ -7,7 +7,7 @@ import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.service.ICollectionService
 import com.junjie.secdraservice.service.IDrawService
-import com.junjie.secdraservice.service.IFollowerService
+import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/collection")
 class CollectionController(private val collectionService: ICollectionService, private val drawService: IDrawService,
-                           private val userService: IUserService, private val followerService: IFollowerService) {
+                           private val userService: IUserService, private val followService: IFollowService) {
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId userId: String, drawId: String): Boolean {
@@ -100,7 +100,7 @@ class CollectionController(private val collectionService: ICollectionService, pr
             val userVo = UserVo()
             val user = userService.getInfo(draw.userId!!)
             BeanUtils.copyProperties(user, userVo)
-            userVo.isFocus = followerService.exists(userId, draw.userId!!)
+            userVo.isFocus = followService.exists(userId, draw.userId!!)
             drawVo.isFocus = if (id.isNullOrEmpty() || id == userId) {
                 true
             } else {

@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.Follower
+import com.junjie.secdraservice.model.Follow
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
@@ -10,12 +10,12 @@ import org.springframework.data.domain.Pageable
  * @author fjj
  */
 
-interface IFollowerService {
-    fun exists(userId: String?, followerId: String): Boolean?
+interface IFollowService {
+    fun exists(followerId: String?, followingId: String): Boolean?
 
-    fun save(userId: String, followerId: String): Follower
+    fun save(followerId: String, followingId: String): Follow
 
-    fun remove(userId: String, followerId: String): Boolean
+    fun remove(followerId: String, followingId: String): Boolean
 
-    fun paging(userId: String, pageable: Pageable): Page<Follower>
+    fun paging(followerId: String, pageable: Pageable): Page<Follow>
 }

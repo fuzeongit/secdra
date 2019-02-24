@@ -7,7 +7,7 @@ import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.contant.Gender
 import com.junjie.secdraservice.model.User
-import com.junjie.secdraservice.service.IFollowerService
+import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("user")
 class UserController(private val userService: IUserService, private val baseConfig: BaseConfig,
                      private val qiniuComponent: QiniuComponent, private val redisTemplate: StringRedisTemplate,
-                     private val followerService: IFollowerService,private var socketIoServer: SocketIOServer) {
+                     private val followService: IFollowService,private var socketIoServer: SocketIOServer) {
     /**
      * 发送验证码
      */
@@ -117,7 +117,7 @@ class UserController(private val userService: IUserService, private val baseConf
         } else {
             id!!
         }))
-        userVo.isFocus = followerService.exists(userId, userVo.id!!)
+        userVo.isFocus = followService.exists(userId, userVo.id!!)
         return userVo
     }
 

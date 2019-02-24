@@ -10,15 +10,15 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class Follower : Serializable {
+class Follow : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var userId: String? = null
-
     var followerId: String? = null
+
+    var followingId: String? = null
 
     @CreatedDate
     var createDate: Date = Date()

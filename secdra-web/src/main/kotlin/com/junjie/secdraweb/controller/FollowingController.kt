@@ -3,7 +3,7 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdraservice.service.IFollowerService
+import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.UserVo
 import org.springframework.beans.BeanUtils
@@ -18,20 +18,20 @@ import org.springframework.web.bind.annotation.*
  * 关注人的控制器
  */
 @RestController
-@RequestMapping("/follower")
-class FollowerController(private val followerService: IFollowerService, private val userService: IUserService) {
+@RequestMapping("/following")
+class FollowingController(private val followService: IFollowService, private val userService: IUserService) {
     @Auth
     @PostMapping("/focus")
-    fun focus(@CurrentUserId userId: String, followerId: String): Boolean {
-        if (followerId == userId) {
+    fun focus(@CurrentUserId followerId: String, followingId: String): Boolean {
+        if (followerId == followingId) {
             throw ProgramException("不能关注自己")
         }
-        val isFocus = followerService.exists(userId, followerId) ?: throw ProgramException("不能关注")
+        val isFocus = followService.exists(followerId, followingId) ?: throw ProgramException("不能关注")
         return if (!isFocus) {
-            followerService.save(userId, followerId)
+            followService.save(followerId, followingId)
             true
         } else {
-            followerService.remove(userId, followerId)
+            followService.remove(followerId, followingId)
             false
         }
     }
@@ -41,13 +41,13 @@ class FollowerController(private val followerService: IFollowerService, private 
      */
     @Auth
     @PostMapping("/unFocus")
-    fun unFocus(@CurrentUserId userId: String, @RequestParam("followerIdList") followerIdList: Array<String>?): Boolean {
-        if (followerIdList == null || followerIdList.isEmpty()) {
+    fun unFocus(@CurrentUserId followerId: String, @RequestParam("followingIdList") followingIdList: Array<String>?): Boolean {
+        if (followingIdList == null || followingIdList.isEmpty()) {
             throw ProgramException("请选择一个关注")
         }
-        for (followerId in followerIdList) {
+        for (followingId in followingIdList) {
             try {
-                followerService.remove(userId, followerId)
+                followService.remove(followerId, followingId)
             } catch (e: Exception) {
 
             }
@@ -60,19 +60,17 @@ class FollowerController(private val followerService: IFollowerService, private 
      */
     @Auth
     @GetMapping("/paging")
-    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVo> {
-        val page = followerService.paging(
+    fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVo> {
+        val page = followService.paging(
                 if (id.isNullOrEmpty()) {
-                    userId
+                    followerId
                 } else {
                     id!!
                 }, pageable)
         val userVoList = ArrayList<UserVo>()
-        for (follower in page.content) {
-            val user = userService.getInfo(follower.followerId!!)
-            val userVo = UserVo()
-            BeanUtils.copyProperties(user, userVo)
-            userVo.isFocus = followerService.exists(userId, userVo.id!!)
+        for (follow in page.content) {
+            val userVo = UserVo(userService.getInfo(follow.followingId!!))
+            userVo.isFocus = followService.exists(followerId, userVo.id!!)
             userVoList.add(userVo)
         }
         return PageImpl<UserVo>(userVoList, page.pageable, page.totalElements)
