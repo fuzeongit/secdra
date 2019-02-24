@@ -1,31 +1,33 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.model.Comment
+import com.junjie.secdraservice.model.CommentMessage
 import org.springframework.beans.BeanUtils
 import java.util.*
 
-class CommentVo {
+class CommentMessageVo {
     var id: String? = null
+    //评论id
+    var commentId: String? = null
     //图片作者id
     var authorId: String? = null
+    //图片id
+    var drawId: String? = null
     //评论人id
     var criticId: String? = null
 
-    var drawId: String? = null
-
     var content: String? = null
+
+    var isRead: Boolean = false
+
+    var critic: UserVo? = null
 
     var createDate: Date = Date()
 
     var modifiedDate: Date = Date()
 
-    var author: UserVo? = null
-    
-    var critic: UserVo? = null
-
     constructor() {}
 
-    constructor(comment: Comment) {
-        BeanUtils.copyProperties(comment, this)
+    constructor(commentMessage: CommentMessage) {
+        BeanUtils.copyProperties(commentMessage, this)
     }
 }
