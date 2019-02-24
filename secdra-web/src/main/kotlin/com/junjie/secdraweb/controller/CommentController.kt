@@ -2,18 +2,14 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdraservice.contant.NotifyType
 import com.junjie.secdraservice.model.Comment
-import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.model.Notify
+import com.junjie.secdraservice.model.CommentMessage
 import com.junjie.secdraservice.model.User
+import com.junjie.secdraservice.service.ICommentMessageService
 import com.junjie.secdraservice.service.ICommentService
-import com.junjie.secdraservice.service.INotifyService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.CommentVo
-import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
-import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -29,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("comment")
-class CommentController(val commentService: ICommentService, val userService: IUserService,val notifyService: INotifyService) {
+class CommentController(val commentService: ICommentService, val userService: IUserService,val commentMessageService: ICommentMessageService) {
 
     /**
      * 发表评论
@@ -46,15 +42,13 @@ class CommentController(val commentService: ICommentService, val userService: IU
         comment.content = content;
 
         val vo =  getVo(commentService.save(comment))
-        val notify = Notify();
-        notify.commentId = vo.id
-        notify.receiveId = vo.authorId
-        notify.authorId = vo.authorId
-        notify.drawId = vo.drawId
-        notify.criticId = vo.criticId
-        notify.notifyType = NotifyType.COMMENT
-        notify.content = vo.content
-        notifyService.save(notify)
+        val commentMessage = CommentMessage();
+        commentMessage.commentId = vo.id
+        commentMessage.authorId = vo.authorId
+        commentMessage.drawId = vo.drawId
+        commentMessage.criticId = vo.criticId
+        commentMessage.content = vo.content
+        commentMessageService.save(commentMessage)
         return vo
     }
 

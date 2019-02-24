@@ -2,21 +2,15 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdraservice.contant.NotifyType
-import com.junjie.secdraservice.model.*
-import com.junjie.secdraservice.service.ICommentService
-import com.junjie.secdraservice.service.INotifyService
+import com.junjie.secdraservice.model.CommentMessage
+import com.junjie.secdraservice.model.Reply
+import com.junjie.secdraservice.model.ReplyMessage
+import com.junjie.secdraservice.model.User
+import com.junjie.secdraservice.service.IReplyMessageService
 import com.junjie.secdraservice.service.IReplyService
 import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.vo.CommentVo
-import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.ReplyVo
 import com.junjie.secdraweb.vo.UserVo
-import org.springframework.beans.BeanUtils
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -28,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("reply")
-class ReplyController(val replyService: IReplyService, val userService: IUserService,val notifyService: INotifyService) {
+class ReplyController(val replyService: IReplyService, val userService: IUserService,val replyMessageService: IReplyMessageService) {
 
     /**
      * 发表评论
@@ -46,16 +40,15 @@ class ReplyController(val replyService: IReplyService, val userService: IUserSer
         reply.drawId = drawId
         reply.content = content
         val vo =  getVo(replyService.save(reply))
-        val notify = Notify();
-        notify.commentId = vo.commentId
-        notify.receiveId = vo.criticId
-        notify.authorId = vo.authorId
-        notify.drawId = vo.drawId
-        notify.criticId = vo.criticId
-        notify.answererId = vo.answererId
-        notify.notifyType = NotifyType.REPLY
-        notify.content = vo.content
-        notifyService.save(notify)
+        val replyMessage = ReplyMessage();
+        replyMessage.commentId = vo.commentId
+        replyMessage.replyId = vo.id
+        replyMessage.authorId = vo.authorId
+        replyMessage.drawId = vo.drawId
+        replyMessage.criticId = vo.criticId
+        replyMessage.answererId = vo.answererId
+        replyMessage.content = vo.content
+        replyMessageService.save(replyMessage)
         return vo
     }
 

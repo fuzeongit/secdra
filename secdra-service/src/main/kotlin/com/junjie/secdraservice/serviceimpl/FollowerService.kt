@@ -1,9 +1,8 @@
-package com.junjie.secdraservice.service
+package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdraservice.dao.IFollowerDao
 import com.junjie.secdraservice.model.Follower
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
+import com.junjie.secdraservice.service.IFollowerService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

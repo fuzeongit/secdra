@@ -1,7 +1,8 @@
-package com.junjie.secdraservice.service
+package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdraservice.dao.ICommentDao
 import com.junjie.secdraservice.model.Comment
+import com.junjie.secdraservice.service.ICommentService
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.Caching

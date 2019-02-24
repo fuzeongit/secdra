@@ -1,7 +1,8 @@
-package com.junjie.secdraservice.service
+package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdraservice.dao.IStatisticalDao
 import com.junjie.secdraservice.model.Statistical
+import com.junjie.secdraservice.service.IStatisticalService
 import org.springframework.stereotype.Service
 
 @Service
