@@ -24,18 +24,22 @@ class MessageController(private val userService: IUserService, private val comme
                         private val replyMessageService: IReplyMessageService,private val followMessageService: IFollowMessageService) {
     @Auth
     @GetMapping("/count")
-    fun count(@CurrentUserId userId: String, messageType: MessageType?): Long {
-        var count: Long = 0
-        if (messageType == null || messageType == MessageType.COMMENT) {
-            count += commentMessageService.countUnread(userId)
-        }
-        if (messageType == null || messageType == MessageType.REPLY) {
-            count += replyMessageService.countUnread(userId)
-        }
-        if (messageType == null || messageType == MessageType.FOLLOW) {
-            count += followMessageService.countUnread(userId)
-        }
-        return count
+    fun count(@CurrentUserId userId: String, messageType: MessageType?): HashMap<MessageType, Long> {
+        val vo = HashMap<MessageType,Long>()
+        vo[MessageType.COMMENT] = commentMessageService.countUnread(userId)
+        vo[MessageType.REPLY] = replyMessageService.countUnread(userId)
+        vo[MessageType.FOLLOW] = followMessageService.countUnread(userId)
+//        var count: Long = 0
+//        if (messageType == null || messageType == MessageType.COMMENT) {
+//            count += commentMessageService.countUnread(userId)
+//        }
+//        if (messageType == null || messageType == MessageType.REPLY) {
+//            count += replyMessageService.countUnread(userId)
+//        }
+//        if (messageType == null || messageType == MessageType.FOLLOW) {
+//            count += followMessageService.countUnread(userId)
+//        }
+        return vo
     }
 
     @Auth
