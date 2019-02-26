@@ -9,6 +9,10 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
+/**
+ * 关注或粉丝
+ * @author fjj
+ */
 @Entity
 class Follow : Serializable {
     @Id

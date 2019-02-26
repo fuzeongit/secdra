@@ -4,10 +4,15 @@ import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.util.*
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
+/**
+ * 系统通知消息
+ * @author fjj
+ */
 @Entity
 class SystemMessage {
     @Id
@@ -15,6 +20,11 @@ class SystemMessage {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
+    var userId: String? = null
+
+    var title: String? = null
+
+    @Column(columnDefinition="text")
     var content: String? = null
 
     var isRead: Boolean = false

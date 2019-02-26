@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*
  * 关注人的控制器
  */
 @RestController
-@RequestMapping("/following")
+@RequestMapping("following")
 class FollowingController(private val followService: IFollowService, private val userService: IUserService,
                           private val followMessageService: IFollowMessageService) {
     @Auth

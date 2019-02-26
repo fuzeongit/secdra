@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest
  * 统计的控制器
  */
 @RestController
-@RequestMapping("/statistical")
+@RequestMapping("statistical")
 class StatisticalController(private val statisticalService: IStatisticalService) {
     @PostMapping("/save")
     fun save(@CurrentUserId userId: String,path:String,request: HttpServletRequest): Statistical {

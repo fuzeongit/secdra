@@ -31,7 +31,7 @@ import kotlin.collections.ArrayList
  * 画像的控制器
  */
 @RestController
-@RequestMapping("/draw")
+@RequestMapping("draw")
 class DrawController(private val drawService: IDrawService, private val userService: IUserService,
                      private val collectionService: ICollectionService, private val followService: IFollowService,
                      private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig,

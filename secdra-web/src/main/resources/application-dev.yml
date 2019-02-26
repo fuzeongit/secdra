@@ -12,7 +12,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
 base:
   verificationCodePrefix: verification_code:%s
   jwtExpiresSecond: 5184000000

@@ -1,6 +1,5 @@
 package com.junjie.secdraservice.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -9,21 +8,26 @@ import java.util.*
 import javax.persistence.*
 
 /**
- * 图片标签
+ * 通知信息设置
  * @author fjj
  */
 @Entity
-class Tag: Serializable {
+@Table(uniqueConstraints= [UniqueConstraint(columnNames = arrayOf("userId"))])
+class MessageSettings : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var name: String? = null
+    var userId: String? = null
 
-    @JsonIgnore
-    @ManyToOne(cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
-    var draw: Draw? = null
+    var commentStatus: Boolean = true
+
+    var replyStatus: Boolean = true
+
+    var followStatus: Boolean = true
+
+    var systemStatus: Boolean = true
 
     @CreatedDate
     var createDate: Date = Date()

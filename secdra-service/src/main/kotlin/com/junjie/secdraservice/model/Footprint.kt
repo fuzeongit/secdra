@@ -8,6 +8,10 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
+/**
+ * 足迹
+ * @author fjj
+ */
 @Entity
 class Footprint {
     @Id

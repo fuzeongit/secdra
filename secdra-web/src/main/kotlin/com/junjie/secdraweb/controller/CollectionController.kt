@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*
  * 图片收藏的
  */
 @RestController
-@RequestMapping("/collection")
+@RequestMapping("collection")
 class CollectionController(private val collectionService: ICollectionService, private val drawService: IDrawService,
                            private val userService: IUserService, private val followService: IFollowService) {
     @Auth

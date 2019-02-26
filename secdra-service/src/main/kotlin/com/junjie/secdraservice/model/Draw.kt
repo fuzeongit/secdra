@@ -9,8 +9,13 @@ import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
+/**
+ * 画册
+ * @author fjj
+ */
 @Entity
 @NamedEntityGraph(name = "Draw.Tag", attributeNodes = [NamedAttributeNode("tagList")])
+@Table(uniqueConstraints= [UniqueConstraint(columnNames = arrayOf("url"))])
 class Draw: Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID

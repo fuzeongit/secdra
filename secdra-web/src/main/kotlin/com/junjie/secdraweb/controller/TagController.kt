@@ -15,7 +15,7 @@ import java.util.*
  * 标签的控制器
  */
 @RestController
-@RequestMapping("/tag")
+@RequestMapping("tag")
 class TagController(private val tagService: ITagService, private val drawDao: IDrawDao, private val tagDao: ITagDao) {
     @GetMapping("/listTagOrderByLikeAmount")
     fun listTagOrderByLikeAmount(): ArrayList<TagVo> {

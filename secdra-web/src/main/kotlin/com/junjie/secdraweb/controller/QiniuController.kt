@@ -22,7 +22,7 @@ import com.junjie.secdraweb.base.qiniu.Auth as QiniuAuth
 
 
 @RestController
-@RequestMapping("/qiniu")
+@RequestMapping("qiniu")
 class QiniuController(private val baseConfig: BaseConfig, private val drawDao: IDrawDao) {
     @GetMapping("/getUploadToken")
     fun get(): Result<String> {

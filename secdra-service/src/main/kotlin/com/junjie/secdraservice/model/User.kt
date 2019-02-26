@@ -16,6 +16,7 @@ import javax.persistence.*
  * @author fjj
  */
 @Entity
+@Table(uniqueConstraints= [UniqueConstraint(columnNames = arrayOf("phone"))])
 class User : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID

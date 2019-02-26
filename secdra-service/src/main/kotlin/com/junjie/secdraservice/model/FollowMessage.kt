@@ -8,6 +8,10 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
+/**
+ * 关注或粉丝消息
+ * @author fjj
+ */
 @Entity
 class FollowMessage {
     @Id

@@ -8,6 +8,10 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
+/**
+ * 回复
+ * @author fjj
+ */
 @Entity
 class Reply {
     @Id

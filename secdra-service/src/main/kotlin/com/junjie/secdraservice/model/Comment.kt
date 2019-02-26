@@ -9,6 +9,10 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
+/**
+ * 评论
+ * @author fjj
+ */
 @Entity
 class Comment: Serializable {
     @Id
