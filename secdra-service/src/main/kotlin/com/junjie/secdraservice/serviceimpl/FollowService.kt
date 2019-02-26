@@ -36,7 +36,11 @@ class FollowService(private val followDao: IFollowDao) : IFollowService {
         }
     }
 
-    override fun paging(followerId: String, pageable: Pageable): Page<Follow> {
+    override fun pagingByFollowerId(followerId: String, pageable: Pageable): Page<Follow> {
         return followDao.findAllByFollowerId(followerId, pageable)
+    }
+
+    override fun pagingByFollowingId(followingId: String, pageable: Pageable): Page<Follow> {
+        return followDao.findAllByFollowingId(followingId, pageable)
     }
 }

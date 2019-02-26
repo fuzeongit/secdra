@@ -7,9 +7,7 @@ import com.junjie.secdraservice.model.FollowMessage
 import com.junjie.secdraservice.service.IFollowMessageService
 import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraservice.serviceimpl.FollowMessageService
 import com.junjie.secdraweb.vo.UserVo
-import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -69,7 +67,7 @@ class FollowingController(private val followService: IFollowService, private val
     @Auth
     @GetMapping("/paging")
     fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVo> {
-        val page = followService.paging(
+        val page = followService.pagingByFollowerId(
                 if (id.isNullOrEmpty()) {
                     followerId
                 } else {

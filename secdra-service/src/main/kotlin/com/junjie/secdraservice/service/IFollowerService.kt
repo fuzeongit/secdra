@@ -17,5 +17,7 @@ interface IFollowService {
 
     fun remove(followerId: String, followingId: String): Boolean
 
-    fun paging(followerId: String, pageable: Pageable): Page<Follow>
+    fun pagingByFollowerId(followerId: String, pageable: Pageable): Page<Follow>
+
+    fun pagingByFollowingId(followingId: String, pageable: Pageable): Page<Follow>
 }
