@@ -10,4 +10,6 @@ interface IFollowMessageService {
     fun countUnread(followingId: String): Long
 
     fun listUnread(followingId: String): List<FollowMessage>
+
+    fun deleteByMonthAgo()
 }

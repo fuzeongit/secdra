@@ -10,4 +10,6 @@ interface IReplyMessageService {
     fun countUnread(criticId: String): Long
 
     fun listUnread(criticId: String): List<ReplyMessage>
+
+    fun deleteByMonthAgo()
 }

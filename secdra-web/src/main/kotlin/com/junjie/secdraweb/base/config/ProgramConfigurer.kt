@@ -6,6 +6,7 @@ import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.RedisComponent
+import com.junjie.secdraweb.base.component.SchedulingComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
 import org.springframework.context.annotation.Bean
@@ -18,7 +19,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 /**
  * @author fjj
@@ -96,6 +96,11 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
     internal fun qiniuComponent(): QiniuComponent {
         return QiniuComponent(baseConfig())
     }
+//
+//    @Bean
+//    internal fun schedulingComponent(): SchedulingComponent {
+//        return SchedulingComponent()
+//    }
 
     @Bean
     fun dateConvert(): Converter<String, Date> {

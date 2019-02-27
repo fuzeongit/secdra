@@ -3,6 +3,7 @@ package com.junjie.secdraservice.serviceimpl
 import com.junjie.secdraservice.dao.IMessageSettingsDao
 import com.junjie.secdraservice.model.MessageSettings
 import com.junjie.secdraservice.service.IMessageSettingsService
+import javassist.NotFoundException
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Example
@@ -22,7 +23,7 @@ class MessageSettingsService(private val messageSettingsDao: IMessageSettingsDao
                 .withIgnorePaths("followStatus")
                 .withIgnorePaths("systemStatus")
         val example = Example.of(query, matcher)
-        return messageSettingsDao.findOne(example).orElseGet { this.save(query) }
+        return messageSettingsDao.findOne(example).orElseThrow { throw NotFoundException("找不到消息配置") }
     }
 
     @CachePut("message::settings::get", key = "#messageSettings.userId")
