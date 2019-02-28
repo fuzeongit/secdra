@@ -26,3 +26,5 @@
 
 application-dev
 application-prod
+/secdra-web/src/main/resources/application-dev.yml
+/secdra-web/src/main/resources/application-prod.yml
