@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 class SchedulingComponent(private val commentMessageService: ICommentMessageService,
                           private val replyMessageService: IReplyMessageService, private val followMessageService: IFollowMessageService,
                           private val systemMessageService: ISystemMessageService) {
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0 0 3/23 * * ?")
     fun removeMessageByMonthAgo() {
         try {
             commentMessageService.deleteByMonthAgo()

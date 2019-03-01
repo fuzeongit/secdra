@@ -30,7 +30,7 @@ class FollowMessageService(private val followMessageDao: IFollowMessageDao) : IF
     override fun deleteByMonthAgo() {
         val specification = Specification<FollowMessage> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
-            predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), DateUtil.addDate(Date(), 0, -30, 0, 0, 0, 0, 0)))
+            predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), DateUtil.addDate(Date(), 0, -30, 0, 0, 0, 0, 0)))
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         val list = followMessageDao.findAll(specification)
