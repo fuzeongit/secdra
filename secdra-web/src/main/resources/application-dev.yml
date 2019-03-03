@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   redis:
     host: 127.0.0.1
@@ -18,8 +18,8 @@ base:
   jwtExpiresSecond: 5184000000
   jwtBase64Secret: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMiLCJleHAiOjE1NDA0MzYxMzYsIm5iZiI6MTU0MDI2MzMzNn0.Q7FKiYp2W-V8cBIP9zEkxO7cpH9MER-aM6q_0lOZeHA=
   updatePasswordTimePrefix: base:update_password_time:%s
-  qiniuAccessKey: 0G397Ly7Z6pqnm2MPUhHIbMFzvBX19yyhu-RdiqI
-  qiniuSecretKey: _xLtVKJ4VNUrwSsEGkJBHtV2s6mZ2QG2yDXaCvTk
+  qiniuAccessKey: XXX
+  qiniuSecretKey: XXX
   qiniuTempBucket: temporary
   qiniuHeadBucket: head
   qiniuBackBucket: background
