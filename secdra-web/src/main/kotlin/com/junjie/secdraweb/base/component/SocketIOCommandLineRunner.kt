@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
  * socketIo 服务
  */
 @Component
-class SocketIOCommandLineRunner(private val server: SocketIOServer) : CommandLineRunner {
+class SocketIOCommandLineRunner(private val socketIOServer: SocketIOServer) : CommandLineRunner {
     @Throws(Exception::class)
     override fun run(vararg args: String?) {
-        server.start();
-        System.out.println("socket.io启动成功！")
+//        socketIOServer.start();
+//        System.out.println("socket.io启动成功！")
     }
 }

@@ -24,7 +24,13 @@ class MessageController(private val userService: IUserService, private val comme
     @GetMapping("/count")
     fun count(@CurrentUserId userId: String, messageType: MessageType?): HashMap<MessageType, Long> {
         val vo = HashMap<MessageType, Long>()
-        val messageSettings = messageSettingsService.get(userId)
+        val messageSettings = try {
+            messageSettingsService.get(userId)
+        } catch (e: Exception) {
+            val newSettings = MessageSettings()
+            newSettings.userId = userId
+            messageSettingsService.save(newSettings)
+        }
         vo[MessageType.COMMENT] = if (messageSettings.commentStatus) {
             commentMessageService.countUnread(userId)
         } else 0
@@ -85,7 +91,13 @@ class MessageController(private val userService: IUserService, private val comme
     @Auth
     @GetMapping("/getSettings")
     fun getSettings(@CurrentUserId userId: String): MessageSettings {
-        return messageSettingsService.get(userId)
+        return try {
+            messageSettingsService.get(userId)
+        } catch (e: Exception) {
+            val newSettings = MessageSettings()
+            newSettings.userId = userId
+            messageSettingsService.save(newSettings)
+        }
     }
 
     @Auth

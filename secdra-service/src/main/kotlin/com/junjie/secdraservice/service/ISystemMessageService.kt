@@ -10,4 +10,6 @@ interface ISystemMessageService {
     fun countUnread(userId: String): Long
 
     fun listUnread(userId: String): List<SystemMessage>
+
+    fun deleteByMonthAgo()
 }

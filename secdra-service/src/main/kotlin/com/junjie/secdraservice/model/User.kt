@@ -5,9 +5,8 @@ import com.junjie.secdraservice.contant.UserState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-
-import java.util.Date
 import java.io.Serializable
+import java.util.*
 import javax.persistence.*
 
 /**
