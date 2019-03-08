@@ -23,4 +23,4 @@
 /dist/
 /nbdist/
 /.nb-gradle/
-/secdra-web/src/main/resources/*.yml
+/secdra-web/src/main/resources/application-prod.yml
