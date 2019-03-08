@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdraservice.contant.DrawState
+import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.dao.ITagDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag

@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.junjie.secdraservice.contant.DrawState
+import com.junjie.secdraservice.constant.DrawState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

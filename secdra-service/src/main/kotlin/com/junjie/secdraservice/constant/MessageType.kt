@@ -1,4 +1,4 @@
-package com.junjie.secdraservice.contant
+package com.junjie.secdraservice.constant
 
 enum class MessageType private constructor(var value: String) {
     COMMENT("评论"),

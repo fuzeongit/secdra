@@ -5,7 +5,7 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
-import com.junjie.secdraservice.contant.Gender
+import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
@@ -14,7 +14,6 @@ import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.SocketIOEventHandler
 import com.junjie.secdraweb.vo.UserVo
 import javassist.NotFoundException
-import org.springframework.beans.BeanUtils
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

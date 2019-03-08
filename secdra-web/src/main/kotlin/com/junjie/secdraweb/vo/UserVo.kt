@@ -1,6 +1,6 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.contant.Gender
+import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.model.User
 import org.springframework.beans.BeanUtils
 import java.util.*

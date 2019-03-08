@@ -6,7 +6,6 @@ import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.RedisComponent
-import com.junjie.secdraweb.base.component.SchedulingComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
 import org.springframework.context.annotation.Bean

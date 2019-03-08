@@ -3,7 +3,6 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdraservice.contant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
@@ -15,8 +14,6 @@ import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
-import javassist.NotFoundException
-import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest

@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdraservice.contant.DrawState
+import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
