@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("follower")
-class FollowerController(private var userDao: IUserDao, private var followDao: IFollowDao) {
+@RequestMapping("follow")
+class FollowController(private var userDao: IUserDao, private var followDao: IFollowDao) {
     @PostMapping("/init")
     fun init(): Any {
         val userList = userDao.findAll()
