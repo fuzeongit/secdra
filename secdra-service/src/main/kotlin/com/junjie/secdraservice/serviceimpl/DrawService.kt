@@ -1,6 +1,5 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
@@ -65,23 +64,12 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
 
     @Cacheable("draw::get", key = "#id")
     override fun get(id: String): Draw {
-        return drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
+        return drawDao.findById(id).orElseThrow{NotFoundException("图片不存在")}
     }
 
-    override fun get(id: String, userId: String): Draw {
+    @CachePut("draw::get", key = "#id")
+    override fun update(id: String, viewAmount: Long?, likeAmount: Long?): Draw {
         val draw = get(id)
-        if (draw.drawState != DrawState.PASS) {
-            PermissionException("该图片已被屏蔽")
-        }
-        if (draw.isPrivate && draw.userId != userId) {
-            draw.url = ""
-        }
-        return draw
-    }
-
-    @CachePut("draw::get", key = "#drawId")
-    override fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw {
-        val draw = drawDao.findById(drawId).orElseThrow { NotFoundException("图片不存在") }
         if (viewAmount != null) {
             draw.viewAmount = viewAmount
         }

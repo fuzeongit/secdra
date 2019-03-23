@@ -17,9 +17,7 @@ interface IDrawService {
 
     fun get(id: String): Draw
 
-    fun get(id: String, userId: String): Draw
-
-    fun update(drawId: String, viewAmount: Long?, likeAmount: Long?): Draw
+    fun update(id: String, viewAmount: Long?, likeAmount: Long?): Draw
 
     fun save(draw: Draw): Draw
 

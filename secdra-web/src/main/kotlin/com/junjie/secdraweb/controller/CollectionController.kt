@@ -2,7 +2,6 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.service.ICollectionService
@@ -30,11 +29,14 @@ class CollectionController(private val collectionService: ICollectionService, pr
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId userId: String, drawId: String): Boolean {
-        val draw = drawService.get(drawId, userId)
+        val draw = drawService.get(drawId)
         if (draw.userId == userId) {
-            throw ProgramException("不能收藏自己")
+           throw ProgramException("不能收藏自己的作品")
         }
         val flag = if (!collectionService.exists(userId, drawId)) {
+            if(draw.isPrivate){
+                throw ProgramException("不能收藏私密图片")
+            }
             collectionService.save(userId, drawId)
             true
         } else {
@@ -60,7 +62,7 @@ class CollectionController(private val collectionService: ICollectionService, pr
                 continue
             }
             try {
-                val draw = drawService.get(drawId, userId)
+                val draw = drawService.get(drawId)
                 collectionService.remove(userId, drawId)
                 draw.likeAmount = collectionService.countByDrawId(drawId)
                 drawService.save(draw)
@@ -86,9 +88,13 @@ class CollectionController(private val collectionService: ICollectionService, pr
             var draw: Draw
             try {
                 draw = drawService.get(collection.drawId!!)
+                if (draw.isPrivate) {
+                    draw.url = "";
+                }
             } catch (e: Exception) {
-                if (e is PermissionException || e is NotFoundException) {
+                if ( e is NotFoundException) {
                     draw = Draw()
+                    draw.id = collection.drawId
                     draw.isPrivate = true
                 } else {
                     throw e

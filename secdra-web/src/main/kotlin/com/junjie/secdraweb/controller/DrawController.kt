@@ -14,6 +14,7 @@ import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
+import javassist.NotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -91,7 +92,10 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @GetMapping("/get")
     fun get(id: String, @CurrentUserId userId: String?): DrawVo {
-        val draw = drawService.get(id, userId!!)
+        val draw = drawService.get(id)
+        if (draw.isPrivate && draw.userId != userId) {
+            draw.url = ""
+        }
         return getVo(draw, userId)
     }
 
@@ -145,9 +149,9 @@ class DrawController(private val drawService: IDrawService, private val userServ
     @PostMapping("/update")
     @Auth
     fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
-        val draw = drawService.get(id, userId)
+        val draw = drawService.get(id)
         if (draw.userId != userId) {
-            throw PermissionException("您无权修改该图片")
+            PermissionException("您无权修改该图片")
         }
         if (!name.isNullOrEmpty()) {
             draw.name = name
@@ -182,7 +186,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
         val drawList = mutableListOf<Draw>()
         for (id in idList) {
             try {
-                val draw = drawService.get(id, userId)
+                val draw = drawService.get(id)
                 if (userId != draw.userId) {
                     continue
                 }
