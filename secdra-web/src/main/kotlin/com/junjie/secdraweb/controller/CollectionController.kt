@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.service.ICollectionService
@@ -10,7 +11,7 @@ import com.junjie.secdraservice.service.IFollowService
 import com.junjie.secdraservice.service.IUserService
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
-import javassist.NotFoundException
+
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

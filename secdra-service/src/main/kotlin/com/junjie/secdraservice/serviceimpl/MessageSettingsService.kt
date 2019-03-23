@@ -1,9 +1,10 @@
 package com.junjie.secdraservice.serviceimpl
 
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdraservice.dao.IMessageSettingsDao
 import com.junjie.secdraservice.model.MessageSettings
 import com.junjie.secdraservice.service.IMessageSettingsService
-import javassist.NotFoundException
+
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Example

@@ -1,11 +1,11 @@
 package com.junjie.secdracore.exception
 
-class SignInException : BaseException {
+class NotFoundException : BaseException {
     constructor(message: String, status: Int, data: Any?) : super(message, status, data) {}
 
     constructor(message: String, status: Int) : super(message, status) {}
 
     constructor(message: String) : super(message) {
-        super.status = 401
+        super.status = 404
     }
 }

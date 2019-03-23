@@ -1,11 +1,12 @@
 package com.junjie.secdraservice.serviceimpl
 
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.IDrawService
-import javassist.NotFoundException
+
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -64,7 +65,7 @@ class DrawService(val drawDao: IDrawDao) : IDrawService {
 
     @Cacheable("draw::get", key = "#id")
     override fun get(id: String): Draw {
-        return drawDao.findById(id).orElseThrow{NotFoundException("图片不存在")}
+        return drawDao.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
     @CachePut("draw::get", key = "#id")

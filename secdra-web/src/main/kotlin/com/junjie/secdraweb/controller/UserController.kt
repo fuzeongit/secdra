@@ -3,6 +3,7 @@ package com.junjie.secdraweb.controller
 import com.corundumstudio.socketio.SocketIOServer
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.constant.Gender
@@ -13,7 +14,7 @@ import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.base.component.SocketIOEventHandler
 import com.junjie.secdraweb.vo.UserVo
-import javassist.NotFoundException
+
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

@@ -14,7 +14,7 @@ import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.component.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVo
 import com.junjie.secdraweb.vo.UserVo
-import javassist.NotFoundException
+
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest

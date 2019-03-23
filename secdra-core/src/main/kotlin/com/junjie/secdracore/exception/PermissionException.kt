@@ -1,18 +1,11 @@
 package com.junjie.secdracore.exception
 
-class PermissionException : Exception {
-    var status: Int = 403
+class PermissionException : BaseException {
+    constructor(message: String, status: Int, data: Any?) : super(message, status, data) {}
 
-    var data : Any? = null
+    constructor(message: String, status: Int) : super(message, status) {}
 
-    constructor(message: String,status: Int,data:Any?): super(message){
-        this.status = status
-        this.data = data
+    constructor(message: String) : super(message) {
+        super.status = 403
     }
-
-    constructor(message: String, status: Int) : super(message) {
-        this.status = status
-    }
-
-    constructor(message: String) : super(message) {}
 }
