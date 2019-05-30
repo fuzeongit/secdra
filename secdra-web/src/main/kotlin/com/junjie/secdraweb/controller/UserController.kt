@@ -72,7 +72,7 @@ class UserController(private val userService: IUserService, private val baseConf
         //把修改密码时间放到redis
         redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
         //生成token
-        val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
+        val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtSecretString)
         response.setHeader("token", token)
         return UserVo(user)
     }
@@ -84,7 +84,7 @@ class UserController(private val userService: IUserService, private val baseConf
     fun login(phone: String, password: String, response: HttpServletResponse): UserVo {
         val user = userService.login(phone, password)
         val nowMillis = System.currentTimeMillis()
-        val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtBase64Secret)
+        val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtSecretString)
         response.setHeader("token", token)
         return UserVo(user)
     }

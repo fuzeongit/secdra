@@ -38,7 +38,7 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 }else{
                     request.getHeader("token")
                 }
-                val claims = JwtUtil.parseJWT(token, baseConfig.jwtBase64Secret)
+                val claims = JwtUtil.parseJWT(token, baseConfig.jwtSecretString)
                 val userId = claims["userId"] as String
                 //过期时间
                 val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)

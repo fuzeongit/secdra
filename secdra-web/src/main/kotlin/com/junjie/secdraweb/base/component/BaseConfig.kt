@@ -2,6 +2,8 @@ package com.junjie.secdraweb.base.component
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
+import java.util.*
+import javax.xml.bind.DatatypeConverter
 
 /**
  * @author fjj
@@ -14,7 +16,12 @@ class BaseConfig {
 
     var jwtExpiresSecond: Long = 0
 
-    var jwtBase64Secret: String = ""
+//    var jwtBase64Secret: String = ""
+
+    var jwtSecretString: String = ""
+        get() {
+            return Base64.getEncoder().encodeToString(field.toByteArray(charset("utf-8")))
+        }
 
     var updatePasswordTimePrefix: String = ""
 
