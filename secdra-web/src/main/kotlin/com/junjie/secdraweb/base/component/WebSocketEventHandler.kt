@@ -87,6 +87,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 class WebSocketEventHandler {
     @MessageMapping("/welcome")//1
+    @SendTo("/welcome")
     @Throws(Exception::class)
     fun say(message: String): Boolean {
         return true
