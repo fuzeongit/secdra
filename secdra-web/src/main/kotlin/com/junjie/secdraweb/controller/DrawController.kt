@@ -75,7 +75,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
     fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
         val page = drawService.pagingByUserId(pageable, id
                 ?: userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
-        return getPageVo(page)
+        return getPageVo(page,userId)
     }
 
     /**
