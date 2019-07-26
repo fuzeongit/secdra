@@ -8,6 +8,7 @@ import org.springframework.web.socket.WebSocketSession
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestMapping
 
 
 //@Component
@@ -84,16 +85,10 @@ import org.springframework.stereotype.Controller
 //}
 
 @Controller
-class WsController {
+class WebSocketEventHandler {
     @MessageMapping("/welcome")//1
     @Throws(Exception::class)
     fun say(message: String): Boolean {
-        return true
-    }
-
-    @MessageMapping("/info")//1
-    @Throws(Exception::class)
-    fun a(message: String): Boolean {
         return true
     }
 }

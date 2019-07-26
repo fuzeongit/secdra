@@ -27,7 +27,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry
 class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/ws")
+        registry.addEndpoint("/ws").withSockJS()
     }
 
 }
