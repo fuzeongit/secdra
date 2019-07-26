@@ -103,12 +103,16 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
 
     @Bean
     fun dateConvert(): Converter<String, Date> {
+        val formatStringList = arrayOf("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH", "yyyy-MM-dd", "yyyy-MM", "yyyy")
         return Converter { source ->
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             var date: Date? = null
-            try {
-                date = sdf.parse(source)
-            } catch (e: Exception) { }
+            for (formatString in formatStringList) {
+                val sdf = SimpleDateFormat(formatString)
+                try {
+                    date = sdf.parse(source)
+                    break
+                } catch (e: Exception) { }
+            }
             date
         }
     }

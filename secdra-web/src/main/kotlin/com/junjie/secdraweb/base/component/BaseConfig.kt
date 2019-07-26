@@ -3,7 +3,6 @@ package com.junjie.secdraweb.base.component
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 import java.util.*
-import javax.xml.bind.DatatypeConverter
 
 /**
  * @author fjj
