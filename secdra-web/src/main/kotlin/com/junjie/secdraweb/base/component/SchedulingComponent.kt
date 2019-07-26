@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component
  * @author fjj
  * 定时任务服务
  */
-@Component
-@EnableScheduling
+//@Component
 class SchedulingComponent(private val commentMessageService: ICommentMessageService,
                           private val replyMessageService: IReplyMessageService, private val followMessageService: IFollowMessageService,
                           private val systemMessageService: ISystemMessageService) {

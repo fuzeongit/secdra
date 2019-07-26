@@ -57,7 +57,6 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
                 .maxAge(3600);
     }
 
-
     @Bean
     fun socketIOServer(): SocketIOServer {
         val config = com.corundumstudio.socketio.Configuration()

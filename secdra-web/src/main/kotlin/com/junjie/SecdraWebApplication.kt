@@ -6,11 +6,14 @@ import org.springframework.boot.runApplication
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 
 
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableCaching
+@EnableWebSocketMessageBroker
+//@EnableScheduling
 class SecdraWebApplication : SpringBootServletInitializer() {
     override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
         // 设置启动类，用于独立tomcat运行的入口
