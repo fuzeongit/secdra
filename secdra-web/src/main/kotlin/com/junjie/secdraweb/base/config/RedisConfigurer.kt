@@ -12,6 +12,10 @@ import java.time.Duration
 import java.util.*
 
 
+/**
+ * @author fjj
+ * 缓存配置
+ */
 @Configuration
 class RedisConfigurer : CachingConfigurerSupport() {
     // 缓存管理器

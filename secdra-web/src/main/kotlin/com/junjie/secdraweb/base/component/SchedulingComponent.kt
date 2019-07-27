@@ -1,21 +1,19 @@
 package com.junjie.secdraweb.base.component
 
-import com.junjie.secdraservice.service.ICommentMessageService
-import com.junjie.secdraservice.service.IFollowMessageService
-import com.junjie.secdraservice.service.IReplyMessageService
-import com.junjie.secdraservice.service.ISystemMessageService
-import org.springframework.scheduling.annotation.EnableScheduling
+import com.junjie.secdraservice.service.CommentMessageService
+import com.junjie.secdraservice.service.FollowMessageService
+import com.junjie.secdraservice.service.ReplyMessageService
+import com.junjie.secdraservice.service.SystemMessageService
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
 
 /**
  * @author fjj
  * 定时任务服务
  */
 //@Component
-class SchedulingComponent(private val commentMessageService: ICommentMessageService,
-                          private val replyMessageService: IReplyMessageService, private val followMessageService: IFollowMessageService,
-                          private val systemMessageService: ISystemMessageService) {
+class SchedulingComponent(private val commentMessageService: CommentMessageService,
+                          private val replyMessageService: ReplyMessageService, private val followMessageService: FollowMessageService,
+                          private val systemMessageService: SystemMessageService) {
     @Scheduled(cron = "0 0 3/23 * * ?")
     fun removeMessageByMonthAgo() {
         try {

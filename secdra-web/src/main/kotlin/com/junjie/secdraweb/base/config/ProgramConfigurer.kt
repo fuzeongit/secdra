@@ -1,10 +1,8 @@
 package com.junjie.secdraweb.base.config
 
-import com.corundumstudio.socketio.SocketIOServer
-import com.corundumstudio.socketio.annotation.SpringAnnotationScanner
-import com.junjie.secdraservice.service.IUserService
+import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.BaseConfig
-import com.junjie.secdraweb.base.component.QiniuComponent
+import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.base.component.RedisComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
@@ -24,7 +22,7 @@ import java.util.*
  * 程序的配置清单
  */
 @Configuration
-class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private val userService: IUserService) : WebMvcConfigurer {
+class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private val userService: UserService) : WebMvcConfigurer {
     /**
      * 拦截器
      */
@@ -55,19 +53,6 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
                 .allowedMethods("*")
                 //跨域允许时间
                 .maxAge(3600);
-    }
-
-    @Bean
-    fun socketIOServer(): SocketIOServer {
-        val config = com.corundumstudio.socketio.Configuration()
-        config.hostname = "localhost"
-        config.port = 8089
-        return SocketIOServer(config);
-    }
-
-    @Bean
-    fun springAnnotationScanner(socketServer: SocketIOServer): SpringAnnotationScanner {
-        return SpringAnnotationScanner(socketServer);
     }
 
     @Bean

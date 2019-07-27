@@ -1,6 +1,5 @@
 package com.junjie.secdraweb.controller
 
-import com.corundumstudio.socketio.SocketIOServer
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.NotFoundException
@@ -8,12 +7,11 @@ import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.model.User
-import com.junjie.secdraservice.service.IFollowService
-import com.junjie.secdraservice.service.IUserService
+import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.BaseConfig
-import com.junjie.secdraweb.base.component.QiniuComponent
-import com.junjie.secdraweb.base.component.SocketIOEventHandler
-import com.junjie.secdraweb.vo.UserVo
+import com.junjie.secdraweb.service.QiniuComponent
+import com.junjie.secdraweb.vo.UserVO
 
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.bind.annotation.GetMapping
@@ -29,9 +27,9 @@ import javax.servlet.http.HttpServletResponse
  */
 @RestController
 @RequestMapping("user")
-class UserController(private val userService: IUserService, private val baseConfig: BaseConfig,
+class UserController(private val userService: UserService, private val baseConfig: BaseConfig,
                      private val qiniuComponent: QiniuComponent, private val redisTemplate: StringRedisTemplate,
-                     private val followService: IFollowService,private var socketIoServer: SocketIOServer) {
+                     private val followService: FollowService) {
     /**
      * 发送验证码
      */
@@ -53,7 +51,7 @@ class UserController(private val userService: IUserService, private val baseConf
      * 注册
      */
     @PostMapping("/register")
-    fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVo {
+    fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVO {
         if (phone.isEmpty()) {
             throw NotFoundException("输入手机为空")
         }
@@ -74,19 +72,19 @@ class UserController(private val userService: IUserService, private val baseConf
         //生成token
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtSecretString)
         response.setHeader("token", token)
-        return UserVo(user)
+        return UserVO(user)
     }
 
     /**
      * 登录
      */
     @PostMapping("/login")
-    fun login(phone: String, password: String, response: HttpServletResponse): UserVo {
+    fun login(phone: String, password: String, response: HttpServletResponse): UserVO {
         val user = userService.login(phone, password)
         val nowMillis = System.currentTimeMillis()
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtSecretString)
         response.setHeader("token", token)
-        return UserVo(user)
+        return UserVO(user)
     }
 
     @Auth
@@ -99,11 +97,11 @@ class UserController(private val userService: IUserService, private val baseConf
      * 修改密码
      */
     @PostMapping("/rePassword")
-    fun rePassword(phone: String, password: String, response: HttpServletResponse): UserVo {
+    fun rePassword(phone: String, password: String, response: HttpServletResponse): UserVO {
         val nowMillis = System.currentTimeMillis()
         val user = userService.rePassword(phone, password, Date(nowMillis))
         redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
-        return UserVo(user)
+        return UserVO(user)
     }
 
     /**
@@ -111,19 +109,19 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @Auth
     @GetMapping("/getInfo")
-    fun getInfo(@CurrentUserId userId: String, id: String?): UserVo {
-        val userVo = UserVo(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
+    fun getInfo(@CurrentUserId userId: String, id: String?): UserVO {
+        val userVO = UserVO(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
             userId
         } else {
             id!!
         }))
-        userVo.isFocus = followService.exists(userId, userVo.id!!)
-        return userVo
+        userVO.isFocus = followService.exists(userId, userVO.id!!)
+        return userVO
     }
 
     @GetMapping("/getInfoByDrawId")
-    fun getInfoByDrawId(drawId: String): UserVo {
-        return UserVo(userService.getInfoByDrawId(drawId))
+    fun getInfoByDrawId(drawId: String): UserVO {
+        return UserVO(userService.getInfoByDrawId(drawId))
     }
 
     /**
@@ -131,14 +129,14 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @Auth
     @PostMapping("/update")
-    fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVo {
+    fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVO {
         val info = userService.getInfo(userId)
         if (!name.isNullOrEmpty()) info.name = name
         if (gender != null) info.gender = gender
         if (birthday != null) info.birthday = birthday
         if (introduction.isNullOrEmpty()) info.introduction = introduction
         if (address.isNullOrEmpty()) info.address = address
-        return UserVo(userService.save(info))
+        return UserVO(userService.save(info))
     }
 
 
@@ -147,12 +145,12 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @Auth
     @PostMapping("/updateHead")
-    fun updateHead(@CurrentUserId userId: String, url: String): UserVo {
+    fun updateHead(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket,baseConfig.qiniuHeadBucket)
+        qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket)
         qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
         info.head = url;
-        return UserVo(userService.save(info))
+        return UserVO(userService.save(info))
     }
 
 
@@ -161,21 +159,11 @@ class UserController(private val userService: IUserService, private val baseConf
      */
     @Auth
     @PostMapping("/updateBack")
-    fun updateBack(@CurrentUserId userId: String, url: String): UserVo {
+    fun updateBack(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket,baseConfig.qiniuBackBucket)
+        qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket)
         qiniuComponent.move(url, baseConfig.qiniuBackBucket)
         info.background = url;
-        return UserVo(userService.save(info))
-    }
-
-    @GetMapping("/get")
-    fun getInfo(): Boolean {
-        for (clientId in SocketIOEventHandler.listClient) {
-            if (socketIoServer.getClient(clientId) == null) continue;
-
-            socketIoServer.getClient(clientId).sendEvent("send", "fuck");
-        }
-        return true
+        return UserVO(userService.save(info))
     }
 }

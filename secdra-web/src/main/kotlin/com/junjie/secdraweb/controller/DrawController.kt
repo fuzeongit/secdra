@@ -3,18 +3,16 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdraservice.dao.IDrawDao
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
-import com.junjie.secdraservice.service.ICollectionService
-import com.junjie.secdraservice.service.IDrawService
-import com.junjie.secdraservice.service.IFollowService
-import com.junjie.secdraservice.service.IUserService
+import com.junjie.secdraservice.service.CollectionService
+import com.junjie.secdraservice.service.DrawService
+import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.BaseConfig
-import com.junjie.secdraweb.base.component.QiniuComponent
-import com.junjie.secdraweb.vo.DrawVo
-import com.junjie.secdraweb.vo.UserVo
-
+import com.junjie.secdraweb.service.QiniuComponent
+import com.junjie.secdraweb.vo.DrawVO
+import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -30,41 +28,40 @@ import kotlin.collections.ArrayList
  */
 @RestController
 @RequestMapping("draw")
-class DrawController(private val drawService: IDrawService, private val userService: IUserService,
-                     private val collectionService: ICollectionService, private val followService: IFollowService,
-                     private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig,
-                     val drawDao: IDrawDao) {
+class DrawController(private val drawService: DrawService, private val userService: UserService,
+                     private val collectionService: CollectionService, private val followService: FollowService,
+                     private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig) {
     /**
      * 根据标签获取
      */
     @GetMapping("/paging")
-    fun paging(@CurrentUserId userId: String?, tag: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+    fun paging(@CurrentUserId userId: String?, tag: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
         val page = drawService.paging(pageable, tag, startDate, endDate)
-        return getPageVo(page, userId)
+        return getPageVO(page, userId)
     }
 
     /**
      * 获取推荐
      */
     @GetMapping("/pagingByRecommend")
-    fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+    fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
         //由于不会算法，暂时这样写
         val page = drawService.pagingRand(pageable)
-        return getPageVo(page, userId)
+        return getPageVO(page, userId)
     }
 
     /**
      * 随机获取
      */
     @GetMapping("/listByRecommend")
-    fun listByRecommend(@CurrentUserId userId: String?): ArrayList<DrawVo> {
+    fun listByRecommend(@CurrentUserId userId: String?): ArrayList<DrawVO> {
         val pageable = PageRequest.of(0, 4)
         val drawList = drawService.pagingRand(pageable).content
-        val drawVoList = ArrayList<DrawVo>()
+        val drawVOList = ArrayList<DrawVO>()
         for (draw in drawList) {
-            drawVoList.add(getVo(draw, userId))
+            drawVOList.add(getVO(draw, userId))
         }
-        return drawVoList
+        return drawVOList
     }
 
     /**
@@ -72,40 +69,40 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @Auth
     @GetMapping("/pagingByUserId")
-    fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+    fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
         val page = drawService.pagingByUserId(pageable, id
                 ?: userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
-        return getPageVo(page,userId)
+        return getPageVO(page,userId)
     }
 
     /**
      * 获取他人
      */
     @GetMapping("/pagingByOthers")
-    fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVo> {
+    fun pagingByOthers(userId: String, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
         val page = drawService.pagingByUserId(pageable, userId, startDate, endDate, false)
-        return getPageVo(page, userId)
+        return getPageVO(page, userId)
     }
 
     /**
      * 获取图片
      */
     @GetMapping("/get")
-    fun get(id: String, @CurrentUserId userId: String?): DrawVo {
+    fun get(id: String, @CurrentUserId userId: String?): DrawVO {
         val draw = drawService.get(id)
         if (draw.isPrivate && draw.userId != userId) {
             draw.url = ""
         }
-        return getVo(draw, userId)
+        return getVO(draw, userId)
     }
 
     /**
      * 获取tag第一张
      */
     @GetMapping("getFirstByTag")
-    fun getFirstByTag(tag: String): DrawVo {
+    fun getFirstByTag(tag: String): DrawVO {
         val draw = drawService.getFirstByTag(tag)
-        return getVo(draw, null)
+        return getVO(draw, null)
     }
 
     /**
@@ -121,7 +118,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @Auth
     @PostMapping("/save")
-    fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
+    fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
         val draw = Draw()
         draw.url = url
         draw.userId = userId
@@ -140,7 +137,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
         val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
         draw.width = imageInfo!!.width
         draw.height = imageInfo.height
-        return getVo(drawService.save(draw))
+        return getVO(drawService.save(draw))
     }
 
     /**
@@ -148,7 +145,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
      */
     @PostMapping("/update")
     @Auth
-    fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVo {
+    fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, isPrivate: Boolean, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
         val draw = drawService.get(id)
         if (draw.userId != userId) {
             PermissionException("您无权修改该图片")
@@ -176,7 +173,7 @@ class DrawController(private val drawService: IDrawService, private val userServ
                 }
             }
         }
-        return getVo(drawService.save(draw))
+        return getVO(drawService.save(draw))
     }
 
 
@@ -217,22 +214,22 @@ class DrawController(private val drawService: IDrawService, private val userServ
         return drawList
     }
 
-    private fun getVo(draw: Draw, userId: String? = null): DrawVo {
-        val drawVo = DrawVo(draw)
-        val userVo = UserVo(userService.getInfo(draw.userId!!))
-        userVo.isFocus = followService.exists(userId, userVo.id!!)
+    private fun getVO(draw: Draw, userId: String? = null): DrawVO {
+        val drawVO = DrawVO(draw)
+        val userVO = UserVO(userService.getInfo(draw.userId!!))
+        userVO.isFocus = followService.exists(userId, userVO.id!!)
         if (!userId.isNullOrEmpty()) {
-            drawVo.isFocus = collectionService.exists(userId!!, draw.id!!)
+            drawVO.isFocus = collectionService.exists(userId!!, draw.id!!)
         }
-        drawVo.user = userVo
-        return drawVo
+        drawVO.user = userVO
+        return drawVO
     }
 
-    private fun getPageVo(page: Page<Draw>, userId: String? = null): Page<DrawVo> {
-        val drawVoList = ArrayList<DrawVo>()
+    private fun getPageVO(page: Page<Draw>, userId: String? = null): Page<DrawVO> {
+        val drawVOList = ArrayList<DrawVO>()
         for (draw in page.content) {
-            drawVoList.add(getVo(draw, userId))
+            drawVOList.add(getVO(draw, userId))
         }
-        return PageImpl<DrawVo>(drawVoList, page.pageable, page.totalElements)
+        return PageImpl<DrawVO>(drawVOList, page.pageable, page.totalElements)
     }
 }

@@ -5,7 +5,7 @@ import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.CookieUtil
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
-import com.junjie.secdraservice.service.IUserService
+import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.lang.Nullable
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse
  * @author fjj
  * 登录验证拦截器
  */
-class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, val userService: IUserService) : HandlerInterceptor {
+class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, val userService: UserService) : HandlerInterceptor {
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod) {

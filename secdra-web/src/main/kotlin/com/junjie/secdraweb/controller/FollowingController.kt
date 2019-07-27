@@ -4,10 +4,10 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.model.FollowMessage
-import com.junjie.secdraservice.service.IFollowMessageService
-import com.junjie.secdraservice.service.IFollowService
-import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.vo.UserVo
+import com.junjie.secdraservice.service.FollowMessageService
+import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping("following")
-class FollowingController(private val followService: IFollowService, private val userService: IUserService,
-                          private val followMessageService: IFollowMessageService) {
+class FollowingController(private val followService: FollowService, private val userService: UserService,
+                          private val followMessageService: FollowMessageService) {
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId followerId: String, followingId: String): Boolean {
@@ -66,19 +66,19 @@ class FollowingController(private val followService: IFollowService, private val
      */
     @Auth
     @GetMapping("/paging")
-    fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVo> {
+    fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = followService.pagingByFollowerId(
                 if (id.isNullOrEmpty()) {
                     followerId
                 } else {
                     id!!
                 }, pageable)
-        val userVoList = ArrayList<UserVo>()
+        val userVOList = ArrayList<UserVO>()
         for (follow in page.content) {
-            val userVo = UserVo(userService.getInfo(follow.followingId!!))
-            userVo.isFocus = followService.exists(followerId, userVo.id!!)
-            userVoList.add(userVo)
+            val userVO = UserVO(userService.getInfo(follow.followingId!!))
+            userVO.isFocus = followService.exists(followerId, userVO.id!!)
+            userVOList.add(userVO)
         }
-        return PageImpl<UserVo>(userVoList, page.pageable, page.totalElements)
+        return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)
     }
 }

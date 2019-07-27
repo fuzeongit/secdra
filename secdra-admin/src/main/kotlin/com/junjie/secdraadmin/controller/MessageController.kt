@@ -3,7 +3,6 @@ package com.junjie.secdraadmin.controller
 import com.junjie.secdraservice.dao.ISystemMessageDao
 import com.junjie.secdraservice.dao.IUserDao
 import com.junjie.secdraservice.model.SystemMessage
-import com.junjie.secdraservice.service.ISystemMessageService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

@@ -15,14 +15,14 @@ class BaseConfig {
 
     var jwtExpiresSecond: Long = 0
 
-//    var jwtBase64Secret: String = ""
-
     var jwtSecretString: String = ""
         get() {
             return Base64.getEncoder().encodeToString(field.toByteArray(charset("utf-8")))
         }
 
     var updatePasswordTimePrefix: String = ""
+
+    var notUUID: String = ""
 
     var qiniuAccessKey: String = ""
 

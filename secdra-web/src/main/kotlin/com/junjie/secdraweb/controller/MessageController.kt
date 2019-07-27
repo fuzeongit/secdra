@@ -5,10 +5,10 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdraservice.constant.MessageType
 import com.junjie.secdraservice.model.*
 import com.junjie.secdraservice.service.*
-import com.junjie.secdraweb.vo.CommentMessageVo
-import com.junjie.secdraweb.vo.FollowMessageVo
-import com.junjie.secdraweb.vo.ReplyMessageVo
-import com.junjie.secdraweb.vo.UserVo
+import com.junjie.secdraweb.vo.CommentMessageVO
+import com.junjie.secdraweb.vo.FollowMessageVO
+import com.junjie.secdraweb.vo.ReplyMessageVO
+import com.junjie.secdraweb.vo.UserVO
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("message")
-class MessageController(private val userService: IUserService, private val commentMessageService: ICommentMessageService,
-                        private val replyMessageService: IReplyMessageService, private val followMessageService: IFollowMessageService,
-                        private val systemMessageService: ISystemMessageService, private val messageSettingsService: IMessageSettingsService) {
+class MessageController(private val userService: UserService, private val commentMessageService: CommentMessageService,
+                        private val replyMessageService: ReplyMessageService, private val followMessageService: FollowMessageService,
+                        private val systemMessageService: SystemMessageService, private val messageSettingsService: MessageSettingsService) {
     @Auth
     @GetMapping("/count")
     fun count(@CurrentUserId userId: String, messageType: MessageType?): HashMap<MessageType, Long> {
@@ -47,13 +47,13 @@ class MessageController(private val userService: IUserService, private val comme
     @GetMapping("/listUnread")
     fun listUnread(@CurrentUserId userId: String, messageType: MessageType): List<Any> {
         if (messageType == MessageType.COMMENT) {
-            return getCommentMessageListVo(commentMessageService.listUnread(userId))
+            return getCommentMessageListVO(commentMessageService.listUnread(userId))
         }
         if (messageType == MessageType.REPLY) {
-            return getReplyMessageListVo(replyMessageService.listUnread(userId))
+            return getReplyMessageListVO(replyMessageService.listUnread(userId))
         }
         if (messageType == MessageType.FOLLOW) {
-            return getFollowMessageListVo(followMessageService.listUnread(userId))
+            return getFollowMessageListVO(followMessageService.listUnread(userId))
         }
         if (messageType == MessageType.SYSTEM) {
             return systemMessageService.listUnread(userId)
@@ -65,13 +65,13 @@ class MessageController(private val userService: IUserService, private val comme
     @GetMapping("/list")
     fun list(@CurrentUserId userId: String, messageType: MessageType): List<Any> {
         if (messageType == MessageType.COMMENT) {
-            return getCommentMessageListVo(commentMessageService.list(userId))
+            return getCommentMessageListVO(commentMessageService.list(userId))
         }
         if (messageType == MessageType.REPLY) {
-            return getReplyMessageListVo(replyMessageService.list(userId))
+            return getReplyMessageListVO(replyMessageService.list(userId))
         }
         if (messageType == MessageType.FOLLOW) {
-            return getFollowMessageListVo(followMessageService.list(userId))
+            return getFollowMessageListVO(followMessageService.list(userId))
         }
         if (messageType == MessageType.SYSTEM) {
             val list = systemMessageService.list(userId)
@@ -111,16 +111,16 @@ class MessageController(private val userService: IUserService, private val comme
         return messageSettingsService.save(messageSettings)
     }
 
-    private fun getCommentMessageVo(commentMessage: CommentMessage): CommentMessageVo {
-        val vo = CommentMessageVo(commentMessage)
-        vo.critic = UserVo(userService.getInfo(vo.criticId!!))
+    private fun getCommentMessageVO(commentMessage: CommentMessage): CommentMessageVO {
+        val vo = CommentMessageVO(commentMessage)
+        vo.critic = UserVO(userService.getInfo(vo.criticId!!))
         return vo
     }
 
-    private fun getCommentMessageListVo(list: List<CommentMessage>): List<CommentMessageVo> {
-        val voList = mutableListOf<CommentMessageVo>()
+    private fun getCommentMessageListVO(list: List<CommentMessage>): List<CommentMessageVO> {
+        val voList = mutableListOf<CommentMessageVO>()
         for (commentMessage in list) {
-            voList.add(getCommentMessageVo(commentMessage))
+            voList.add(getCommentMessageVO(commentMessage))
             if (commentMessage.isRead) {
                 continue
             }
@@ -130,16 +130,16 @@ class MessageController(private val userService: IUserService, private val comme
         return voList
     }
 
-    private fun getReplyMessageVo(replyMessage: ReplyMessage): ReplyMessageVo {
-        val vo = ReplyMessageVo(replyMessage)
-        vo.answerer = UserVo(userService.getInfo(vo.answererId!!))
+    private fun getReplyMessageVO(replyMessage: ReplyMessage): ReplyMessageVO {
+        val vo = ReplyMessageVO(replyMessage)
+        vo.answerer = UserVO(userService.getInfo(vo.answererId!!))
         return vo
     }
 
-    private fun getReplyMessageListVo(list: List<ReplyMessage>): List<ReplyMessageVo> {
-        val voList = mutableListOf<ReplyMessageVo>()
+    private fun getReplyMessageListVO(list: List<ReplyMessage>): List<ReplyMessageVO> {
+        val voList = mutableListOf<ReplyMessageVO>()
         for (replyMessage in list) {
-            voList.add(getReplyMessageVo(replyMessage))
+            voList.add(getReplyMessageVO(replyMessage))
             if (replyMessage.isRead) {
                 continue
             }
@@ -149,16 +149,16 @@ class MessageController(private val userService: IUserService, private val comme
         return voList
     }
 
-    private fun getFollowMessageVo(followMessage: FollowMessage): FollowMessageVo {
-        val vo = FollowMessageVo(followMessage)
-        vo.follower = UserVo(userService.getInfo(vo.followerId!!))
+    private fun getFollowMessageVO(followMessage: FollowMessage): FollowMessageVO {
+        val vo = FollowMessageVO(followMessage)
+        vo.follower = UserVO(userService.getInfo(vo.followerId!!))
         return vo
     }
 
-    private fun getFollowMessageListVo(list: List<FollowMessage>): List<FollowMessageVo> {
-        val voList = mutableListOf<FollowMessageVo>()
+    private fun getFollowMessageListVO(list: List<FollowMessage>): List<FollowMessageVO> {
+        val voList = mutableListOf<FollowMessageVO>()
         for (followMessage in list) {
-            voList.add(getFollowMessageVo(followMessage))
+            voList.add(getFollowMessageVO(followMessage))
             if (followMessage.isRead) {
                 continue
             }

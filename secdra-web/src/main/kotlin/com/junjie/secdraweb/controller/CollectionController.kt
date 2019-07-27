@@ -5,12 +5,12 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.service.ICollectionService
-import com.junjie.secdraservice.service.IDrawService
-import com.junjie.secdraservice.service.IFollowService
-import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.vo.DrawVo
-import com.junjie.secdraweb.vo.UserVo
+import com.junjie.secdraservice.service.CollectionService
+import com.junjie.secdraservice.service.DrawService
+import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.vo.DrawVO
+import com.junjie.secdraweb.vo.UserVO
 
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping("collection")
-class CollectionController(private val collectionService: ICollectionService, private val drawService: IDrawService,
-                           private val userService: IUserService, private val followService: IFollowService) {
+class CollectionController(private val collectionService: CollectionService, private val drawService: DrawService,
+                           private val userService: UserService, private val followService: FollowService) {
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId userId: String, drawId: String): Boolean {
@@ -77,14 +77,14 @@ class CollectionController(private val collectionService: ICollectionService, pr
 
     @Auth
     @GetMapping("/paging")
-    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVo> {
+    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVO> {
         val page = collectionService.paging(
                 if (id.isNullOrEmpty()) {
                     userId
                 } else {
                     id!!
                 }, pageable)
-        val drawVoList = ArrayList<DrawVo>()
+        val drawVOList = ArrayList<DrawVO>()
         for (collection in page.content) {
             var draw: Draw
             try {
@@ -101,21 +101,21 @@ class CollectionController(private val collectionService: ICollectionService, pr
                     throw e
                 }
             }
-            val drawVo = DrawVo()
-            BeanUtils.copyProperties(draw, drawVo)
+            val drawVO = DrawVO()
+            BeanUtils.copyProperties(draw, drawVO)
 
-            val userVo = UserVo()
+            val userVO = UserVO()
             val user = userService.getInfo(draw.userId!!)
-            BeanUtils.copyProperties(user, userVo)
-            userVo.isFocus = followService.exists(userId, draw.userId!!)
-            drawVo.isFocus = if (id.isNullOrEmpty() || id == userId) {
+            BeanUtils.copyProperties(user, userVO)
+            userVO.isFocus = followService.exists(userId, draw.userId!!)
+            drawVO.isFocus = if (id.isNullOrEmpty() || id == userId) {
                 true
             } else {
                 collectionService.exists(userId, draw.id!!)
             }
-            drawVo.user = userVo
-            drawVoList.add(drawVo)
+            drawVO.user = userVO
+            drawVOList.add(drawVO)
         }
-        return PageImpl<DrawVo>(drawVoList, page.pageable, page.totalElements)
+        return PageImpl<DrawVO>(drawVOList, page.pageable, page.totalElements)
     }
 }

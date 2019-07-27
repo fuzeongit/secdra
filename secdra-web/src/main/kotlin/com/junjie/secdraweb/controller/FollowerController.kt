@@ -2,9 +2,9 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdraservice.service.IFollowService
-import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.vo.UserVo
+import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -19,25 +19,25 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("follower")
-class FollowerController(private val followService: IFollowService, private val userService: IUserService) {
+class FollowerController(private val followService: FollowService, private val userService: UserService) {
     /**
      * 获取粉丝列表
      */
     @Auth
     @GetMapping("/paging")
-    fun paging(@CurrentUserId followingId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVo> {
+    fun paging(@CurrentUserId followingId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = followService.pagingByFollowingId(
                 if (id.isNullOrEmpty()) {
                     followingId
                 } else {
                     id!!
                 }, pageable)
-        val userVoList = ArrayList<UserVo>()
+        val userVOList = ArrayList<UserVO>()
         for (follow in page.content) {
-            val userVo = UserVo(userService.getInfo(follow.followerId!!))
-            userVo.isFocus = followService.exists(followingId, userVo.id!!)
-            userVoList.add(userVo)
+            val userVO = UserVO(userService.getInfo(follow.followerId!!))
+            userVO.isFocus = followService.exists(followingId, userVO.id!!)
+            userVOList.add(userVO)
         }
-        return PageImpl<UserVo>(userVoList, page.pageable, page.totalElements)
+        return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)
     }
 }

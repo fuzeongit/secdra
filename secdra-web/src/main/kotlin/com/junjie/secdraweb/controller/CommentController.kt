@@ -5,11 +5,11 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdraservice.model.Comment
 import com.junjie.secdraservice.model.CommentMessage
 import com.junjie.secdraservice.model.User
-import com.junjie.secdraservice.service.ICommentMessageService
-import com.junjie.secdraservice.service.ICommentService
-import com.junjie.secdraservice.service.IUserService
-import com.junjie.secdraweb.vo.CommentVo
-import com.junjie.secdraweb.vo.UserVo
+import com.junjie.secdraservice.service.CommentMessageService
+import com.junjie.secdraservice.service.CommentService
+import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.vo.CommentVO
+import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -25,14 +25,14 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("comment")
-class CommentController(val commentService: ICommentService, val userService: IUserService,val commentMessageService: ICommentMessageService) {
+class CommentController(val commentService: CommentService, val userService: UserService, val commentMessageService: CommentMessageService) {
 
     /**
      * 发表评论
      */
     @Auth
     @PostMapping("/save")
-    fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVo {
+    fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")
         (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
         val comment = Comment();
@@ -41,7 +41,7 @@ class CommentController(val commentService: ICommentService, val userService: IU
         comment.drawId = drawId;
         comment.content = content;
 
-        val vo =  getVo(commentService.save(comment))
+        val vo =  getVO(commentService.save(comment))
         val commentMessage = CommentMessage();
         commentMessage.commentId = vo.id
         commentMessage.authorId = vo.authorId
@@ -56,53 +56,53 @@ class CommentController(val commentService: ICommentService, val userService: IU
      * 获取4条
      */
     @GetMapping("listTop4")
-    fun listTop4(drawId: String): List<CommentVo> {
+    fun listTop4(drawId: String): List<CommentVO> {
 //        val map = HashMap<String,Any>()
 //        map["count"] = commentService.count(drawId)
-//        map["list"] = getListVo(commentService.listTop4(drawId))
-        return getListVo(commentService.listTop4(drawId))
+//        map["list"] = getListVO(commentService.listTop4(drawId))
+        return getListVO(commentService.listTop4(drawId))
     }
 
     /**
      * 获取列表
      */
     @GetMapping("list")
-    fun list(drawId: String): List<CommentVo> {
-        return getListVo(commentService.list(drawId))
+    fun list(drawId: String): List<CommentVO> {
+        return getListVO(commentService.list(drawId))
     }
 
     /**
      * 分页获取
      */
     @GetMapping("pagingByDrawId")
-    fun pagingByDrawId(drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVo> {
-        return getPageVo(commentService.paging(drawId, pageable))
+    fun pagingByDrawId(drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVO> {
+        return getPageVO(commentService.paging(drawId, pageable))
     }
 
-    private fun getVo(comment: Comment, user: User? = null): CommentVo {
-        val commentVo = CommentVo(comment)
+    private fun getVO(comment: Comment, user: User? = null): CommentVO {
+        val commentVO = CommentVO(comment)
         if (user == null) {
-            commentVo.author = UserVo(userService.getInfo(comment.authorId!!))
+            commentVO.author = UserVO(userService.getInfo(comment.authorId!!))
         } else {
-            commentVo.author = UserVo(user)
+            commentVO.author = UserVO(user)
         }
-        commentVo.critic = UserVo(userService.getInfo(comment.criticId!!))
-        return commentVo
+        commentVO.critic = UserVO(userService.getInfo(comment.criticId!!))
+        return commentVO
     }
 
-    private fun getPageVo(page: Page<Comment>): Page<CommentVo> {
-        val commentVoList = ArrayList<CommentVo>()
+    private fun getPageVO(page: Page<Comment>): Page<CommentVO> {
+        val commentVOList = ArrayList<CommentVO>()
         for (comment in page.content) {
-            commentVoList.add(getVo(comment))
+            commentVOList.add(getVO(comment))
         }
-        return PageImpl<CommentVo>(commentVoList, page.pageable, page.totalElements)
+        return PageImpl<CommentVO>(commentVOList, page.pageable, page.totalElements)
     }
 
-    private fun getListVo(list: List<Comment>): List<CommentVo> {
-        val commentVoList = ArrayList<CommentVo>()
+    private fun getListVO(list: List<Comment>): List<CommentVO> {
+        val commentVOList = ArrayList<CommentVO>()
         for (comment in list) {
-            commentVoList.add(getVo(comment))
+            commentVOList.add(getVO(comment))
         }
-        return commentVoList
+        return commentVOList
     }
 }
