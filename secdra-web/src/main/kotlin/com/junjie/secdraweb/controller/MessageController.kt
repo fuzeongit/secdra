@@ -23,22 +23,9 @@ class MessageController(private val userService: UserService, private val commen
     @GetMapping("/count")
     fun count(@CurrentUserId userId: String, messageType: MessageType?): HashMap<MessageType, Long> {
         val vo = HashMap<MessageType, Long>()
-        val messageSettings = try {
-            messageSettingsService.get(userId)
-        } catch (e: Exception) {
-            val newSettings = MessageSettings()
-            newSettings.userId = userId
-            messageSettingsService.save(newSettings)
-        }
-        vo[MessageType.COMMENT] = if (messageSettings.commentStatus) {
-            commentMessageService.countUnread(userId)
-        } else 0
-        vo[MessageType.REPLY] = if (messageSettings.replyStatus) {
-            replyMessageService.countUnread(userId)
-        } else 0
-        vo[MessageType.FOLLOW] = if (messageSettings.followStatus) {
-            followMessageService.countUnread(userId)
-        } else 0
+        vo[MessageType.COMMENT] = commentMessageService.countUnread(userId)
+        vo[MessageType.REPLY] = replyMessageService.countUnread(userId)
+        vo[MessageType.FOLLOW] = followMessageService.countUnread(userId)
         vo[MessageType.SYSTEM] = systemMessageService.countUnread(userId)
         return vo
     }

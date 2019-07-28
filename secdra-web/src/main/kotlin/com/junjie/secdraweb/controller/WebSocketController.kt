@@ -1,5 +1,6 @@
 package com.junjie.secdraweb.controller
 
+import com.junjie.secdracore.model.Result
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraweb.base.component.BaseConfig
 import org.springframework.messaging.Message
@@ -16,8 +17,12 @@ import java.security.Principal
 class WebSocketController(private val baseConfig: BaseConfig, private val simpMessagingTemplate: SimpMessagingTemplate, private val simpUserRegistry: SimpUserRegistry) {
     @MessageMapping("/comment")
     fun send(message: Any, @Headers headers: Map<String, Any>, principal: Principal) {
-        println(principal.name)
-        val receiverList = simpUserRegistry.users.filter { it -> it.name == baseConfig.notUUID }
+        val receiverList = simpUserRegistry.users.filter { it ->
+            println(it.name)
+            println("402880e566ddba740166ddbce0b70000")
+            println(it.name == "402880e566ddba740166ddbce0b70000")
+            it.name == "402880e566ddba740166ddbce0b70000"
+        }
         for (receiver in receiverList) {
             simpMessagingTemplate.convertAndSendToUser(receiver.name, "/commentNotice", "你还没有登录哦");
         }
@@ -25,10 +30,8 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
 
     @MessageMapping("/sendBroadcast")
     @SendTo("/broadcast")
-    fun sendBroadcast(message: Message<Map<String, Any>>, a: String?): Map<String, Any> {
-        println(message.payload["message"] as String)
+    fun sendBroadcast(message: Message<Map<String, Any>>, a: String?){
         sendBroadcast()
-        return message.payload
     }
 
     @MessageMapping("/sendBroadcastBySendToUser")
@@ -44,6 +47,6 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
     }
 
     private fun sendBroadcast() {
-        simpMessagingTemplate.convertAndSend("/broadcast", Draw())
+        simpMessagingTemplate.convertAndSend("/broadcast", Result(200,null,Draw()))
     }
 }

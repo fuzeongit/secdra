@@ -26,7 +26,13 @@ class MessageSettingsServiceImpl(private val messageSettingsDAO: MessageSettings
                 .withIgnorePaths("createDate")
                 .withIgnorePaths("modifiedDate")
         val example = Example.of(query, matcher)
-        return messageSettingsDAO.findOne(example).orElseThrow { NotFoundException("找不到消息配置") }
+        return try{
+             messageSettingsDAO.findOne(example).orElseThrow { NotFoundException("找不到消息配置") }
+        }catch (e:NotFoundException){
+            val newSettings = MessageSettings()
+            newSettings.userId = userId
+            messageSettingsDAO.save(newSettings)
+        }
     }
 
     @CachePut("message::settings::get", key = "#messageSettings.userId")

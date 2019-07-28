@@ -7,6 +7,7 @@ import com.junjie.secdraservice.model.FollowMessage
 import com.junjie.secdraservice.service.FollowMessageService
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("following")
 class FollowingController(private val followService: FollowService, private val userService: UserService,
-                          private val followMessageService: FollowMessageService) {
+                          private val followMessageService: FollowMessageService, private val webSocketService: WebSocketService) {
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId followerId: String, followingId: String): Boolean {
@@ -35,6 +36,7 @@ class FollowingController(private val followService: FollowService, private val 
             followMessage.followerId = follow.followerId
             followMessage.followingId = follow.followingId
             followMessageService.save(followMessage)
+            webSocketService.sendFollowingFocus(followerId,followingId)
             true
         } else {
             followService.remove(followerId, followingId)
@@ -81,4 +83,5 @@ class FollowingController(private val followService: FollowService, private val 
         }
         return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)
     }
+
 }
