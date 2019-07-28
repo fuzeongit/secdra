@@ -32,7 +32,7 @@
 <script>
     var socket = "";
     var stompClient = {};
-
+    var sub = {}
     function connect(name) {
         socket = new SockJS('http://localhost:8080/webSocket')
         stompClient = Stomp.over(socket);
@@ -42,7 +42,7 @@
             stompClient.subscribe('/user/commentNotice', function (message) {
                 console.log(message);
             });
-            stompClient.subscribe('/broadcast', function (message) {
+            sub =  stompClient.subscribe('/broadcast', function (message) {
                 console.log(message);
             });
             stompClient.subscribe('/user/sendBroadcastBySendToUser', function (message) {
@@ -57,22 +57,20 @@
     }
 
     function disconnect() {
-        console.log(stompClient.subscriptions);
-
-        // stompClient.disconnect({}, function () {
-        //     console.log('断开连接');
+        sub.unsubscribe();
+        // stompClient.unsubscribe(sub);
+        // console.log(stompClient.subscriptions)
+        // for (var sub in stompClient.subscriptions) {
+        //     if (stompClient.subscriptions.hasOwnProperty(sub)) {
+        //         stompClient.unsubscribe(sub);
+        //     }
+        // }
+        // stompClient.subscribe('/sendBroadcastBySendTo', function (message) {
+        //     console.log(message);
         // });
-        for (var sub in stompClient.subscriptions) {
-            if (stompClient.subscriptions.hasOwnProperty(sub)) {
-                stompClient.unsubscribe(sub);
-            }
-        }
-        stompClient.disconnect({}, function () {
-           console.log(stompClient)
-        });
-        stompClient.subscribe('/sendBroadcastBySendTo', function (message) {
-            console.log(message);
-        });
+        // stompClient.disconnect({}, function () {
+        //    console.log('断开连接');
+        // });
         // socket.close();
     }
 

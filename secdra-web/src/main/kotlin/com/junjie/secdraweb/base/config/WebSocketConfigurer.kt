@@ -1,15 +1,21 @@
 package com.junjie.secdraweb.base.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.base.interceptor.WebSocketUserInterceptor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.messaging.converter.MappingJackson2MessageConverter
+import org.springframework.messaging.converter.MessageConverter
+import org.springframework.messaging.converter.SimpleMessageConverter
+import org.springframework.messaging.converter.StringMessageConverter
 import org.springframework.messaging.simp.config.ChannelRegistration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 
 /**
@@ -53,4 +59,32 @@ class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate, privat
     internal fun baseConfig(): BaseConfig {
         return BaseConfig()
     }
+
+    override fun configureMessageConverters(messageConverters: MutableList<MessageConverter>): Boolean {
+//        messageConverters.add(mappingJackson2MessageConverter())
+        return true
+    }
+
+
+    @Bean
+    fun mappingJackson2MessageConverter(): MappingJackson2MessageConverter {
+        val converter = MappingJackson2MessageConverter();
+        //设置日期格式
+        val objectMapper = ObjectMapper();
+//        val smt = SimpleDateFormat("yyyy-MM-dd");
+//        objectMapper.dateFormat = smt;
+        converter.objectMapper = objectMapper;
+//        //设置中文编码格式
+//       val list = ArrayList<MediaType>();
+//        list.add(MediaType.APPLICATION_JSON_UTF8);
+//        mappingJackson2MessageConverter.
+        return converter;
+    }
+//    @Bean
+//    fun converter(): StringMessageConverter {
+//        val converter = StringMessageConverter();
+//        return converter;
+//    }
 }
+
+

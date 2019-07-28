@@ -1,6 +1,8 @@
 package com.junjie.secdraweb.controller
 
+import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraweb.base.component.BaseConfig
+import org.springframework.messaging.Message
 import org.springframework.messaging.handler.annotation.Headers
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
@@ -22,8 +24,11 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
     }
 
     @MessageMapping("/sendBroadcast")
-    fun sendBroadcast(message: Any, @Headers headers: Map<String, Any>) {
-        return sendBroadcast()
+    @SendTo("/broadcast")
+    fun sendBroadcast(message: Message<Map<String, Any>>, a: String?): Map<String, Any> {
+        println(message.payload["message"] as String)
+        sendBroadcast()
+        return message.payload
     }
 
     @MessageMapping("/sendBroadcastBySendToUser")
@@ -39,6 +44,6 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
     }
 
     private fun sendBroadcast() {
-        simpMessagingTemplate.convertAndSend("/broadcast", "这是一则广告")
+        simpMessagingTemplate.convertAndSend("/broadcast", Draw())
     }
 }
