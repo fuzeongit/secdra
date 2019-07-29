@@ -1,7 +1,7 @@
 package com.junjie.secdraadmin.controller
 
-import com.junjie.secdraservice.dao.IDrawDao
-import com.junjie.secdraservice.dao.IUserDao
+import com.junjie.secdraservice.dao.DrawDAO
+import com.junjie.secdraservice.dao.UserDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,12 +14,12 @@ import javax.imageio.ImageIO
 
 @RestController
 @RequestMapping("draw")
-class DrawController(private var drawDao: IDrawDao, private var userDao: IUserDao) {
+class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO) {
     @PostMapping("/init")
     fun init(folderPath: String): Any {
         var i = 0
         val map = HashMap<String, Array<String>>()
-        val userList = userDao.findAll()
+        val userList = userDAO.findAll()
         try {
             val typeNameList = File(folderPath).list()
             for (typeName in typeNameList) {
@@ -42,7 +42,7 @@ class DrawController(private var drawDao: IDrawDao, private var userDao: IUserDa
                     val tagList = mutableSetOf<Tag>()
                     tagList.add(tag)
                     draw.tagList = tagList
-                    drawDao.save(draw)
+                    drawDAO.save(draw)
                     i++
                 }
             }
