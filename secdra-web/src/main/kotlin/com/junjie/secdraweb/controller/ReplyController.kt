@@ -8,6 +8,7 @@ import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.ReplyMessageService
 import com.junjie.secdraservice.service.ReplyService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.ReplyVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("reply")
-class ReplyController(val replyService: ReplyService, val userService: UserService, val replyMessageService: ReplyMessageService) {
+class ReplyController(private val replyService: ReplyService,
+                      private val userService: UserService,
+                      private val replyMessageService: ReplyMessageService,
+                      private val webSocketService: WebSocketService) {
 
     /**
      * 发表评论
@@ -38,7 +42,7 @@ class ReplyController(val replyService: ReplyService, val userService: UserServi
         reply.criticId = criticId
         reply.drawId = drawId
         reply.content = content
-        val vo =  getVO(replyService.save(reply))
+        val vo = getVO(replyService.save(reply))
         val replyMessage = ReplyMessage();
         replyMessage.commentId = vo.commentId
         replyMessage.replyId = vo.id
@@ -48,6 +52,7 @@ class ReplyController(val replyService: ReplyService, val userService: UserServi
         replyMessage.answererId = vo.answererId
         replyMessage.content = vo.content
         replyMessageService.save(replyMessage)
+        webSocketService.sendReply(answererId, criticId)
         return vo
     }
 

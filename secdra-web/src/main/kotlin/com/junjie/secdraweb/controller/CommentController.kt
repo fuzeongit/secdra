@@ -8,6 +8,7 @@ import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.CommentMessageService
 import com.junjie.secdraservice.service.CommentService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.CommentVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
@@ -25,7 +26,10 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("comment")
-class CommentController(val commentService: CommentService, val userService: UserService, val commentMessageService: CommentMessageService) {
+class CommentController(private val commentService: CommentService,
+                        private val userService: UserService,
+                        private val commentMessageService: CommentMessageService,
+                        private val webSocketService: WebSocketService) {
 
     /**
      * 发表评论
@@ -41,7 +45,7 @@ class CommentController(val commentService: CommentService, val userService: Use
         comment.drawId = drawId;
         comment.content = content;
 
-        val vo =  getVO(commentService.save(comment))
+        val vo = getVO(commentService.save(comment))
         val commentMessage = CommentMessage();
         commentMessage.commentId = vo.id
         commentMessage.authorId = vo.authorId
@@ -49,6 +53,7 @@ class CommentController(val commentService: CommentService, val userService: Use
         commentMessage.criticId = vo.criticId
         commentMessage.content = vo.content
         commentMessageService.save(commentMessage)
+        webSocketService.sendComment(criticId, authorId)
         return vo
     }
 
