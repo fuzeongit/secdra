@@ -1,12 +1,21 @@
 package com.junjie.secdraadmin.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.junjie.secdrasearch.model.IndexDraw
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.dao.UserDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
+import com.junjie.secdraservice.service.DrawService
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.io.FileInputStream
 import javax.imageio.ImageIO
@@ -14,7 +23,7 @@ import javax.imageio.ImageIO
 
 @RestController
 @RequestMapping("draw")
-class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO) {
+class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO, private val drawService: DrawService, val elasticsearchTemplate: ElasticsearchTemplate) {
     @PostMapping("/init")
     fun init(folderPath: String): Any {
         var i = 0
@@ -52,5 +61,16 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO)
             println(e.message)
             throw e
         }
+    }
+
+
+    @GetMapping("/initIndex")
+    fun initIndex() {
+        elasticsearchTemplate.createIndex(IndexDraw::class.java)
+    }
+
+    @GetMapping("/initEs")
+    fun initEs(): Long {
+        return drawService.synchronizationIndexDraw()
     }
 }

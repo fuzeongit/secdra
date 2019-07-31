@@ -26,4 +26,6 @@ interface DrawService {
     fun getFirstByTag(tag: String): Draw
 
     fun countByTag(tag: String): Long
+
+    fun synchronizationIndexDraw(): Long
 }

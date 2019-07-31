@@ -1,6 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdrasearch.dao.IndexDrawDAO
+import com.junjie.secdrasearch.model.IndexDraw
 import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.model.Draw
@@ -22,7 +24,7 @@ import javax.persistence.criteria.Predicate
 
 
 @Service
-class DrawServiceImpl(val drawDAO: DrawDAO) : DrawService {
+class DrawServiceImpl(private val drawDAO: DrawDAO,private val indexDrawDAO: IndexDrawDAO) : DrawService {
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -105,5 +107,24 @@ class DrawServiceImpl(val drawDAO: DrawDAO) : DrawService {
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return drawDAO.count(specification)
+    }
+
+    override fun synchronizationIndexDraw(): Long {
+        val sourceList =drawDAO.findAll()
+        val drawList = mutableListOf<IndexDraw>()
+        for(source in sourceList){
+            val draw = IndexDraw()
+            draw.id = source.id
+            draw.name = source.name
+            draw.viewAmount = source.viewAmount
+            draw.likeAmount = source.likeAmount
+            draw.createDate = source.createDate
+            for(tag in source.tagList){
+                draw.tagList.add(tag.name!!)
+            }
+            drawList.add(draw)
+        }
+        indexDrawDAO.saveAll(drawList)
+        return sourceList.size.toLong()
     }
 }

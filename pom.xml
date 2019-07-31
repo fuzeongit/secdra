@@ -13,6 +13,7 @@
 
     <modules>
         <module>secdra-core</module>
+        <module>secdra-search</module>
         <module>secdra-service</module>
         <module>secdra-web</module>
         <module>secdra-admin</module>
@@ -37,6 +38,11 @@
             <dependency>
                 <groupId>com.junjie</groupId>
                 <artifactId>secdra-core</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.junjie</groupId>
+                <artifactId>secdra-search</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -102,11 +108,6 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.corundumstudio.socketio</groupId>-->
-            <!--<artifactId>netty-socketio</artifactId>-->
-            <!--<version>1.7.11</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
