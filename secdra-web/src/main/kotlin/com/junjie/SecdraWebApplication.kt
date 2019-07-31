@@ -26,6 +26,7 @@ class SecdraWebApplication : SpringBootServletInitializer() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            System.setProperty("es.set.netty.runtime.available.processors","false")
             runApplication<SecdraWebApplication>(*args)
         }
     }

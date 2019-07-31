@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.service
 
+import com.junjie.secdrasearch.model.IndexDraw
 import com.junjie.secdraservice.model.Draw
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -28,4 +29,6 @@ interface DrawService {
     fun countByTag(tag: String): Long
 
     fun synchronizationIndexDraw(): Long
+
+    fun paging(pageable: Pageable, tag: String): Page<IndexDraw>
 }

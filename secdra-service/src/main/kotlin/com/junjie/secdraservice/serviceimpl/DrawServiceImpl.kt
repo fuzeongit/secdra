@@ -8,7 +8,6 @@ import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.DrawService
-
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -24,7 +23,11 @@ import javax.persistence.criteria.Predicate
 
 
 @Service
-class DrawServiceImpl(private val drawDAO: DrawDAO,private val indexDrawDAO: IndexDrawDAO) : DrawService {
+class DrawServiceImpl(private val drawDAO: DrawDAO, private val indexDrawDAO: IndexDrawDAO) : DrawService {
+    override fun paging(pageable: Pageable, tag: String): Page<IndexDraw> {
+        return indexDrawDAO.findAllByNameOrTagList(pageable, tag, tag)
+    }
+
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -110,16 +113,17 @@ class DrawServiceImpl(private val drawDAO: DrawDAO,private val indexDrawDAO: Ind
     }
 
     override fun synchronizationIndexDraw(): Long {
-        val sourceList =drawDAO.findAll()
+        val sourceList = drawDAO.findAll()
         val drawList = mutableListOf<IndexDraw>()
-        for(source in sourceList){
+        for (source in sourceList) {
             val draw = IndexDraw()
             draw.id = source.id
             draw.name = source.name
+            draw.userId = source.userId
             draw.viewAmount = source.viewAmount
             draw.likeAmount = source.likeAmount
             draw.createDate = source.createDate
-            for(tag in source.tagList){
+            for (tag in source.tagList) {
                 draw.tagList.add(tag.name!!)
             }
             drawList.add(draw)
@@ -127,4 +131,6 @@ class DrawServiceImpl(private val drawDAO: DrawDAO,private val indexDrawDAO: Ind
         indexDrawDAO.saveAll(drawList)
         return sourceList.size.toLong()
     }
+
+
 }

@@ -6,7 +6,7 @@ spring:
     port: 6379
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
     username: root
     password: root
   jpa:
@@ -15,7 +15,7 @@ spring:
   data:
     elasticsearch:
       cluster-nodes: 127.0.0.1:9300
-
+      cluster-name: elasticsearch
 #    show-sql: true
 #  mvc:
 #    static-path-pattern: /static/**

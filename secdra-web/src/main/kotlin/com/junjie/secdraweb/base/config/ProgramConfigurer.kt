@@ -6,9 +6,12 @@ import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.base.component.RedisComponent
 import com.junjie.secdraweb.base.interceptor.AuthInterceptor
 import com.junjie.secdraweb.base.resolver.CurrentUserIdMethodArgumentResolver
+import org.elasticsearch.client.Client
+import org.elasticsearch.client.ElasticsearchClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
@@ -95,7 +98,8 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
                 try {
                     date = sdf.parse(source)
                     break
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                }
             }
             date
         }
