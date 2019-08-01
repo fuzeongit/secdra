@@ -15,7 +15,7 @@ class PixivError {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var drawId: String? = null
+    var pixivId: String? = null
 
     var message: String? = null
 
@@ -24,5 +24,4 @@ class PixivError {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
-
 }

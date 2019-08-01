@@ -1,6 +1,7 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.util.EmojiUtil
 import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.dao.PixivDrawDAO
@@ -64,33 +65,97 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
         }
     }
 
-
+    //保存pixiv
     @PostMapping("/pixivSave")
-    fun pixivSave(drawId: String,name: String,userName: String,userId: String, tagList: String): PixivDraw {
+    fun pixivSave(pixivId: String, name: String, userName: String, userId: String, tagList: String): Boolean {
         val p = PixivDraw()
-        p.drawId = drawId
-        p.name = name
-        p.userName = userName
+        p.pixivId = pixivId
+        p.name = EmojiUtil.emojiChange(name).trim()
+        p.userName = EmojiUtil.emojiChange(userName).trim()
         p.userId = userId
-        p.tagList = tagList
-        return pixivDrawDAO.save(p)
+        p.tagList = EmojiUtil.emojiChange(tagList).trim()
+        try {
+            pixivDrawDAO.save(p)
+        } catch (e: Exception) {
+            val pixivError = PixivError()
+            pixivError.pixivId = pixivId
+            pixivError.message = e.message
+            pixivErrorDAO.save(pixivError)
+        }
+        return true
     }
 
+    //保存pixiv采集错误
     @PostMapping("/pixivError")
-    fun pixivSave(drawId: String, message: String): PixivError {
+    fun pixivSave(pixivId: String, message: String): PixivError {
         val pixivError = PixivError()
-        pixivError.drawId = drawId
+        pixivError.pixivId = pixivId
         pixivError.message = message
         return pixivErrorDAO.save(pixivError)
     }
 
-    /**
-     * 根据标签获取
-     */
-    @GetMapping("/paging")
-    fun paging(@CurrentUserId userId: String?, tag: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<Draw> {
-        return drawService.paging(pageable, tag, startDate, endDate)
+    //从pixiv初始化标签
+    @GetMapping("/initTag")
+    fun initTag(): Boolean {
+        val pixivDrawList = pixivDrawDAO.findAllByInit(false)
+        for (pixivDraw in pixivDrawList) {
+            val drawList = drawDAO.findAllByUrlLike(pixivDraw.pixivId!! + "%")
+            for (draw in drawList) {
+                pixivDraw.init = true
+
+                draw.name = if (pixivDraw.name.isNullOrBlank()) {
+                    draw.name
+                } else {
+                    pixivDraw.name
+                }
+
+                val tagStringList = pixivDraw.tagList!!.split("|")
+
+                for (tagString in tagStringList) {
+                    val tag = Tag()
+                    tag.name = tagString
+                    draw.tagList.add(tag)
+                }
+
+
+                drawDAO.save(draw)
+
+            }
+
+            pixivDrawDAO.save(pixivDraw)
+
+        }
+        return true
     }
+
+    @GetMapping("/check")
+    fun check (): Int {
+        val drawList = drawDAO.findAll()
+        var i = 0
+        for(draw in drawList){
+            if(draw.tagList.size == 0){
+                i++
+            }
+        }
+        return i
+    }
+
+    //获取任务
+    @GetMapping("/listTask")
+    fun listTask(): MutableList<String> {
+        val drawList = drawDAO.findAll()
+        val result = mutableListOf<String>()
+        for (draw in drawList) {
+            val pixivId = draw.url!!.split("_")[0]
+            val pixivDrawList = pixivDrawDAO.findAllByPixivId(pixivId)
+            val pixivErrorList = pixivErrorDAO.findAllByPixivId(pixivId)
+            if (pixivDrawList.isEmpty() && pixivErrorList.isEmpty()) {
+                result.add(pixivId)
+            }
+        }
+        return result
+    }
+
 
     @GetMapping("/initIndex")
     fun initIndex() {

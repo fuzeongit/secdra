@@ -15,8 +15,8 @@ import javax.persistence.*
  */
 @Entity
 @NamedEntityGraph(name = "Draw.Tag", attributeNodes = [NamedAttributeNode("tagList")])
-@Table(uniqueConstraints= [UniqueConstraint(columnNames = arrayOf("url"))])
-class Draw: Serializable {
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("url"))])
+class Draw : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")

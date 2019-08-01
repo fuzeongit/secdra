@@ -29,6 +29,4 @@ interface DrawService {
     fun countByTag(tag: String): Long
 
     fun synchronizationIndexDraw(): Long
-
-    fun paging(pageable: Pageable, tag: String): Page<DrawDocument>
 }

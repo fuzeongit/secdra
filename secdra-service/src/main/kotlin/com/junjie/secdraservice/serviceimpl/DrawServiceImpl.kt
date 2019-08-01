@@ -128,7 +128,4 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         return sourceList.size.toLong()
     }
 
-    override fun paging(pageable: Pageable, tag: String): Page<DrawDocument> {
-        return drawDocumentDAO.findAllByNameOrTagList(pageable, tag, tag)
-    }
 }

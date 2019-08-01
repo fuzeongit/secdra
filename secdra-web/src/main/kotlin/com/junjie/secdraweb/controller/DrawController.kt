@@ -42,14 +42,6 @@ class DrawController(private val drawService: DrawService, private val userServi
     }
 
     /**
-     * 根据标签获取
-     */
-    @GetMapping("/pagingIndex")
-    fun paging(tag: String, @PageableDefault(value = 20) pageable: Pageable): Page<DrawDocument> {
-        return drawService.paging(pageable, tag)
-    }
-
-    /**
      * 获取推荐
      */
     @GetMapping("/pagingByRecommend")
@@ -81,7 +73,7 @@ class DrawController(private val drawService: DrawService, private val userServi
     fun pagingBySelf(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
         val page = drawService.pagingByUserId(pageable, id
                 ?: userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
-        return getPageVO(page,userId)
+        return getPageVO(page, userId)
     }
 
     /**
@@ -167,7 +159,7 @@ class DrawController(private val drawService: DrawService, private val userServi
         }
         draw.isPrivate = isPrivate
 
-        if (!tagList!!.isEmpty()) {
+        if (tagList != null && !tagList.isEmpty()) {
             val tagNameList = draw.tagList.map { it.name }
             for (addTagName in tagList) {
                 if (tagNameList.indexOf(addTagName) == -1) {
@@ -176,7 +168,7 @@ class DrawController(private val drawService: DrawService, private val userServi
                     draw.tagList.add(tag)
                 }
             }
-            for (tag in draw.tagList.toList()){
+            for (tag in draw.tagList.toList()) {
                 if (tagList.indexOf(tag.name) == -1) {
                     draw.tagList.remove(tag)
                 }

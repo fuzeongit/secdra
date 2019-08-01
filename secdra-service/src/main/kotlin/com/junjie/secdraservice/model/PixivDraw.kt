@@ -11,13 +11,13 @@ import javax.persistence.Id
 
 
 @Entity
-class PixivDraw: Serializable {
+class PixivDraw : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var drawId: String? = null
+    var pixivId: String? = null
 
     var name: String? = null
 
@@ -26,6 +26,8 @@ class PixivDraw: Serializable {
     var userId: String? = null
 
     var tagList: String? = null
+
+    var init: Boolean = false
 
     @CreatedDate
     var createDate: Date = Date()
