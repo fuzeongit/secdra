@@ -11,7 +11,8 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: false
   data:
     elasticsearch:
       cluster-nodes: 127.0.0.1:9300

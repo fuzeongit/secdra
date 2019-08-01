@@ -11,6 +11,6 @@ class SecdraWebApplicationTests {
 
 	@Test
 	fun contextLoads() {
-	}
 
+	}
 }

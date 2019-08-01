@@ -6,8 +6,8 @@ import org.springframework.data.elasticsearch.annotations.Field
 import org.springframework.data.elasticsearch.annotations.FieldType
 import java.util.*
 
-@Document(indexName = "index_draw")
-class IndexDraw {
+@Document(indexName = "index_draw_search")
+class DrawDocument {
     @Id
     var id: String? = null
 

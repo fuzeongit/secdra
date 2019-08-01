@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdrasearch.model.IndexDraw
+import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -30,5 +30,5 @@ interface DrawService {
 
     fun synchronizationIndexDraw(): Long
 
-    fun paging(pageable: Pageable, tag: String): Page<IndexDraw>
+    fun paging(pageable: Pageable, tag: String): Page<DrawDocument>
 }

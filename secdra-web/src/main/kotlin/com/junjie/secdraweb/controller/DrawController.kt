@@ -3,7 +3,7 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdrasearch.model.IndexDraw
+import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.CollectionService
@@ -45,7 +45,7 @@ class DrawController(private val drawService: DrawService, private val userServi
      * 根据标签获取
      */
     @GetMapping("/pagingIndex")
-    fun paging(tag: String, @PageableDefault(value = 20) pageable: Pageable): Page<IndexDraw> {
+    fun paging(tag: String, @PageableDefault(value = 20) pageable: Pageable): Page<DrawDocument> {
         return drawService.paging(pageable, tag)
     }
 

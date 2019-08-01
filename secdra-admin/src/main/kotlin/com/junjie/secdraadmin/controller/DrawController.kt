@@ -1,29 +1,30 @@
 package com.junjie.secdraadmin.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.junjie.secdrasearch.model.IndexDraw
+import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.dao.DrawDAO
+import com.junjie.secdraservice.dao.PixivDrawDAO
+import com.junjie.secdraservice.dao.PixivErrorDAO
 import com.junjie.secdraservice.dao.UserDAO
 import com.junjie.secdraservice.model.Draw
+import com.junjie.secdraservice.model.PixivDraw
+import com.junjie.secdraservice.model.PixivError
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.DrawService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.RestTemplate
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
 import java.io.File
 import java.io.FileInputStream
+import java.util.*
 import javax.imageio.ImageIO
 
 
 @RestController
 @RequestMapping("draw")
-class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO, private val drawService: DrawService, val elasticsearchTemplate: ElasticsearchTemplate) {
+class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO, private val drawService: DrawService, private val pixivDrawDAO: PixivDrawDAO, private val pixivErrorDAO: PixivErrorDAO, private val elasticsearchTemplate: ElasticsearchTemplate) {
     @PostMapping("/init")
     fun init(folderPath: String): Any {
         var i = 0
@@ -64,9 +65,36 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
     }
 
 
+    @PostMapping("/pixivSave")
+    fun pixivSave(drawId: String,name: String,userName: String,userId: String, tagList: String): PixivDraw {
+        val p = PixivDraw()
+        p.drawId = drawId
+        p.name = name
+        p.userName = userName
+        p.userId = userId
+        p.tagList = tagList
+        return pixivDrawDAO.save(p)
+    }
+
+    @PostMapping("/pixivError")
+    fun pixivSave(drawId: String, message: String): PixivError {
+        val pixivError = PixivError()
+        pixivError.drawId = drawId
+        pixivError.message = message
+        return pixivErrorDAO.save(pixivError)
+    }
+
+    /**
+     * 根据标签获取
+     */
+    @GetMapping("/paging")
+    fun paging(@CurrentUserId userId: String?, tag: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<Draw> {
+        return drawService.paging(pageable, tag, startDate, endDate)
+    }
+
     @GetMapping("/initIndex")
     fun initIndex() {
-        elasticsearchTemplate.createIndex(IndexDraw::class.java)
+        elasticsearchTemplate.createIndex(DrawDocument::class.java)
     }
 
     @GetMapping("/initEs")

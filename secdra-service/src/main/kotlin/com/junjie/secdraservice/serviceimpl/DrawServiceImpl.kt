@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
-import com.junjie.secdrasearch.dao.IndexDrawDAO
-import com.junjie.secdrasearch.model.IndexDraw
+import com.junjie.secdrasearch.dao.DrawDocumentDAO
+import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.model.Draw
@@ -23,11 +23,7 @@ import javax.persistence.criteria.Predicate
 
 
 @Service
-class DrawServiceImpl(private val drawDAO: DrawDAO, private val indexDrawDAO: IndexDrawDAO) : DrawService {
-    override fun paging(pageable: Pageable, tag: String): Page<IndexDraw> {
-        return indexDrawDAO.findAllByNameOrTagList(pageable, tag, tag)
-    }
-
+class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO: DrawDocumentDAO) : DrawService {
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -114,9 +110,9 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val indexDrawDAO: In
 
     override fun synchronizationIndexDraw(): Long {
         val sourceList = drawDAO.findAll()
-        val drawList = mutableListOf<IndexDraw>()
+        val drawList = mutableListOf<DrawDocument>()
         for (source in sourceList) {
-            val draw = IndexDraw()
+            val draw = DrawDocument()
             draw.id = source.id
             draw.name = source.name
             draw.userId = source.userId
@@ -128,9 +124,11 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val indexDrawDAO: In
             }
             drawList.add(draw)
         }
-        indexDrawDAO.saveAll(drawList)
+        drawDocumentDAO.saveAll(drawList)
         return sourceList.size.toLong()
     }
 
-
+    override fun paging(pageable: Pageable, tag: String): Page<DrawDocument> {
+        return drawDocumentDAO.findAllByNameOrTagList(pageable, tag, tag)
+    }
 }
