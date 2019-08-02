@@ -32,7 +32,7 @@ class CollectionController(private val collectionService: CollectionService, pri
                            private val userService: UserService, private val followService: FollowService) {
     @Auth
     @PostMapping("/focus")
-    fun focus(@CurrentUserId userId: String, drawId: String): Boolean {
+    fun focus(@CurrentUserId userId: String, drawId: String): CollectState {
         val draw = drawService.get(drawId)
         if (draw.userId == userId) {
             throw ProgramException("不能收藏自己的作品")
@@ -42,10 +42,10 @@ class CollectionController(private val collectionService: CollectionService, pri
                 throw ProgramException("不能收藏私密图片")
             }
             collectionService.save(userId, drawId)
-            true
+            CollectState.CONCERNED
         } else {
             collectionService.remove(userId, drawId)
-            false
+            CollectState.STRANGE
         }
         drawService.update(drawId, null, collectionService.countByDrawId(drawId))
         return flag;

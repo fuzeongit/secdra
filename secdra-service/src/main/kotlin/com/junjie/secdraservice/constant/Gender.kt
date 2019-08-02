@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.constant
 
 enum class Gender private constructor(var value: String) {
-    MALE("男"),
-    FEMALE("女")
+    MALE("男孩"),
+    FEMALE("女孩")
 }

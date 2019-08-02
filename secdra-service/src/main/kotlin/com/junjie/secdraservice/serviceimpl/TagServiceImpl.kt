@@ -1,6 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdraservice.constant.DrawState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.TagDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
@@ -22,7 +23,7 @@ class TagServiceImpl(private val tagDAO: TagDAO) : TagService {
             val predicatesList = ArrayList<Predicate>()
             val joinDraw: Join<Tag, Draw> = root.join("draw", JoinType.INNER)
             predicatesList.add(criteriaBuilder.equal(joinDraw.get<Int>("drawState"), DrawState.PASS))
-            predicatesList.add(criteriaBuilder.equal(joinDraw.get<Int>("isPrivate"), false))
+            predicatesList.add(criteriaBuilder.equal(joinDraw.get<Int>("privacy"), PrivacyState.PUBLIC))
             criteriaQuery
                     .groupBy(root.get<String>("name"))
                     .orderBy(criteriaBuilder.desc(criteriaBuilder.count(root.get<String>("name")))

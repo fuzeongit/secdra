@@ -26,7 +26,7 @@ class FollowingController(private val followService: FollowService, private val 
                           private val followMessageService: FollowMessageService, private val webSocketService: WebSocketService) {
     @Auth
     @PostMapping("/focus")
-    fun focus(@CurrentUserId followerId: String, followingId: String): Boolean {
+    fun focus(@CurrentUserId followerId: String, followingId: String): FollowState {
         if (followerId == followingId) {
             throw ProgramException("不能关注自己")
         }
@@ -38,10 +38,10 @@ class FollowingController(private val followService: FollowService, private val 
             followMessage.followingId = follow.followingId
             followMessageService.save(followMessage)
             webSocketService.sendFollowingFocus(followerId, followingId)
-            true
+            FollowState.CONCERNED
         } else {
             followService.remove(followerId, followingId)
-            false
+            FollowState.STRANGE
         }
     }
 

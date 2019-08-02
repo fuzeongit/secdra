@@ -4,6 +4,7 @@ import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdrasearch.dao.DrawDocumentDAO
 import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.constant.DrawState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
@@ -40,7 +41,7 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
                 predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), endDate))
             }
             predicatesList.add(criteriaBuilder.equal(root.get<Int>("drawState"), DrawState.PASS))
-            predicatesList.add(criteriaBuilder.equal(root.get<Int>("isPrivate"), false))
+            predicatesList.add(criteriaBuilder.equal(root.get<Int>("privacy"), PrivacyState.PUBLIC))
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return drawDAO.findAll(specification, pageable)
@@ -58,7 +59,7 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
             predicatesList.add(criteriaBuilder.equal(root.get<String>("userId"), userId))
             predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
             if (!isSelf) {
-                predicatesList.add(criteriaBuilder.equal(root.get<String>("isPrivate"), false))
+                predicatesList.add(criteriaBuilder.equal(root.get<String>("privacy"), PrivacyState.PUBLIC))
             }
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }

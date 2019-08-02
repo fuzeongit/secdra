@@ -3,7 +3,6 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag

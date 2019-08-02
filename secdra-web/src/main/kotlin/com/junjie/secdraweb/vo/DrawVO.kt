@@ -1,6 +1,7 @@
 package com.junjie.secdraweb.vo
 
 import com.junjie.secdraservice.constant.CollectState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.model.User
@@ -18,7 +19,7 @@ class DrawVO {
 
     var name: String? = null
 
-    var isPrivate: Boolean = false
+    var privacy: PrivacyState = PrivacyState.PUBLIC
 
     var focus: CollectState = CollectState.CONCERNED
 
