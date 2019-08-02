@@ -3,6 +3,7 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdraservice.constant.FollowState
 import com.junjie.secdraservice.model.FollowMessage
 import com.junjie.secdraservice.service.FollowMessageService
 import com.junjie.secdraservice.service.FollowService
@@ -29,14 +30,14 @@ class FollowingController(private val followService: FollowService, private val 
         if (followerId == followingId) {
             throw ProgramException("不能关注自己")
         }
-        val isFocus = followService.exists(followerId, followingId) ?: throw ProgramException("不能关注")
-        return if (!isFocus) {
+        val focus = followService.exists(followerId, followingId)
+        return if (focus == FollowState.STRANGE) {
             val follow = followService.save(followerId, followingId)
             val followMessage = FollowMessage()
             followMessage.followerId = follow.followerId
             followMessage.followingId = follow.followingId
             followMessageService.save(followMessage)
-            webSocketService.sendFollowingFocus(followerId,followingId)
+            webSocketService.sendFollowingFocus(followerId, followingId)
             true
         } else {
             followService.remove(followerId, followingId)
@@ -78,7 +79,7 @@ class FollowingController(private val followService: FollowService, private val 
         val userVOList = ArrayList<UserVO>()
         for (follow in page.content) {
             val userVO = UserVO(userService.getInfo(follow.followingId!!))
-            userVO.isFocus = followService.exists(followerId, userVO.id!!)
+            userVO.focus = followService.exists(followerId, userVO.id!!)
             userVOList.add(userVO)
         }
         return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)

@@ -1,6 +1,5 @@
 package com.junjie.secdraadmin.controller
 
-import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.util.EmojiUtil
 import com.junjie.secdrasearch.model.DrawDocument
 import com.junjie.secdraservice.dao.DrawDAO
@@ -12,10 +11,7 @@ import com.junjie.secdraservice.model.PixivDraw
 import com.junjie.secdraservice.model.PixivError
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.DrawService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
-import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 import java.io.File
 import java.io.FileInputStream
@@ -109,17 +105,22 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
                     pixivDraw.name
                 }
 
-                val tagStringList = pixivDraw.tagList!!.split("|")
-
-                for (tagString in tagStringList) {
-                    val tag = Tag()
-                    tag.name = tagString
-                    draw.tagList.add(tag)
+                val tagList = pixivDraw.tagList!!.split("|")
+                val tagNameList = draw.tagList.map { it.name }
+                for (addTagName in tagList) {
+                    if (tagNameList.indexOf(addTagName) == -1) {
+                        val tag = Tag()
+                        tag.name = addTagName
+                        draw.tagList.add(tag)
+                    }
+                }
+                for (tag in draw.tagList.toList()) {
+                    if (tagList.indexOf(tag.name) == -1) {
+                        draw.tagList.remove(tag)
+                    }
                 }
 
-
                 drawDAO.save(draw)
-
             }
 
             pixivDrawDAO.save(pixivDraw)
@@ -129,11 +130,11 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
     }
 
     @GetMapping("/check")
-    fun check (): Int {
+    fun check(): Int {
         val drawList = drawDAO.findAll()
         var i = 0
-        for(draw in drawList){
-            if(draw.tagList.size == 0){
+        for (draw in drawList) {
+            if (draw.tagList.size == 0) {
                 i++
             }
         }
@@ -166,4 +167,35 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
     fun initEs(): Long {
         return drawService.synchronizationIndexDraw()
     }
+
+    @PostMapping("/update")
+    fun update(@RequestParam("tagList") tagList: Array<String>?): Draw {
+        //57150551_p0.jpg
+        val draw = drawService.get("402880e567208788016720898f230008")
+        if (tagList != null && !tagList.isEmpty()) {
+            val tagNameList = draw.tagList.map { it.name }
+            for (addTagName in tagList) {
+                if (tagNameList.indexOf(addTagName) == -1) {
+                    val tag = Tag()
+                    tag.name = addTagName
+
+                    draw.tagList.add(tag)
+                }
+            }
+            for (tag in draw.tagList.toList()) {
+                if (tagList.indexOf(tag.name) == -1) {
+                    draw.tagList.remove(tag)
+                }
+            }
+        }
+        return drawService.save(draw)
+    }
+
+    @PostMapping("/delete")
+    fun delete() {
+        //57150551_p0.jpg
+        drawDAO.deleteById("402880e567208788016720898f230008")
+
+    }
+
 }

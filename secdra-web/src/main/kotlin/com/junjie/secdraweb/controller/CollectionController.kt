@@ -4,6 +4,9 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdraservice.constant.CollectState
+import com.junjie.secdraservice.constant.FollowState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawService
@@ -32,10 +35,10 @@ class CollectionController(private val collectionService: CollectionService, pri
     fun focus(@CurrentUserId userId: String, drawId: String): Boolean {
         val draw = drawService.get(drawId)
         if (draw.userId == userId) {
-           throw ProgramException("不能收藏自己的作品")
+            throw ProgramException("不能收藏自己的作品")
         }
-        val flag = if (!collectionService.exists(userId, drawId)) {
-            if(draw.isPrivate){
+        val flag = if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
+            if (draw.privacy == PrivacyState.PRIVATE) {
                 throw ProgramException("不能收藏私密图片")
             }
             collectionService.save(userId, drawId)
@@ -59,7 +62,7 @@ class CollectionController(private val collectionService: CollectionService, pri
         }
         val newDrawIdList = mutableListOf<String>()
         for (drawId in drawIdList) {
-            if (!collectionService.exists(userId, drawId)) {
+            if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
                 continue
             }
             try {
@@ -89,14 +92,14 @@ class CollectionController(private val collectionService: CollectionService, pri
             var draw: Draw
             try {
                 draw = drawService.get(collection.drawId!!)
-                if (draw.isPrivate) {
+                if (draw.privacy == PrivacyState.PRIVATE) {
                     draw.url = "";
                 }
             } catch (e: Exception) {
-                if ( e is NotFoundException) {
+                if (e is NotFoundException) {
                     draw = Draw()
                     draw.id = collection.drawId
-                    draw.isPrivate = true
+                    draw.privacy = PrivacyState.PRIVATE
                 } else {
                     throw e
                 }
@@ -107,9 +110,9 @@ class CollectionController(private val collectionService: CollectionService, pri
             val userVO = UserVO()
             val user = userService.getInfo(draw.userId!!)
             BeanUtils.copyProperties(user, userVO)
-            userVO.isFocus = followService.exists(userId, draw.userId!!)
-            drawVO.isFocus = if (id.isNullOrEmpty() || id == userId) {
-                true
+            userVO.focus = followService.exists(userId, draw.userId!!)
+            drawVO.focus = if (id.isNullOrEmpty() || id == userId) {
+                CollectState.CONCERNED
             } else {
                 collectionService.exists(userId, draw.id!!)
             }

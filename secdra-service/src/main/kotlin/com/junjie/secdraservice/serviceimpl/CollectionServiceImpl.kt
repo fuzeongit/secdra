@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.serviceimpl
 
+import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.dao.CollectionDAO
 import com.junjie.secdraservice.model.Collection
 import com.junjie.secdraservice.service.CollectionService
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : CollectionService {
-    override fun exists(userId: String, drawId: String): Boolean {
-        return collectionDAO.existsByUserIdAndDrawId(userId, drawId)
+    override fun exists(userId: String, drawId: String): CollectState {
+        return if (collectionDAO.existsByUserIdAndDrawId(userId, drawId)) CollectState.CONCERNED else CollectState.STRANGE
     }
 
     override fun get(userId: String, drawId: String): Collection {

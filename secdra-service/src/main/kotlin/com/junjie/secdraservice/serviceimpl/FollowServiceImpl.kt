@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.serviceimpl
 
+import com.junjie.secdraservice.constant.FollowState
 import com.junjie.secdraservice.dao.FollowDAO
 import com.junjie.secdraservice.model.Follow
 import com.junjie.secdraservice.service.FollowService
@@ -9,14 +10,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
-    override fun exists(followerId: String?, followingId: String): Boolean? {
+    override fun exists(followerId: String?, followingId: String): FollowState {
         if (followerId == followingId) {
-            return null
+            return FollowState.SElF
         }
         return try {
-            followDAO.existsByFollowerIdAndFollowingId(followerId!!, followingId)
+            if (followDAO.existsByFollowerIdAndFollowingId(followerId!!, followingId)) FollowState.CONCERNED else FollowState.STRANGE
         } catch (e: Exception) {
-            null
+            FollowState.SElF
         }
     }
 

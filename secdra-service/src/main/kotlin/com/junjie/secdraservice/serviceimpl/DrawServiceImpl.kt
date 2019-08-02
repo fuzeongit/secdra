@@ -24,6 +24,7 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO: DrawDocumentDAO) : DrawService {
+
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -98,11 +99,12 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
     }
 
     override fun countByTag(tag: String): Long {
-        val specification = Specification<Draw> { root, _, criteriaBuilder ->
+        val specification = Specification<Draw> { root, criteriaQuery, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
             val joinTag: Join<Draw, Tag> = root.join("tagList", JoinType.LEFT)
             predicatesList.add(criteriaBuilder.like(joinTag.get<String>("name"), "%$tag%"))
             predicatesList.add(criteriaBuilder.equal(root.get<String>("drawState"), DrawState.PASS))
+            criteriaQuery.distinct(true)
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return drawDAO.count(specification)

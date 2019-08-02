@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.service
 
+import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.model.Collection
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -12,7 +13,7 @@ import org.springframework.data.domain.Pageable
  */
 
 interface CollectionService {
-    fun exists(userId: String, drawId: String): Boolean
+    fun exists(userId: String, drawId: String): CollectState
 
     fun get(userId: String, drawId: String): Collection
 

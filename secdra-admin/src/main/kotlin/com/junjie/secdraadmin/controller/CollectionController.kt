@@ -1,5 +1,6 @@
 package com.junjie.secdraadmin.controller
 
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.CollectionDAO
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.dao.UserDAO
@@ -18,7 +19,7 @@ class CollectionController(private var drawDAO: DrawDAO, private var userDAO: Us
         for (user in userList) {
             val takeList = drawList.shuffled().take(50)
             for (take in takeList) {
-                if (take.userId.isNullOrEmpty() || user.id.isNullOrEmpty() || take.userId == user.id || take.isPrivate) {
+                if (take.userId.isNullOrEmpty() || user.id.isNullOrEmpty() || take.userId == user.id || take.privacy == PrivacyState.PRIVATE) {
                     continue
                 }
                 if (collectionDAO.existsByUserIdAndDrawId(user.id!!, take.id!!)) {

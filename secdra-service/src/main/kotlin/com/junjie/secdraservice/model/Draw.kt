@@ -2,6 +2,7 @@ package com.junjie.secdraservice.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.junjie.secdraservice.constant.DrawState
+import com.junjie.secdraservice.constant.PrivacyState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -30,7 +31,7 @@ class Draw : Serializable {
 
     var name: String? = null
 
-    var isPrivate: Boolean = false
+    var privacy: PrivacyState = PrivacyState.PUBLIC
 
     var drawState: DrawState = DrawState.PASS
 
@@ -43,7 +44,7 @@ class Draw : Serializable {
     var height: Long = 0;
 
     @JsonIgnore
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "draw_id")
     var tagList: MutableSet<Tag> = mutableSetOf()
 

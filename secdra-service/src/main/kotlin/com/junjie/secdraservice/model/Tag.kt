@@ -22,7 +22,7 @@ class Tag: Serializable {
     var name: String? = null
 
     @JsonIgnore
-    @ManyToOne(cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
+    @ManyToOne
     var draw: Draw? = null
 
     @CreatedDate

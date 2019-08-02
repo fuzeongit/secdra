@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.lang.Nullable
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 
@@ -18,8 +19,6 @@ interface DrawDAO : JpaRepository<Draw, String>, JpaSpecificationExecutor<Draw> 
 
     @EntityGraph(value = "Draw.Tag", type = EntityGraph.EntityGraphType.FETCH)
     override fun findAll(@Nullable specification: Specification<Draw>?, pageable: Pageable): Page<Draw>
-
-    fun findAllByUserId(pageable: Pageable): Page<Draw>
 
     fun findAllByUrlLike(url: String): List<Draw>
 

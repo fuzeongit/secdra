@@ -1,5 +1,6 @@
 package com.junjie.secdraweb.vo
 
+import com.junjie.secdraservice.constant.FollowState
 import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.model.User
 import org.springframework.beans.BeanUtils
@@ -24,11 +25,12 @@ class UserVO {
 
     var background: String? = null
 
-    var isFocus: Boolean? = null
+    var focus: FollowState = FollowState.SElF
 
-    constructor(){
+    constructor() {
     }
-    constructor(user: User){
-        BeanUtils.copyProperties(user,this)
+
+    constructor(user: User) {
+        BeanUtils.copyProperties(user, this)
     }
 }

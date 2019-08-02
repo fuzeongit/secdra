@@ -27,27 +27,11 @@ class TagServiceImpl(private val tagDAO: TagDAO) : TagService {
                     .groupBy(root.get<String>("name"))
                     .orderBy(criteriaBuilder.desc(criteriaBuilder.count(root.get<String>("name")))
                             , criteriaBuilder.desc(criteriaBuilder.sum(joinDraw.get<Number>("likeAmount"))))
+                    .distinct(true)
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
 
         val tagListSource = tagDAO.findAll(specification, PageRequest.of(0, 30))
         return tagListSource.content
-//        val tagList = ArrayList<Tag>()
-//        for (tagSource in tagListSource.content) {
-//            val specificationItem = Specification<Tag> { root, criteriaQuery, criteriaBuilder ->
-//                val predicatesList = ArrayList<Predicate>()
-//                val joinDraw: Join<Tag, Draw> = root.join("draw", JoinType.INNER)
-//                predicatesList.add(criteriaBuilder.equal(root.get<String>("name"), tagSource.name))
-//                criteriaQuery.orderBy(criteriaBuilder.desc(joinDraw.get<Number>("likeAmount")))
-//                criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
-//            }
-//            try {
-//                val tagFirst = tagDAO.findAll(specificationItem, PageRequest.of(0, 1)).content
-//                tagList.add(tagFirst[0])
-//            } catch (e: Exception) {
-//                println(e.message)
-//            }
-//        }
-//        return tagList
     }
 }

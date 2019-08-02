@@ -115,7 +115,7 @@ class UserController(private val userService: UserService, private val baseConfi
         } else {
             id!!
         }))
-        userVO.isFocus = followService.exists(userId, userVO.id!!)
+        userVO.focus = followService.exists(userId, userVO.id!!)
         return userVO
     }
 

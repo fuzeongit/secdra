@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.service
 
+import com.junjie.secdraservice.constant.FollowState
 import com.junjie.secdraservice.model.Follow
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Pageable
  */
 
 interface FollowService {
-    fun exists(followerId: String?, followingId: String): Boolean?
+    fun exists(followerId: String?, followingId: String): FollowState
 
     fun save(followerId: String, followingId: String): Follow
 
