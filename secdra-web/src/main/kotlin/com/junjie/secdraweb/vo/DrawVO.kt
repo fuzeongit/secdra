@@ -21,7 +21,7 @@ class DrawVO {
 
     var privacy: PrivacyState = PrivacyState.PUBLIC
 
-    var focus: CollectState = CollectState.CONCERNED
+    var focus: CollectState = CollectState.STRANGE
 
     var viewAmount: Long = 0
 

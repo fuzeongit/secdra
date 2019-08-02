@@ -189,7 +189,7 @@ class DrawController(private val drawService: DrawService, private val userServi
                 if (privacy != null) {
                     draw.privacy = privacy
                 }
-                if (!tagList!!.isEmpty()) {
+                if (tagList != null && !tagList.isEmpty()) {
                     val tagNameList = draw.tagList.map { it.name }
                     for (addTagName in tagList) {
                         if (tagNameList.indexOf(addTagName) == -1) {
