@@ -3,7 +3,9 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdrasearch.model.DrawDocument
+import com.junjie.secdrasearch.service.DrawDocumentService
+import com.junjie.secdracore.constant.PrivacyState
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.CollectionService
@@ -29,16 +31,15 @@ import kotlin.collections.ArrayList
  */
 @RestController
 @RequestMapping("draw")
-class DrawController(private val drawService: DrawService, private val userService: UserService,
+class DrawController(private val drawService: DrawService, private val drawDocumentService: DrawDocumentService, private val userService: UserService,
                      private val collectionService: CollectionService, private val followService: FollowService,
                      private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig) {
     /**
      * 根据标签获取
      */
     @GetMapping("/paging")
-    fun paging(@CurrentUserId userId: String?, tag: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
-        val page = drawService.paging(pageable, tag, startDate, endDate)
-        return getPageVO(page, userId)
+    fun paging(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, tagList: String?, precise: Boolean?, name: String?, startDate: Date?, endDate: Date?): Page<DrawDocument> {
+        return drawDocumentService.paging(pageable, tagList?.split(" "), precise != null && precise, name, startDate, endDate)
     }
 
     /**

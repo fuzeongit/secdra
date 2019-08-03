@@ -1,4 +1,4 @@
-package com.junjie.secdraservice.constant
+package com.junjie.secdracore.constant
 
 enum class PrivacyState private constructor(var value: String) {
     PUBLIC("公开"),

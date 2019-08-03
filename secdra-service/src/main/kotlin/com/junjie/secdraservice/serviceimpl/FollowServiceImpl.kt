@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdraservice.constant.FollowState
+import com.junjie.secdracore.constant.FollowState
 import com.junjie.secdraservice.dao.FollowDAO
 import com.junjie.secdraservice.model.Follow
 import com.junjie.secdraservice.service.FollowService

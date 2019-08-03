@@ -1,10 +1,8 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.constant.CollectState
-import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdracore.constant.CollectState
+import com.junjie.secdracore.constant.PrivacyState
 import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.model.Tag
-import com.junjie.secdraservice.model.User
 import org.springframework.beans.BeanUtils
 import java.util.*
 
@@ -31,7 +29,7 @@ class DrawVO {
 
     var height: Long = 0;
 
-    var tagList: MutableSet<Tag> = mutableSetOf<Tag>()
+    var tagList: List<String> = mutableListOf()
 
     var user: UserVO? = null
 

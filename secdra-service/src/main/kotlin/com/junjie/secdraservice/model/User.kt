@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.model
 
-import com.junjie.secdraservice.constant.Gender
-import com.junjie.secdraservice.constant.UserState
+import com.junjie.secdracore.constant.Gender
+import com.junjie.secdracore.constant.UserState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

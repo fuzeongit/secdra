@@ -1,5 +1,4 @@
-package com.junjie.secdraservice.constant
-
+package com.junjie.secdracore.constant
 
 enum class FollowState private constructor(var value: String) {
     STRANGE("未关注"),

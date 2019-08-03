@@ -3,8 +3,8 @@ package com.junjie.secdraservice.serviceimpl
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdrasearch.dao.DrawDocumentDAO
 import com.junjie.secdrasearch.model.DrawDocument
-import com.junjie.secdraservice.constant.DrawState
-import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdracore.constant.DrawState
+import com.junjie.secdracore.constant.PrivacyState
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
@@ -25,7 +25,6 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO: DrawDocumentDAO) : DrawService {
-
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -45,6 +44,10 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return drawDAO.findAll(specification, pageable)
+    }
+
+    override fun paging(pageable: Pageable, tag: String?): Page<DrawDocument> {
+        return drawDocumentDAO.findAllByNameOrTagList(pageable, tag!!, tag)
     }
 
     override fun pagingByUserId(pageable: Pageable, userId: String, startDate: Date?, endDate: Date?, isSelf: Boolean): Page<Draw> {
@@ -118,10 +121,16 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
             val draw = DrawDocument()
             draw.id = source.id
             draw.name = source.name
+            draw.introduction = source.introduction
+            draw.url = source.url
             draw.userId = source.userId
+            draw.privacy = source.privacy
             draw.viewAmount = source.viewAmount
             draw.likeAmount = source.likeAmount
+            draw.width = source.width
+            draw.height = source.height
             draw.createDate = source.createDate
+            draw.modifiedDate = source.modifiedDate
             for (tag in source.tagList) {
                 draw.tagList.add(tag.name!!)
             }
@@ -130,5 +139,4 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         drawDocumentDAO.saveAll(drawList)
         return sourceList.size.toLong()
     }
-
 }

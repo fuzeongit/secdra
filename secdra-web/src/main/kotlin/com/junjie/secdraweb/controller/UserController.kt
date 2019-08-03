@@ -5,7 +5,7 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.util.JwtUtil
-import com.junjie.secdraservice.constant.Gender
+import com.junjie.secdracore.constant.Gender
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService

@@ -1,4 +1,4 @@
-package com.junjie.secdraservice.constant
+package com.junjie.secdracore.constant
 
 enum class Gender private constructor(var value: String) {
     MALE("男孩"),

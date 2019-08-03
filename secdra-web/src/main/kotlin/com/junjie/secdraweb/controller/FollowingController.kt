@@ -3,7 +3,7 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdraservice.constant.FollowState
+import com.junjie.secdracore.constant.FollowState
 import com.junjie.secdraservice.model.FollowMessage
 import com.junjie.secdraservice.service.FollowMessageService
 import com.junjie.secdraservice.service.FollowService

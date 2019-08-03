@@ -12,8 +12,10 @@ import java.util.*
  * @author fjj
  */
 interface DrawService {
-//    @Deprecated("由于ES的引入，弃用改查询，查询的时候使用ES查询")
+    @Deprecated("由于ES的引入，弃用改查询，查询的时候使用ES查询")
     fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw>
+
+    fun paging(pageable: Pageable, tag: String?) :Page<DrawDocument>
 
     fun pagingByUserId(pageable: Pageable, userId: String, startDate: Date?, endDate: Date?, isSelf: Boolean): Page<Draw>
 

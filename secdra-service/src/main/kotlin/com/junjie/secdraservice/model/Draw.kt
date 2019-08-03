@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.junjie.secdraservice.constant.DrawState
-import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdracore.constant.DrawState
+import com.junjie.secdracore.constant.PrivacyState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -23,13 +23,13 @@ class Draw : Serializable {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var introduction: String? = null
-
-    var url: String? = null
-
     var userId: String? = null
 
     var name: String? = null
+
+    var introduction: String? = null
+
+    var url: String? = null
 
     var privacy: PrivacyState = PrivacyState.PUBLIC
 

@@ -1,5 +1,4 @@
-package com.junjie.secdraservice.constant
-
+package com.junjie.secdracore.constant
 
 enum class CommentState private constructor(var value: String) {
     DISABLE("禁用"),
