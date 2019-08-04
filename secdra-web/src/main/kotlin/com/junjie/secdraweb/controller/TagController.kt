@@ -1,7 +1,9 @@
 package com.junjie.secdraweb.controller
 
+import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.TagService
 import com.junjie.secdraweb.vo.TagVO
+import org.elasticsearch.search.aggregations.Aggregation
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -13,14 +15,9 @@ import java.util.*
  */
 @RestController
 @RequestMapping("tag")
-class TagController(private val tagService: TagService) {
-    @GetMapping("/listTagOrderByLikeAmount")
-    fun listTagOrderByLikeAmount(): ArrayList<TagVO> {
-        val list = tagService.listTagOrderByLikeAmount()
-        val voList = ArrayList<TagVO>()
-        for (item in list) {
-            voList.add(TagVO(item.name!!, item.draw?.url!!))
-        }
-        return voList
+class TagController(private val drawDocumentService: DrawDocumentService) {
+    @GetMapping("/listTagTop30")
+    fun listTagTop30(): Aggregation? {
+        return drawDocumentService.listTagTop30()
     }
 }

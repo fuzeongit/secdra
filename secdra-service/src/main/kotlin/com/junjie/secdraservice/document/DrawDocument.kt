@@ -42,7 +42,7 @@ class DrawDocument : Serializable {
     @Field(type = FieldType.Keyword, index = false)
     var height: Long = 0;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    @Field(type = FieldType.Keyword)
     var tagList: MutableList<String> = mutableListOf()
 
     @Field(type = FieldType.Keyword)

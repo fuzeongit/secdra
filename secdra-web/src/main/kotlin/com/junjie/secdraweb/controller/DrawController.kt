@@ -61,23 +61,11 @@ class DrawController(private val drawService: DrawService, private val drawDocum
 //    }
 
     /**
-     * 按userId获取
-     */
-//    @Auth
-//    @GetMapping("/pagingByUserId")
-//    fun pagingByUserId(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
-//        val page = drawService.pagingByUserId(pageable, id
-//                ?: userId, startDate, endDate, id.isNullOrEmpty() || id == userId)
-//        return getPageVO(page, userId)
-//    }
-
-
-    /**
      * 获取图片
      */
     @GetMapping("/get")
     fun get(id: String, @CurrentUserId userId: String?): DrawVO {
-        val draw = drawService.get(id)
+        val draw = drawDocumentService.get(id)
         if (draw.privacy == PrivacyState.PRIVATE && draw.userId != userId) {
             draw.url = ""
         }
@@ -90,7 +78,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      */
     @GetMapping("getFirstByTag")
     fun getFirstByTag(tag: String): DrawVO {
-        val draw = drawService.getFirstByTag(tag)
+        val draw = drawDocumentService.getFirstByTag(tag)
         return getVO(DrawVO(draw), null)
     }
 

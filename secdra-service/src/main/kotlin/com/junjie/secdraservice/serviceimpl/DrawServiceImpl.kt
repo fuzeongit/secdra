@@ -65,27 +65,6 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         return drawDAO.findAll(specification, pageable)
     }
 
-//    @Cacheable("draw::get", key = "#id")
-    override fun get(id: String): Draw {
-        return drawDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
-    }
-
-    override fun update(id: String, viewAmount: Long?, likeAmount: Long?): DrawDocument {
-        val draw = get(id)
-        if (viewAmount != null) {
-            draw.viewAmount = viewAmount
-        }
-        if (likeAmount != null) {
-            draw.likeAmount = likeAmount
-        }
-        return save(draw)
-    }
-
-//    @CachePut("draw::get", key = "#draw.id")
-    override fun save(draw: Draw): DrawDocument {
-        return drawDocumentDAO.save(DrawDocument(drawDAO.save(draw)))
-    }
-
     @Cacheable("draw::pagingRand")
     override fun pagingRand(pageable: Pageable): Page<Draw> {
         return drawDAO.pagingRand(pageable)
@@ -107,6 +86,27 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return drawDAO.count(specification)
+    }
+
+    @Cacheable("draw::get", key = "#id")
+    override fun get(id: String): Draw {
+        return drawDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
+    }
+
+    //    @CachePut("draw::get", key = "#draw.id")
+    override fun save(draw: Draw): DrawDocument {
+        return drawDocumentDAO.save(DrawDocument(drawDAO.save(draw)))
+    }
+
+    override fun update(id: String, viewAmount: Long?, likeAmount: Long?): DrawDocument {
+        val draw = get(id)
+        if (viewAmount != null) {
+            draw.viewAmount = viewAmount
+        }
+        if (likeAmount != null) {
+            draw.likeAmount = likeAmount
+        }
+        return save(draw)
     }
 
     override fun synchronizationIndexDraw(): Long {
