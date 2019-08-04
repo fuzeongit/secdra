@@ -1,4 +1,4 @@
-package com.junjie.secdracore.constant
+package com.junjie.secdraservice.constant
 
 enum class CollectState private constructor(var value: String) {
     STRANGE("未关注"),

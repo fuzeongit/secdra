@@ -1,6 +1,6 @@
-package com.junjie.secdrasearch.dao
+package com.junjie.secdraservice.dao
 
-import com.junjie.secdrasearch.model.DrawDocument
+import com.junjie.secdraservice.document.DrawDocument
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository

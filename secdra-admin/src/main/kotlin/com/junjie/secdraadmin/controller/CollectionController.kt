@@ -1,6 +1,6 @@
 package com.junjie.secdraadmin.controller
 
-import com.junjie.secdracore.constant.PrivacyState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.CollectionDAO
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraservice.dao.UserDAO

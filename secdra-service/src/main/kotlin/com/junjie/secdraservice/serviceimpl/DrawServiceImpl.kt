@@ -1,11 +1,11 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
-import com.junjie.secdrasearch.dao.DrawDocumentDAO
-import com.junjie.secdrasearch.model.DrawDocument
-import com.junjie.secdracore.constant.DrawState
-import com.junjie.secdracore.constant.PrivacyState
+import com.junjie.secdraservice.constant.DrawState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.DrawDAO
+import com.junjie.secdraservice.dao.DrawDocumentDAO
+import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.DrawService
@@ -46,10 +46,6 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         return drawDAO.findAll(specification, pageable)
     }
 
-    override fun paging(pageable: Pageable, tag: String?): Page<DrawDocument> {
-        return drawDocumentDAO.findAllByNameOrTagList(pageable, tag!!, tag)
-    }
-
     override fun pagingByUserId(pageable: Pageable, userId: String, startDate: Date?, endDate: Date?, isSelf: Boolean): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
@@ -69,13 +65,12 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         return drawDAO.findAll(specification, pageable)
     }
 
-    @Cacheable("draw::get", key = "#id")
+//    @Cacheable("draw::get", key = "#id")
     override fun get(id: String): Draw {
         return drawDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
-    @CachePut("draw::get", key = "#id")
-    override fun update(id: String, viewAmount: Long?, likeAmount: Long?): Draw {
+    override fun update(id: String, viewAmount: Long?, likeAmount: Long?): DrawDocument {
         val draw = get(id)
         if (viewAmount != null) {
             draw.viewAmount = viewAmount
@@ -83,12 +78,12 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         if (likeAmount != null) {
             draw.likeAmount = likeAmount
         }
-        return drawDAO.save(draw)
+        return save(draw)
     }
 
-    @CachePut("draw::get", key = "#draw.id")
-    override fun save(draw: Draw): Draw {
-        return drawDAO.save(draw)
+//    @CachePut("draw::get", key = "#draw.id")
+    override fun save(draw: Draw): DrawDocument {
+        return drawDocumentDAO.save(DrawDocument(drawDAO.save(draw)))
     }
 
     @Cacheable("draw::pagingRand")
@@ -118,22 +113,7 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         val sourceList = drawDAO.findAll()
         val drawList = mutableListOf<DrawDocument>()
         for (source in sourceList) {
-            val draw = DrawDocument()
-            draw.id = source.id
-            draw.name = source.name
-            draw.introduction = source.introduction
-            draw.url = source.url
-            draw.userId = source.userId
-            draw.privacy = source.privacy
-            draw.viewAmount = source.viewAmount
-            draw.likeAmount = source.likeAmount
-            draw.width = source.width
-            draw.height = source.height
-            draw.createDate = source.createDate
-            draw.modifiedDate = source.modifiedDate
-            for (tag in source.tagList) {
-                draw.tagList.add(tag.name!!)
-            }
+            val draw = DrawDocument(source)
             drawList.add(draw)
         }
         drawDocumentDAO.saveAll(drawList)

@@ -1,27 +1,34 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdracore.util.EmojiUtil
-import com.junjie.secdrasearch.model.DrawDocument
-import com.junjie.secdraservice.dao.DrawDAO
-import com.junjie.secdraservice.dao.PixivDrawDAO
-import com.junjie.secdraservice.dao.PixivErrorDAO
-import com.junjie.secdraservice.dao.UserDAO
+import com.junjie.secdraservice.dao.*
+import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.PixivDraw
 import com.junjie.secdraservice.model.PixivError
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.DrawService
+import org.elasticsearch.index.query.QueryBuilders
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
 import javax.imageio.ImageIO
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.core.query.SearchQuery
+
+
 
 
 @RestController
 @RequestMapping("draw")
-class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO, private val drawService: DrawService, private val pixivDrawDAO: PixivDrawDAO, private val pixivErrorDAO: PixivErrorDAO, private val elasticsearchTemplate: ElasticsearchTemplate) {
+class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO, private val drawService: DrawService, private val pixivDrawDAO: PixivDrawDAO, private val pixivErrorDAO: PixivErrorDAO, private val elasticsearchTemplate: ElasticsearchTemplate
+
+                     , private val drawDocumentDAO: DrawDocumentDAO) {
     @PostMapping("/init")
     fun init(folderPath: String): Any {
         var i = 0
@@ -46,7 +53,7 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
                     draw.introduction = "这是一张很好看的图片，这是我从p站上下载回来的，侵删！"
                     val tag = Tag()
                     tag.name = typeName
-                    val tagList = mutableSetOf<Tag>()
+                    val tagList = mutableListOf<Tag>()
                     tagList.add(tag)
                     draw.tagList = tagList
                     drawDAO.save(draw)
@@ -168,8 +175,13 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
         return drawService.synchronizationIndexDraw()
     }
 
+    @GetMapping("/getEs")
+    fun getEs(@PageableDefault(value = 20) pageable: Pageable): Page<DrawDocument> {
+        return drawDocumentDAO.findAll(pageable)
+    }
+
     @PostMapping("/update")
-    fun update(@RequestParam("tagList") tagList: Array<String>?): Draw {
+    fun update(@RequestParam("tagList") tagList: Array<String>?): DrawDocument {
         //57150551_p0.jpg
         val draw = drawService.get("402880e567208788016720898f230008")
         if (tagList != null && !tagList.isEmpty()) {
@@ -195,7 +207,6 @@ class DrawController(private var drawDAO: DrawDAO, private var userDAO: UserDAO,
     fun delete() {
         //57150551_p0.jpg
         drawDAO.deleteById("402880e567208788016720898f230008")
-
     }
 
 }

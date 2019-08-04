@@ -1,7 +1,7 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdracore.util.JwtUtil
-import com.junjie.secdracore.constant.Gender
+import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.dao.UserDAO
 import com.junjie.secdraservice.model.User
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,7 +1,8 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdracore.constant.CollectState
-import com.junjie.secdracore.constant.PrivacyState
+import com.junjie.secdraservice.constant.CollectState
+import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import org.springframework.beans.BeanUtils
 import java.util.*
@@ -40,7 +41,23 @@ class DrawVO {
     constructor() {
     }
 
-    constructor(draw: Draw) {
+    constructor(draw: DrawDocument) {
         BeanUtils.copyProperties(draw, this)
+    }
+
+    constructor(draw: Draw) {
+        this.id = draw.id
+        this.introduction = draw.introduction
+        this.url = draw.url
+        this.userId = draw.userId
+        this.name = draw.name
+        this.privacy = draw.privacy
+        this.viewAmount = draw.viewAmount
+        this.likeAmount = draw.likeAmount
+        this.width = draw.width
+        this.height = draw.height
+        this.createDate = draw.createDate
+        this.modifiedDate = draw.modifiedDate
+        this.tagList = draw.tagList.map { it.name!! }
     }
 }

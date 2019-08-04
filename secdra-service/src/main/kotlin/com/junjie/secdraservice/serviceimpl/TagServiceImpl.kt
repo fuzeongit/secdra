@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdracore.constant.DrawState
-import com.junjie.secdracore.constant.PrivacyState
+import com.junjie.secdraservice.constant.DrawState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.TagDAO
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag

@@ -2,7 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
-import com.junjie.secdracore.constant.MessageType
+import com.junjie.secdraservice.constant.MessageType
 import com.junjie.secdraservice.model.*
 import com.junjie.secdraservice.service.*
 import com.junjie.secdraweb.vo.CommentMessageVO

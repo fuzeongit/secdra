@@ -4,9 +4,8 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdracore.constant.CollectState
-import com.junjie.secdracore.constant.FollowState
-import com.junjie.secdracore.constant.PrivacyState
+import com.junjie.secdraservice.constant.CollectState
+import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawService

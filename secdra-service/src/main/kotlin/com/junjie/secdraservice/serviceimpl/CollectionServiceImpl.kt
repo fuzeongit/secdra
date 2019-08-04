@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdracore.constant.CollectState
+import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.dao.CollectionDAO
 import com.junjie.secdraservice.model.Collection
 import com.junjie.secdraservice.service.CollectionService
