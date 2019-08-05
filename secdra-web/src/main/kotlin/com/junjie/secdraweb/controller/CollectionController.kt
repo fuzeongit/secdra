@@ -6,14 +6,10 @@ import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
-import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.service.CollectionService
-import com.junjie.secdraservice.service.DrawService
-import com.junjie.secdraservice.service.FollowService
-import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraservice.document.DrawDocument
+import com.junjie.secdraservice.service.*
 import com.junjie.secdraweb.vo.DrawVO
 import com.junjie.secdraweb.vo.UserVO
-
 import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -27,12 +23,13 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping("collection")
-class CollectionController(private val collectionService: CollectionService, private val drawService: DrawService,
+class CollectionController(private val collectionService: CollectionService,
+                           private val drawDocumentService: DrawDocumentService,
                            private val userService: UserService, private val followService: FollowService) {
     @Auth
     @PostMapping("/focus")
     fun focus(@CurrentUserId userId: String, drawId: String): CollectState {
-        val draw = drawService.get(drawId)
+        val draw = drawDocumentService.get(drawId)
         if (draw.userId == userId) {
             throw ProgramException("不能收藏自己的作品")
         }
@@ -46,8 +43,9 @@ class CollectionController(private val collectionService: CollectionService, pri
             collectionService.remove(userId, drawId)
             CollectState.STRANGE
         }
-        drawService.update(drawId, null, collectionService.countByDrawId(drawId))
-        return flag;
+        draw.likeAmount = collectionService.countByDrawId(drawId)
+        drawDocumentService.save(draw)
+        return flag
     }
 
     /**
@@ -61,20 +59,20 @@ class CollectionController(private val collectionService: CollectionService, pri
         }
         val newDrawIdList = mutableListOf<String>()
         for (drawId in drawIdList) {
-            if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
+            if (collectionService.exists(userId, drawId) != CollectState.CONCERNED) {
                 continue
             }
             try {
-                val draw = drawService.get(drawId)
+                val draw = drawDocumentService.get(drawId)
                 collectionService.remove(userId, drawId)
                 draw.likeAmount = collectionService.countByDrawId(drawId)
-                drawService.save(draw)
+                drawDocumentService.save(draw)
                 newDrawIdList.add(draw.id!!)
             } catch (e: Exception) {
 
             }
         }
-        return newDrawIdList;
+        return newDrawIdList
     }
 
     @Auth
@@ -88,15 +86,15 @@ class CollectionController(private val collectionService: CollectionService, pri
                 }, pageable)
         val drawVOList = ArrayList<DrawVO>()
         for (collection in page.content) {
-            var draw: Draw
+            var draw: DrawDocument
             try {
-                draw = drawService.get(collection.drawId!!)
+                draw = drawDocumentService.get(collection.drawId!!)
                 if (draw.privacy == PrivacyState.PRIVATE) {
-                    draw.url = "";
+                    draw.url = ""
                 }
             } catch (e: Exception) {
                 if (e is NotFoundException) {
-                    draw = Draw()
+                    draw = DrawDocument()
                     draw.id = collection.drawId
                     draw.privacy = PrivacyState.PRIVATE
                 } else {

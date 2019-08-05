@@ -37,13 +37,13 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
     @MessageMapping("/sendBroadcastBySendToUser")
     @SendToUser("sendBroadcastBySendToUser")
     fun sendBroadcastBySendToUser(message: Any, @Headers headers: Map<String, Any>): String {
-        return "就发给你自己";
+        return "就发给你自己"
     }
 
     @MessageMapping("/sendBroadcastBySendTo")
     @SendTo("sendBroadcastBySendTo")
     fun sendBroadcastBySendTo(message: Any, @Headers headers: Map<String, Any>): String {
-        return "send to all";
+        return "send to all"
     }
 
     private fun sendBroadcast() {

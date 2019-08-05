@@ -15,14 +15,20 @@ interface UserService {
     fun save(user: User): User
 
     /**
+     * 是否存在手机
+     */
+    fun existsByPhone(phone: String): Boolean
+
+    /**
      * 注册
      */
-    fun register(user: User): User
+    fun register(phone:String,password: String,rePasswordDate: Date): User
 
     /**
      * 登录
      */
     fun login(phone: String, password: String): User
+
 
     /**
      * 修改密码

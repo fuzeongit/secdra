@@ -12,25 +12,34 @@ import java.util.*
 
 @Service
 class UserServiceImpl(val userDAO: UserDAO) : UserService {
-
     @CachePut("user::getInfo", key = "#user.id")
     override fun save(user: User): User {
         return userDAO.save(user)
     }
 
-    override fun register(user: User): User {
-        if (userDAO.existsByPhone(user.phone!!)) {
+    override fun existsByPhone(phone: String): Boolean {
+        return userDAO.existsByPhone(phone)
+    }
+
+    override fun register(phone:String,password: String,rePasswordDate: Date): User {
+        if (existsByPhone(phone)) {
             throw PermissionException("手机号已存在")
         }
+        val user = User()
+        user.phone = phone
+        user.password = password
+        user.rePasswordDate = rePasswordDate
         return userDAO.save(user)
     }
 
     override fun login(phone: String, password: String): User {
-        if (!userDAO.existsByPhone(phone)) {
+        if (!existsByPhone(phone)) {
             throw PermissionException("手机号不存在")
         }
         return userDAO.findOneByPhoneAndPassword(phone, password).orElseThrow { SignInException("账号密码不正确") }
     }
+
+
 
     override fun rePassword(phone: String, password: String, rePasswordTime: Date): User {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

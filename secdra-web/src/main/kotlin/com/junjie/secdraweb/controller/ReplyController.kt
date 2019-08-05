@@ -43,7 +43,7 @@ class ReplyController(private val replyService: ReplyService,
         reply.drawId = drawId
         reply.content = content
         val vo = getVO(replyService.save(reply))
-        val replyMessage = ReplyMessage();
+        val replyMessage = ReplyMessage()
         replyMessage.commentId = vo.commentId
         replyMessage.replyId = vo.id
         replyMessage.authorId = vo.authorId

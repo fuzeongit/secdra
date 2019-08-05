@@ -27,10 +27,7 @@ interface DrawService {
     @Deprecated("由于ES的引入，弃用改查询，使用ES的countByTag")
     fun countByTag(tag: String): Long
 
-    @Deprecated("由于ES的引入，弃用改查询，使用ES的get")
     fun get(id: String): Draw
-
-    fun update(id: String, viewAmount: Long?, likeAmount: Long?): DrawDocument
 
     fun save(draw: Draw): DrawDocument
 

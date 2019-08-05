@@ -1,13 +1,10 @@
 package com.junjie.secdraweb.controller
 
 import com.junjie.secdraservice.service.DrawDocumentService
-import com.junjie.secdraservice.service.TagService
-import com.junjie.secdraweb.vo.TagVO
 import org.elasticsearch.search.aggregations.Aggregation
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 /**
  * @author fjj

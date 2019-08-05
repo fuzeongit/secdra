@@ -40,17 +40,17 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
                 }
 
             }
-            mustQuery.must(tagBoolQuery);
+            mustQuery.must(tagBoolQuery)
         }
         if (!name.isNullOrEmpty())
-            mustQuery.must(QueryBuilders.matchPhraseQuery("name", name));
+            mustQuery.must(QueryBuilders.matchPhraseQuery("name", name))
         if (startDate != null || endDate != null) {
             val rangeQueryBuilder = QueryBuilders.rangeQuery("createDate")
             if (startDate != null)
                 rangeQueryBuilder.from(startDate)
             if (endDate != null)
                 rangeQueryBuilder.to(endDate)
-            mustQuery.must(rangeQueryBuilder);
+            mustQuery.must(rangeQueryBuilder)
         }
         if (userId.isNullOrEmpty() || !self) {
             mustQuery.must(QueryBuilders.termQuery("privacy", PrivacyState.PUBLIC.toString()))
@@ -82,8 +82,12 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
                 .withIndices("index_draw_search")
                 .addAggregation(aggregationBuilders)
                 .build()
-        return  elasticsearchTemplate.query(query, {
-            it.aggregations.get("tagList");
-        });
+        return  elasticsearchTemplate.query(query) {
+            it.aggregations.get("tagList")
+        }
+    }
+
+    override fun save(draw: DrawDocument): DrawDocument {
+        return drawDocumentDAO.save(draw)
     }
 }

@@ -61,7 +61,7 @@ class FollowingController(private val followService: FollowService, private val 
 
             }
         }
-        return false;
+        return false
     }
 
     /**

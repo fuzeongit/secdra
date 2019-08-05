@@ -35,9 +35,9 @@ class Draw : Serializable {
 
     var drawState: DrawState = DrawState.PASS
 
-    var viewAmount: Long = 0
-
-    var likeAmount: Long = 0
+//    var viewAmount: Long = 0
+//
+//    var likeAmount: Long = 0
 
     var width: Long = 0;
 

@@ -2,7 +2,6 @@ package com.junjie.secdraservice.service
 
 import com.junjie.secdraservice.document.DrawDocument
 import org.elasticsearch.search.aggregations.Aggregation
-import org.elasticsearch.search.aggregations.Aggregations
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.util.*
@@ -17,4 +16,6 @@ interface DrawDocumentService {
     fun getFirstByTag(tag: String): DrawDocument
 
     fun listTagTop30(): Aggregation?
+
+    fun save(draw: DrawDocument): DrawDocument
 }

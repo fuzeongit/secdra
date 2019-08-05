@@ -27,7 +27,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
     @GetMapping("/getUploadToken")
     fun get(): Result<String> {
         val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
-        return Result(200, "", auth.uploadToken(baseConfig.qiniuTempBucket));
+        return Result(200, "", auth.uploadToken(baseConfig.qiniuTempBucket))
     }
 
     @Auth
@@ -41,9 +41,9 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
         val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$name")
         val nameEncodeBase64 = UrlSafeBase64.encodeToString("$bucket:$name")
 
-        val url = "http://rs.qiniu.com/move/$sourceNameEncodeBase64/$nameEncodeBase64";
-        val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey);
-        val authorizationMap = auth.authorization(url, null, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        val url = "http://rs.qiniu.com/move/$sourceNameEncodeBase64/$nameEncodeBase64"
+        val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
+        val authorizationMap = auth.authorization(url, null, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         val authorization = authorizationMap.get("Authorization") as String
 
         val client = RestTemplate()

@@ -11,7 +11,12 @@ import java.util.*
 @Component
 @ConfigurationProperties("base")
 class BaseConfig {
-    var verificationCodePrefix: String = ""
+    //注册验证码存redis的key前缀
+    var registerVerificationCodePrefix: String = ""
+    //忘记密码验证码存redis的key前缀
+    var forgetVerificationCodePrefix: String = ""
+    //验证码过期毫秒数
+    var verificationCodeTimeout: Long = 0
 
     var jwtExpiresSecond: Long = 0
 

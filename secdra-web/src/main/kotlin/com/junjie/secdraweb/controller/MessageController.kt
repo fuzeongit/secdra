@@ -66,7 +66,7 @@ class MessageController(private val userService: UserService, private val commen
                 if (item.isRead) {
                     continue
                 }
-                item.isRead = true;
+                item.isRead = true
                 systemMessageService.save(item)
             }
             return list
@@ -111,7 +111,7 @@ class MessageController(private val userService: UserService, private val commen
             if (commentMessage.isRead) {
                 continue
             }
-            commentMessage.isRead = true;
+            commentMessage.isRead = true
             commentMessageService.save(commentMessage)
         }
         return voList
@@ -130,7 +130,7 @@ class MessageController(private val userService: UserService, private val commen
             if (replyMessage.isRead) {
                 continue
             }
-            replyMessage.isRead = true;
+            replyMessage.isRead = true
             replyMessageService.save(replyMessage)
         }
         return voList
@@ -149,7 +149,7 @@ class MessageController(private val userService: UserService, private val commen
             if (followMessage.isRead) {
                 continue
             }
-            followMessage.isRead = true;
+            followMessage.isRead = true
             followMessageService.save(followMessage)
         }
         return voList

@@ -22,9 +22,9 @@ class DrawVO {
 
     var focus: CollectState = CollectState.STRANGE
 
-    var viewAmount: Long = 0
+    var viewAmount: Long? = null
 
-    var likeAmount: Long = 0
+    var likeAmount: Long? = null
 
     var width: Long = 0;
 
@@ -52,8 +52,22 @@ class DrawVO {
         this.userId = draw.userId
         this.name = draw.name
         this.privacy = draw.privacy
-        this.viewAmount = draw.viewAmount
-        this.likeAmount = draw.likeAmount
+        this.width = draw.width
+        this.height = draw.height
+        this.createDate = draw.createDate
+        this.modifiedDate = draw.modifiedDate
+        this.tagList = draw.tagList.map { it.name!! }
+    }
+
+    constructor(draw: Draw,viewAmount:Long,likeAmount:Long) {
+        this.id = draw.id
+        this.introduction = draw.introduction
+        this.url = draw.url
+        this.userId = draw.userId
+        this.name = draw.name
+        this.privacy = draw.privacy
+        this.viewAmount = viewAmount
+        this.likeAmount = likeAmount
         this.width = draw.width
         this.height = draw.height
         this.createDate = draw.createDate

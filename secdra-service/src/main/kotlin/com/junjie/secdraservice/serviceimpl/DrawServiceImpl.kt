@@ -8,6 +8,8 @@ import com.junjie.secdraservice.dao.DrawDocumentDAO
 import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
+import com.junjie.secdraservice.service.CollectionService
+import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.DrawService
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
@@ -24,7 +26,7 @@ import javax.persistence.criteria.Predicate
 
 
 @Service
-class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO: DrawDocumentDAO) : DrawService {
+class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO: DrawDocumentDAO, private val drawDocumentService: DrawDocumentService, private val collectionService: CollectionService) : DrawService {
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -88,32 +90,24 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         return drawDAO.count(specification)
     }
 
-    @Cacheable("draw::get", key = "#id")
+    //    @Cacheable("draw::get", key = "#id")
     override fun get(id: String): Draw {
         return drawDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
     //    @CachePut("draw::get", key = "#draw.id")
     override fun save(draw: Draw): DrawDocument {
-        return drawDocumentDAO.save(DrawDocument(drawDAO.save(draw)))
-    }
-
-    override fun update(id: String, viewAmount: Long?, likeAmount: Long?): DrawDocument {
-        val draw = get(id)
-        if (viewAmount != null) {
-            draw.viewAmount = viewAmount
-        }
-        if (likeAmount != null) {
-            draw.likeAmount = likeAmount
-        }
-        return save(draw)
+        //TODO viewAmount
+        return drawDocumentService
+                .save(DrawDocument(drawDAO.save(draw), 0, collectionService.countByDrawId(draw.id!!)))
     }
 
     override fun synchronizationIndexDraw(): Long {
         val sourceList = drawDAO.findAll()
         val drawList = mutableListOf<DrawDocument>()
         for (source in sourceList) {
-            val draw = DrawDocument(source)
+            //TODO viewAmount
+            val draw = DrawDocument(source, 0, collectionService.countByDrawId(source.id!!))
             drawList.add(draw)
         }
         drawDocumentDAO.saveAll(drawList)

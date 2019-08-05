@@ -190,7 +190,6 @@ class DrawController(private val drawService: DrawService, private val drawDocum
         return drawList
     }
 
-
     private fun getVO(drawVO: DrawVO, userId: String? = null): DrawVO {
         val userVO = UserVO(userService.getInfo(drawVO.userId!!))
         userVO.focus = followService.exists(userId, userVO.id!!)

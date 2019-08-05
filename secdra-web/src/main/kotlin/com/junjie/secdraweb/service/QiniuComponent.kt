@@ -26,10 +26,10 @@ class QiniuComponent(private val baseConfig: BaseConfig) {
         val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$url")
         val nameEncodeBase64 = UrlSafeBase64.encodeToString("$bucket:$url")
 
-        val qiniuUrl = "http://rs.qiniu.com/move/$sourceNameEncodeBase64/$nameEncodeBase64";
+        val qiniuUrl = "http://rs.qiniu.com/move/$sourceNameEncodeBase64/$nameEncodeBase64"
 
-        val auth = Auth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey);
-        val authorizationMap = auth.authorization(qiniuUrl, null, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        val auth = Auth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
+        val authorizationMap = auth.authorization(qiniuUrl, null, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         val authorization = authorizationMap.get("Authorization") as String
 
         val client = RestTemplate()

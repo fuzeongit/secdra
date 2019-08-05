@@ -20,7 +20,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
 base:
-  verificationCodePrefix: verification_code:%s
+  registerVerificationCodePrefix: register_verification_code:%s
+  forgetVerificationCodePrefix: forget_verification_code:%s
+  verificationCodeTimeout: 300000
   jwtExpiresSecond: 5184000000
   jwtSecretString: www.secdra.com
   updatePasswordTimePrefix: base:update_password_time:%s

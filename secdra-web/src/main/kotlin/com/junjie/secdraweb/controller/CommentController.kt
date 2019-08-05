@@ -39,14 +39,14 @@ class CommentController(private val commentService: CommentService,
     fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")
         (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
-        val comment = Comment();
-        comment.authorId = authorId;
-        comment.criticId = criticId;
-        comment.drawId = drawId;
-        comment.content = content;
+        val comment = Comment()
+        comment.authorId = authorId
+        comment.criticId = criticId
+        comment.drawId = drawId
+        comment.content = content
 
         val vo = getVO(commentService.save(comment))
-        val commentMessage = CommentMessage();
+        val commentMessage = CommentMessage()
         commentMessage.commentId = vo.id
         commentMessage.authorId = vo.authorId
         commentMessage.drawId = vo.drawId
