@@ -38,10 +38,6 @@
 			<groupId>com.junjie</groupId>
 			<artifactId>secdra-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.junjie</groupId>
-			<artifactId>secdra-search</artifactId>
-		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>

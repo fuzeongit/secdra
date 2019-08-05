@@ -13,7 +13,6 @@
 
     <modules>
         <module>secdra-core</module>
-        <module>secdra-search</module>
         <module>secdra-service</module>
         <module>secdra-web</module>
         <module>secdra-admin</module>
@@ -38,11 +37,6 @@
             <dependency>
                 <groupId>com.junjie</groupId>
                 <artifactId>secdra-core</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.junjie</groupId>
-                <artifactId>secdra-search</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
