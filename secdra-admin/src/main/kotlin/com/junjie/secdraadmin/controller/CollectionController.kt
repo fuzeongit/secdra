@@ -32,7 +32,6 @@ class CollectionController(private var drawDAO: DrawDAO, private var userDAO: Us
             }
         }
         for (draw in drawList) {
-            draw.likeAmount = collectionDAO.countByDrawId(draw.id!!)
             drawDAO.save(draw)
         }
         return true
