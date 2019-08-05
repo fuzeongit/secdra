@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.constant.MessageType
 import com.junjie.secdraservice.model.*
 import com.junjie.secdraservice.service.*
@@ -21,6 +22,7 @@ class MessageController(private val userService: UserService, private val commen
                         private val systemMessageService: SystemMessageService, private val messageSettingsService: MessageSettingsService) {
     @Auth
     @GetMapping("/count")
+    @RestfulPack
     fun count(@CurrentUserId userId: String, messageType: MessageType?): HashMap<MessageType, Long> {
         val vo = HashMap<MessageType, Long>()
         vo[MessageType.COMMENT] = commentMessageService.countUnread(userId)
@@ -32,6 +34,7 @@ class MessageController(private val userService: UserService, private val commen
 
     @Auth
     @GetMapping("/listUnread")
+    @RestfulPack
     fun listUnread(@CurrentUserId userId: String, messageType: MessageType): List<Any> {
         if (messageType == MessageType.COMMENT) {
             return getCommentMessageListVO(commentMessageService.listUnread(userId))
@@ -50,6 +53,7 @@ class MessageController(private val userService: UserService, private val commen
 
     @Auth
     @GetMapping("/list")
+    @RestfulPack
     fun list(@CurrentUserId userId: String, messageType: MessageType): List<Any> {
         if (messageType == MessageType.COMMENT) {
             return getCommentMessageListVO(commentMessageService.list(userId))
@@ -76,6 +80,7 @@ class MessageController(private val userService: UserService, private val commen
 
     @Auth
     @GetMapping("/getSettings")
+    @RestfulPack
     fun getSettings(@CurrentUserId userId: String): MessageSettings {
         return try {
             messageSettingsService.get(userId)
@@ -88,6 +93,7 @@ class MessageController(private val userService: UserService, private val commen
 
     @Auth
     @PostMapping("/saveSettings")
+    @RestfulPack
     fun saveSettings(@CurrentUserId userId: String, id: String, commentStatus: Boolean, replyStatus: Boolean, followStatus: Boolean): MessageSettings {
         val messageSettings = MessageSettings()
         messageSettings.id = id

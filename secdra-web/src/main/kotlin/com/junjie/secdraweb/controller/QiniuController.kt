@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.model.Result
 import com.junjie.secdraservice.dao.DrawDAO
 import com.junjie.secdraweb.base.component.BaseConfig
@@ -25,6 +26,7 @@ import com.junjie.secdraweb.base.qiniu.Auth as QiniuAuth
 @RequestMapping("qiniu")
 class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: DrawDAO) {
     @GetMapping("/getUploadToken")
+    @RestfulPack
     fun get(): Result<String> {
         val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
         return Result(200, "", auth.uploadToken(baseConfig.qiniuTempBucket))
@@ -32,6 +34,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
 
     @Auth
     @PostMapping("move")
+    @RestfulPack
     fun move(
             @CurrentUserId userId: String,
             name: String): Boolean {
@@ -66,6 +69,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
     }
 
     @GetMapping("getImageInfo")
+    @RestfulPack
     fun getImageInfo(): Boolean {
         val all = drawDAO.findAll()
         val client = RestTemplate()
@@ -81,6 +85,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
     }
 
     @GetMapping("testGetImageInfo")
+    @RestfulPack
     fun testGetImageInfo(): QiniuImageInfo? {
         val client = RestTemplate()
         val qiniuImageInfo = client.getForObject("http://ph9jy186h.bkt.clouddn.com/32740714_p0.jpg?imageInfo", QiniuImageInfo::class.java)

@@ -2,12 +2,16 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.document.DrawDocument
-import com.junjie.secdraservice.service.*
+import com.junjie.secdraservice.service.CollectionService
+import com.junjie.secdraservice.service.DrawDocumentService
+import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.vo.DrawVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.beans.BeanUtils
@@ -28,6 +32,7 @@ class CollectionController(private val collectionService: CollectionService,
                            private val userService: UserService, private val followService: FollowService) {
     @Auth
     @PostMapping("/focus")
+    @RestfulPack
     fun focus(@CurrentUserId userId: String, drawId: String): CollectState {
         val draw = drawDocumentService.get(drawId)
         if (draw.userId == userId) {
@@ -53,6 +58,7 @@ class CollectionController(private val collectionService: CollectionService,
      */
     @Auth
     @PostMapping("/unFocus")
+    @RestfulPack
     fun unFocus(@CurrentUserId userId: String, @RequestParam("drawIdList") drawIdList: Array<String>?): List<String> {
         if (drawIdList == null || drawIdList.isEmpty()) {
             throw ProgramException("请选择一张图片")
@@ -77,6 +83,7 @@ class CollectionController(private val collectionService: CollectionService,
 
     @Auth
     @GetMapping("/paging")
+    @RestfulPack
     fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVO> {
         val page = collectionService.paging(
                 if (id.isNullOrEmpty()) {

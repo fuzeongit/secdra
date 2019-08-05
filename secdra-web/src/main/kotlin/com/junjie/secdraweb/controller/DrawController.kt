@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.document.DrawDocument
@@ -33,6 +34,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      * 根据标签获取
      */
     @GetMapping("/paging")
+    @RestfulPack
     fun paging(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, tagList: String?, precise: Boolean?, name: String?, startDate: Date?, endDate: Date?, targetId: String?): Page<DrawVO> {
         return getPageVO(drawDocumentService.paging(pageable, tagList?.split(" "), precise != null && precise, name, startDate, endDate, targetId, targetId == userId))
     }
@@ -41,6 +43,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      * 获取推荐
      */
     @GetMapping("/pagingByRecommend")
+    @RestfulPack
     fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
         //由于不会算法，暂时这样写
         return getPageVO(drawDocumentService.paging(pageable, null, false, null, startDate, endDate, null, false))
@@ -64,6 +67,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      * 获取图片
      */
     @GetMapping("/get")
+    @RestfulPack
     fun get(id: String, @CurrentUserId userId: String?): DrawVO {
         val draw = drawDocumentService.get(id)
         if (draw.privacy == PrivacyState.PRIVATE && draw.userId != userId) {
@@ -77,6 +81,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      * 会移到ES搜索
      */
     @GetMapping("getFirstByTag")
+    @RestfulPack
     fun getFirstByTag(tag: String): DrawVO {
         val draw = drawDocumentService.getFirstByTag(tag)
         return getVO(DrawVO(draw), null)
@@ -86,6 +91,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      * 按tag统计图片
      */
     @GetMapping("countByTag")
+    @RestfulPack
     fun countByTag(tag: String): Long {
         return drawDocumentService.countByTag(tag)
     }
@@ -95,6 +101,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
      */
     @Auth
     @PostMapping("/save")
+    @RestfulPack
     fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
         val draw = Draw()
         draw.url = url
@@ -120,8 +127,9 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     /**
      * 更新
      */
-    @PostMapping("/update")
     @Auth
+    @PostMapping("/update")
+    @RestfulPack
     fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
         val draw = drawService.get(id)
         if (draw.userId != userId) {
@@ -152,9 +160,9 @@ class DrawController(private val drawService: DrawService, private val drawDocum
         return getVO(DrawVO(drawService.save(draw)))
     }
 
-
-    @PostMapping("/batchUpdate")
     @Auth
+    @PostMapping("/batchUpdate")
+    @RestfulPack
     fun batchUpdate(@CurrentUserId userId: String, idList: Array<String>, name: String?, introduction: String?, privacy: PrivacyState?, @RequestParam("tagList") tagList: Array<String>?): MutableList<DrawDocument> {
         val drawList = mutableListOf<DrawDocument>()
         for (id in idList) {

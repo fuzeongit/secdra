@@ -1,5 +1,6 @@
 package com.junjie.secdraweb.base.advice
 
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.*
 import com.junjie.secdracore.model.Result
 import org.springframework.core.MethodParameter
@@ -20,8 +21,14 @@ import java.sql.SQLException
  */
 @ControllerAdvice
 class GlobalHandler : ResponseBodyAdvice<Any?> {
+
     override fun supports(methodParameter: MethodParameter, clazz: Class<out HttpMessageConverter<*>>): Boolean {
-        return true
+        return try {
+            //只要拥有RestfulPack这个注解就会执行响应体包装
+            methodParameter.method!!.isAnnotationPresent(RestfulPack::class.java)
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun beforeBodyWrite(returnValue: Any?, methodParameter: MethodParameter, mediaType: MediaType, clazz: Class<out HttpMessageConverter<*>>, p4: ServerHttpRequest, p5: ServerHttpResponse): Result<*> {

@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.model.Reply
 import com.junjie.secdraservice.model.ReplyMessage
 import com.junjie.secdraservice.model.User
@@ -32,6 +33,7 @@ class ReplyController(private val replyService: ReplyService,
      */
     @Auth
     @PostMapping("/save")
+    @RestfulPack
     fun save(@CurrentUserId answererId: String, commentId: String, authorId: String, criticId: String, drawId: String, content: String): ReplyVO {
         content.isEmpty() && throw Exception("回复不能为空")
         (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
@@ -60,6 +62,7 @@ class ReplyController(private val replyService: ReplyService,
      * 获取列表
      */
     @GetMapping("list")
+    @RestfulPack
     fun list(commentId: String): List<ReplyVO> {
         return getListVO(replyService.list(commentId))
     }

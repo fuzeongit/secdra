@@ -1,5 +1,6 @@
 package com.junjie.secdraweb.controller
 
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.service.DrawDocumentService
 import org.elasticsearch.search.aggregations.Aggregation
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("tag")
 class TagController(private val drawDocumentService: DrawDocumentService) {
     @GetMapping("/listTagTop30")
+    @RestfulPack
     fun listTagTop30(): Aggregation? {
         return drawDocumentService.listTagTop30()
     }

@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.constant.FollowState
 import com.junjie.secdraservice.model.FollowMessage
@@ -26,6 +27,7 @@ class FollowingController(private val followService: FollowService, private val 
                           private val followMessageService: FollowMessageService, private val webSocketService: WebSocketService) {
     @Auth
     @PostMapping("/focus")
+    @RestfulPack
     fun focus(@CurrentUserId followerId: String, followingId: String): FollowState {
         if (followerId == followingId) {
             throw ProgramException("不能关注自己")
@@ -50,6 +52,7 @@ class FollowingController(private val followService: FollowService, private val 
      */
     @Auth
     @PostMapping("/unFocus")
+    @RestfulPack
     fun unFocus(@CurrentUserId followerId: String, @RequestParam("followingIdList") followingIdList: Array<String>?): Boolean {
         if (followingIdList == null || followingIdList.isEmpty()) {
             throw ProgramException("请选择一个关注")
@@ -69,6 +72,7 @@ class FollowingController(private val followService: FollowService, private val 
      */
     @Auth
     @GetMapping("/paging")
+    @RestfulPack
     fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = followService.pagingByFollowerId(
                 if (id.isNullOrEmpty()) {
@@ -84,5 +88,4 @@ class FollowingController(private val followService: FollowService, private val 
         }
         return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)
     }
-
 }

@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.model.Result
@@ -37,6 +38,7 @@ class UserController(private val userService: UserService, private val baseConfi
      * 发送验证码
      */
     @PostMapping("sendCode")
+    @RestfulPack
     fun sendCode(phone: String, verificationCodeOperation: VerificationCodeOperation): Result<String> {
         if (!RegexUtil.checkMobile(phone)) {
             throw ProgramException("请输入正确的手机号码")
@@ -72,6 +74,7 @@ class UserController(private val userService: UserService, private val baseConfi
      * 注册
      */
     @PostMapping("/register")
+    @RestfulPack
     fun register(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVO {
         if (!RegexUtil.checkMobile(phone)) {
             throw ProgramException("请输入正确的手机号码")
@@ -106,6 +109,7 @@ class UserController(private val userService: UserService, private val baseConfi
      * 修改密码
      */
     @PostMapping("/rePassword")
+    @RestfulPack
     fun rePassword(phone: String, password: String, verificationCode: String, response: HttpServletResponse): UserVO {
         if (!RegexUtil.checkMobile(phone)) {
             throw ProgramException("请输入正确的手机号码")
@@ -129,6 +133,7 @@ class UserController(private val userService: UserService, private val baseConfi
      * 登录
      */
     @PostMapping("/login")
+    @RestfulPack
     fun login(phone: String, password: String, response: HttpServletResponse): UserVO {
         val user = userService.login(phone, password)
         val nowMillis = System.currentTimeMillis()
@@ -139,6 +144,7 @@ class UserController(private val userService: UserService, private val baseConfi
 
     @Auth
     @PostMapping("/checkLogin")
+    @RestfulPack
     fun checkLogin(): Boolean {
         return true
     }
@@ -149,6 +155,7 @@ class UserController(private val userService: UserService, private val baseConfi
      */
     @Auth
     @GetMapping("/getInfo")
+    @RestfulPack
     fun getInfo(@CurrentUserId userId: String, id: String?): UserVO {
         val userVO = UserVO(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
             userId
@@ -165,6 +172,7 @@ class UserController(private val userService: UserService, private val baseConfi
      */
     @Auth
     @PostMapping("/update")
+    @RestfulPack
     fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVO {
         val info = userService.getInfo(userId)
         if (!name.isNullOrEmpty()) info.name = name
@@ -181,6 +189,7 @@ class UserController(private val userService: UserService, private val baseConfi
      */
     @Auth
     @PostMapping("/updateHead")
+    @RestfulPack
     fun updateHead(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
         qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket)
@@ -195,6 +204,7 @@ class UserController(private val userService: UserService, private val baseConfi
      */
     @Auth
     @PostMapping("/updateBack")
+    @RestfulPack
     fun updateBack(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
         qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket)

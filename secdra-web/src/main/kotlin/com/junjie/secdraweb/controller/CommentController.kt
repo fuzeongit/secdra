@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.model.Comment
 import com.junjie.secdraservice.model.CommentMessage
 import com.junjie.secdraservice.model.User
@@ -36,6 +37,7 @@ class CommentController(private val commentService: CommentService,
      */
     @Auth
     @PostMapping("/save")
+    @RestfulPack
     fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")
         (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
@@ -61,10 +63,8 @@ class CommentController(private val commentService: CommentService,
      * 获取4条
      */
     @GetMapping("listTop4")
+    @RestfulPack
     fun listTop4(drawId: String): List<CommentVO> {
-//        val map = HashMap<String,Any>()
-//        map["count"] = commentService.count(drawId)
-//        map["list"] = getListVO(commentService.listTop4(drawId))
         return getListVO(commentService.listTop4(drawId))
     }
 
@@ -72,6 +72,7 @@ class CommentController(private val commentService: CommentService,
      * 获取列表
      */
     @GetMapping("list")
+    @RestfulPack
     fun list(drawId: String): List<CommentVO> {
         return getListVO(commentService.list(drawId))
     }
@@ -80,6 +81,7 @@ class CommentController(private val commentService: CommentService,
      * 分页获取
      */
     @GetMapping("pagingByDrawId")
+    @RestfulPack
     fun pagingByDrawId(drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVO> {
         return getPageVO(commentService.paging(drawId, pageable))
     }

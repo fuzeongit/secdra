@@ -2,6 +2,7 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
+import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.vo.UserVO
@@ -25,6 +26,7 @@ class FollowerController(private val followService: FollowService, private val u
      */
     @Auth
     @GetMapping("/paging")
+    @RestfulPack
     fun paging(@CurrentUserId followingId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = followService.pagingByFollowingId(
                 if (id.isNullOrEmpty()) {
