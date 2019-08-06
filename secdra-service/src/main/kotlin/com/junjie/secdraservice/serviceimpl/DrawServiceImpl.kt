@@ -72,12 +72,6 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
         return drawDAO.pagingRand(pageable)
     }
 
-    @Cacheable("draw::getFirstByTag")
-    override fun getFirstByTag(tag: String): Draw {
-        return paging(PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")), tag, null, null)
-                .content.first()
-    }
-
     override fun countByTag(tag: String): Long {
         val specification = Specification<Draw> { root, criteriaQuery, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()

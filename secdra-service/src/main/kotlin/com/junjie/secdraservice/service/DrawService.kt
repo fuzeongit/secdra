@@ -21,9 +21,6 @@ interface DrawService {
     @Deprecated("由于ES的引入，弃用改查询，现在暂时按数据库直接出，加了足迹功能后会写推荐")
     fun pagingRand(pageable: Pageable): Page<Draw>
 
-    @Deprecated("由于ES的引入，弃用改查询，使用ES的getFirstByTag")
-    fun getFirstByTag(tag: String): Draw
-
     @Deprecated("由于ES的引入，弃用改查询，使用ES的countByTag")
     fun countByTag(tag: String): Long
 

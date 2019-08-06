@@ -71,7 +71,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
     override fun getFirstByTag(tag: String): DrawDocument {
         return paging(
                 PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")),
-                listOf(tag), false, null,
+                listOf(tag), true, null,
                 null, null,
                 null, false).content.first()
     }

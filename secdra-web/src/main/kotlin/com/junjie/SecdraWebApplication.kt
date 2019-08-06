@@ -20,6 +20,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 class SecdraWebApplication : SpringBootServletInitializer() {
     override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {
         // 设置启动类，用于独立tomcat运行的入口
+        System.setProperty("es.set.netty.runtime.available.processors","false")
         return builder.sources(SecdraWebApplication::class.java)
     }
 
