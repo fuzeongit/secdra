@@ -55,6 +55,9 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
         if (userId.isNullOrEmpty() || !self) {
             mustQuery.must(QueryBuilders.termQuery("privacy", PrivacyState.PUBLIC.toString()))
         }
+        if(!userId.isNullOrEmpty()){
+            mustQuery.must(QueryBuilders.termQuery("userId", userId))
+        }
         return drawDocumentDAO.search(mustQuery, pageable)
     }
 
