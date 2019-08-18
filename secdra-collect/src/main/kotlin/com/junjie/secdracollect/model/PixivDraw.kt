@@ -1,5 +1,6 @@
-package com.junjie.secdraservice.model
+package com.junjie.secdracollect.model
 
+import com.junjie.secdracollect.constant.TransferState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -17,17 +18,19 @@ class PixivDraw : Serializable {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var pixivId: String? = null
+    lateinit var pixivId: String
 
-    var name: String? = null
+    var pixivName: String? = null
 
-    var userName: String? = null
+    var pixivUserName: String? = null
 
-    var userId: String? = null
+    var pixivUserId: String? = null
 
     var tagList: String? = null
 
-    var init: Boolean = false
+    var state: TransferState = TransferState.WAIT
+
+    var drawId: String? = null
 
     @CreatedDate
     var createDate: Date = Date()

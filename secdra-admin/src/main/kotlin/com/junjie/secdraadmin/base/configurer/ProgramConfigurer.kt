@@ -1,4 +1,4 @@
-package com.junjie.secdraadmin.controller.configurer
+package com.junjie.secdraadmin.base.configurer
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry

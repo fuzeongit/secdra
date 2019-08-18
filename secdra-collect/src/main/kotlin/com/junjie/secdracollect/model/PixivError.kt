@@ -1,4 +1,4 @@
-package com.junjie.secdraservice.model
+package com.junjie.secdracollect.model
 
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
@@ -18,6 +18,8 @@ class PixivError {
     var pixivId: String? = null
 
     var message: String? = null
+
+    var record: Boolean = false
 
     @CreatedDate
     var createDate: Date = Date()

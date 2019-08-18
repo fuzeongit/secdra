@@ -1,6 +1,5 @@
 package com.junjie.secdraadmin.controller
 
-import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.dao.UserDAO
 import com.junjie.secdraservice.model.User
@@ -8,9 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.io.File
-import java.nio.charset.Charset
-import java.util.*
-import javax.xml.bind.DatatypeConverter
 
 @RestController
 @RequestMapping("user")
@@ -52,40 +48,5 @@ class UserController(private var userDAO: UserDAO) {
             println(e.message)
             throw e
         }
-    }
-
-
-    @PostMapping("save")
-    fun save(path: String): Boolean {
-        val userList = userDAO.findAll()
-        var i = 0;
-        try {
-            val file = File(path)
-            val fileNameList = file.list()
-
-            for (fileName in fileNameList) {
-                if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
-                    userList[i].background = fileName
-                    userDAO.save(userList[i])
-                    i++;
-                }
-            }
-            return true
-        } catch (e: Exception) {
-            println(i)
-            println(e.message)
-            throw e
-        }
-    }
-
-
-    @PostMapping("getToken")
-    fun getToken(userId: String): String {
-        val asB64 = Base64.getEncoder().encodeToString("Secdra".toByteArray(charset("utf-8")))
-        val nowMillis = System.currentTimeMillis()
-
-        val asBytes = DatatypeConverter.parseBase64Binary(asB64)
-        println(String(asBytes, Charset.forName("utf-8"))) // 输出为: some string
-        return JwtUtil.createJWT(userId, nowMillis, 5184000000, asB64)
     }
 }

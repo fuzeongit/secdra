@@ -102,7 +102,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     @Auth
     @PostMapping("/save")
     @RestfulPack
-    fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
+    fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Set<String>?): DrawVO {
         val draw = Draw()
         draw.url = url
         draw.userId = userId
@@ -113,7 +113,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
             for (tagName in tagList) {
                 val tag = Tag()
                 tag.name = tagName
-                draw.tagList.add(tag)
+                draw.tagList.toMutableSet().add(tag)
             }
         }
 
@@ -144,18 +144,19 @@ class DrawController(private val drawService: DrawService, private val drawDocum
         draw.privacy = privacy
         if (tagList != null && !tagList.isEmpty()) {
             val tagNameList = draw.tagList.map { it.name }
+            val sourceTagList = draw.tagList.toMutableSet()
             for (addTagName in tagList) {
                 if (tagNameList.indexOf(addTagName) == -1) {
-                    val tag = Tag()
-                    tag.name = addTagName
-                    draw.tagList.add(tag)
+                    sourceTagList.add(Tag(addTagName))
                 }
             }
             for (tag in draw.tagList.toList()) {
                 if (tagList.indexOf(tag.name) == -1) {
-                    draw.tagList.remove(tag)
+                    sourceTagList.remove(tag)
                 }
             }
+            draw.tagList.clear()
+            draw.tagList.addAll(sourceTagList)
         }
         return getVO(DrawVO(drawService.save(draw)))
     }
@@ -181,14 +182,11 @@ class DrawController(private val drawService: DrawService, private val drawDocum
                     draw.privacy = privacy
                 }
                 if (tagList != null && !tagList.isEmpty()) {
-                    val tagNameList = draw.tagList.map { it.name }
-                    for (addTagName in tagList) {
-                        if (tagNameList.indexOf(addTagName) == -1) {
-                            val tag = Tag()
-                            tag.name = addTagName
-                            draw.tagList.add(tag)
-                        }
-                    }
+                    val sourceTagList = draw.tagList.toMutableSet()
+                    sourceTagList.addAll(tagList.map { Tag(it) })
+                    val tagLsit = sourceTagList.distinctBy { it.name }
+                    draw.tagList.clear()
+                    draw.tagList.addAll(tagLsit)
                 }
                 drawList.add(drawService.save(draw))
             } catch (e: Exception) {

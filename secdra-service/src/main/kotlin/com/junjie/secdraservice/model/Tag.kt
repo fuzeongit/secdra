@@ -6,20 +6,23 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.io.Serializable
 import java.util.*
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.ManyToOne
 
 /**
  * 图片标签
  * @author fjj
  */
 @Entity
-class Tag: Serializable {
+class Tag : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var name: String? = null
+    lateinit var name: String
 
     @JsonIgnore
     @ManyToOne
@@ -30,4 +33,10 @@ class Tag: Serializable {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(name: String) {
+        this.name = name
+    }
 }

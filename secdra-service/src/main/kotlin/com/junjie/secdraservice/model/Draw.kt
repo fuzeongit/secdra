@@ -9,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
+import java.util.TreeSet
+
 
 /**
  * 画册
@@ -35,10 +37,6 @@ class Draw : Serializable {
 
     var drawState: DrawState = DrawState.PASS
 
-//    var viewAmount: Long = 0
-//
-//    var likeAmount: Long = 0
-
     var width: Long = 0;
 
     var height: Long = 0;
@@ -46,7 +44,7 @@ class Draw : Serializable {
     @JsonIgnore
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "draw_id")
-    var tagList: MutableList<Tag> = mutableListOf()
+    var tagList: MutableSet<Tag> = TreeSet { o1, o2 -> o1.name.compareTo(o2.name) };
 
     @CreatedDate
     var createDate: Date = Date()

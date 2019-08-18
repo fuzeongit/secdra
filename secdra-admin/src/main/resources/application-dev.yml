@@ -1,14 +1,24 @@
 server:
-  port: 8083
+  port: 8081
 spring:
   redis:
     host: 127.0.0.1
     port: 6379
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
-    username: root
-    password: root
+    primary:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
+    collect:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra_collect?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+#    username: root
+#    password: root
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,9 +27,6 @@ spring:
     elasticsearch:
       cluster-nodes: 127.0.0.1:9300
       cluster-name: elasticsearch
-#    show-sql: true
-#  mvc:
-#    static-path-pattern: /static/**
 
 
 

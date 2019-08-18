@@ -51,9 +51,9 @@ class DrawDocument : Serializable {
     @Field(type = FieldType.Keyword)
     var modifiedDate: Date = Date()
 
-    constructor() {}
+    constructor()
 
-    constructor(draw: Draw,viewAmount:Long,likeAmount:Long) {
+    constructor(draw: Draw, viewAmount: Long, likeAmount: Long) {
         this.id = draw.id
         this.introduction = draw.introduction
         this.url = draw.url
@@ -66,6 +66,6 @@ class DrawDocument : Serializable {
         this.height = draw.height
         this.createDate = draw.createDate
         this.modifiedDate = draw.modifiedDate
-        this.tagList = draw.tagList.map { it.name!! }.toMutableList()
+        this.tagList = draw.tagList.map { it.name }.toMutableList()
     }
 }

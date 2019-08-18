@@ -35,6 +35,11 @@
             <artifactId>secdra-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.junjie</groupId>
+            <artifactId>secdra-collect</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
