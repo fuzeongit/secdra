@@ -56,7 +56,7 @@ class DrawVO {
         this.height = draw.height
         this.createDate = draw.createDate
         this.modifiedDate = draw.modifiedDate
-        this.tagList = draw.tagList.map { it.name!! }
+        this.tagList = draw.tagList.map { it.name }
     }
 
     constructor(draw: Draw,viewAmount:Long,likeAmount:Long) {
@@ -72,6 +72,6 @@ class DrawVO {
         this.height = draw.height
         this.createDate = draw.createDate
         this.modifiedDate = draw.modifiedDate
-        this.tagList = draw.tagList.map { it.name!! }
+        this.tagList = draw.tagList.map { it.name }
     }
 }

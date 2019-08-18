@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service
 @Service
 class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
     override fun exists(followerId: String?, followingId: String): FollowState {
+        if(followerId==null){
+            return FollowState.CONCERNED
+        }
         if (followerId == followingId) {
             return FollowState.SElF
         }
         return try {
-            if (followDAO.existsByFollowerIdAndFollowingId(followerId!!, followingId)) FollowState.CONCERNED else FollowState.STRANGE
+            if (followDAO.existsByFollowerIdAndFollowingId(followerId, followingId)) FollowState.CONCERNED else FollowState.STRANGE
         } catch (e: Exception) {
             FollowState.SElF
         }
