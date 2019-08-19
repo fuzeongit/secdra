@@ -9,8 +9,6 @@ import java.util.*
 class UserVO {
     lateinit var id: String
 
-    lateinit var phone: String
-
     var gender: Gender = Gender.MALE
 
     var birthday: Date = Date()

@@ -104,10 +104,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
         val draw = Draw(userId, url, name, introduction!!)
         draw.privacy = privacy
         if (tagList != null && !tagList.isEmpty()) {
-            for (tagName in tagList) {
-                val tag = Tag(tagName)
-                draw.tagList.toMutableSet().add(tag)
-            }
+            draw.tagList.addAll(tagList.map { Tag(it) })
         }
 
         qiniuComponent.move(url, baseConfig.qiniuBucket)
@@ -161,7 +158,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
                 }
                 if (name != null && name.isNotEmpty()) draw.name = name
                 if (introduction != null && introduction.isNotEmpty()) draw.introduction = introduction
-                privacy?.let { draw.privacy = privacy }
+                privacy?.let { draw.privacy = it }
                 if (tagList != null && !tagList.isEmpty()) {
                     val sourceTagList = draw.tagList.toMutableSet()
                     sourceTagList.addAll(tagList.map { Tag(it) })
@@ -179,16 +176,13 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     private fun getVO(drawVO: DrawVO, userId: String? = null): DrawVO {
         val userVO = UserVO(userService.getInfo(drawVO.userId))
         userVO.focus = followService.exists(userId, userVO.id)
-        userId?.let { drawVO.focus = collectionService.exists(userId, drawVO.id) }
+        userId?.let { drawVO.focus = collectionService.exists(it, drawVO.id) }
         drawVO.user = userVO
         return drawVO
     }
 
     private fun getPageVO(page: Page<DrawDocument>, userId: String? = null): Page<DrawVO> {
-        val drawVOList = ArrayList<DrawVO>()
-        for (draw in page.content) {
-            drawVOList.add(getVO(DrawVO(draw), userId))
-        }
+        val drawVOList = page.content.map { getVO(DrawVO(it), userId) }
         return PageImpl<DrawVO>(drawVOList, page.pageable, page.totalElements)
     }
 }

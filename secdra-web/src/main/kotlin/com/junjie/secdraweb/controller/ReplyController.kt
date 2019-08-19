@@ -39,7 +39,7 @@ class ReplyController(private val replyService: ReplyService,
         (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
         val reply = Reply(commentId, authorId, criticId, answererId, drawId, content)
         val vo = getVO(replyService.save(reply))
-        val replyMessage = ReplyMessage(vo.commentId, vo.id!!, vo.authorId, vo.drawId, vo.criticId, vo.answererId, vo.content)
+        val replyMessage = ReplyMessage(vo.commentId, vo.id, vo.authorId, vo.drawId, vo.criticId, vo.answererId, vo.content)
         replyMessageService.save(replyMessage)
         webSocketService.sendReply(answererId, criticId)
         return vo
@@ -62,10 +62,6 @@ class ReplyController(private val replyService: ReplyService,
     }
 
     private fun getListVO(list: List<Reply>): List<ReplyVO> {
-        val replyVOList = ArrayList<ReplyVO>()
-        for (reply in list) {
-            replyVOList.add(getVO(reply))
-        }
-        return replyVOList
+        return list.map { getVO(it) }
     }
 }

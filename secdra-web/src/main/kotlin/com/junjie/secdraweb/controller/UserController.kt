@@ -147,8 +147,8 @@ class UserController(private val userService: UserService, private val baseConfi
     fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVO {
         val info = userService.getInfo(userId)
         if (name != null && name.isNotEmpty()) info.name = name
-        gender?.let { info.gender = gender }
-        birthday?.let { info.birthday = birthday }
+        gender?.let { info.gender = it }
+        birthday?.let { info.birthday = it }
         if (introduction != null && introduction.isNotEmpty()) info.introduction = introduction
         if (address != null && address.isNotEmpty()) info.address = address
         return UserVO(userService.save(info))
@@ -163,7 +163,7 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun updateHead(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        info.head?.let { qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket) }
+        info.head?.let { qiniuComponent.move(it, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket) }
         qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
         info.head = url
         return UserVO(userService.save(info))
@@ -178,7 +178,7 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun updateBack(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        info.background?.let { qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket) }
+        info.background?.let { qiniuComponent.move(it, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket) }
         qiniuComponent.move(url, baseConfig.qiniuBackBucket)
         info.background = url
         return UserVO(userService.save(info))

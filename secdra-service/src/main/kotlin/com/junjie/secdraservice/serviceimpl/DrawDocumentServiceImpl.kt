@@ -40,13 +40,13 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
             mustQuery.must(QueryBuilders.matchPhraseQuery("name", name))
         if (startDate != null || endDate != null) {
             val rangeQueryBuilder = QueryBuilders.rangeQuery("createDate")
-            startDate?.let { rangeQueryBuilder.from(startDate) }
-            endDate?.let { rangeQueryBuilder.to(endDate) }
+            startDate?.let { rangeQueryBuilder.from(it) }
+            endDate?.let { rangeQueryBuilder.to(it) }
             mustQuery.must(rangeQueryBuilder)
         }
         if (userId.isNullOrEmpty() || !self) {
             mustQuery.must(QueryBuilders.termQuery("privacy", PrivacyState.PUBLIC.toString()))
-    }
+        }
         if (!userId.isNullOrEmpty()) {
             mustQuery.must(QueryBuilders.termQuery("userId", userId))
         }

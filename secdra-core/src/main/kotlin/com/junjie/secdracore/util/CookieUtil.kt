@@ -4,7 +4,7 @@ import java.util.HashMap
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 
-object CookieUtil{
+object CookieUtil {
     /**
      * 将cookie封装成map
      *
@@ -14,8 +14,8 @@ object CookieUtil{
     fun readCookieMap(request: HttpServletRequest): Map<String, Cookie> {
         val cookieMap = HashMap<String, Cookie>()
         val cookies = request.cookies        //获取所有的cookie值
-        if (cookies != null) {
-            for (cookie in cookies) {
+        cookies?.let {
+            for (cookie in it) {
                 cookieMap[cookie.name] = cookie
             }
         }
