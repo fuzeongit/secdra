@@ -20,13 +20,20 @@ class Collection : Serializable {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var userId: String? = null
+    lateinit var userId: String
 
-    var drawId: String? = null
+    lateinit var drawId: String
 
     @CreatedDate
     var createDate: Date = Date()
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(userId: String, drawId: String) {
+        this.userId = userId
+        this.drawId = drawId
+    }
 }

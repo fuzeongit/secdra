@@ -7,28 +7,27 @@ import org.springframework.beans.BeanUtils
 import java.util.*
 
 class UserVO {
-    var id: String? = null
+    lateinit var id: String
 
-    var phone: String? = null
-
-    var name: String? = null
+    lateinit var phone: String
 
     var gender: Gender = Gender.MALE
 
-    var head: String? = null
+    var birthday: Date = Date()
 
-    var birthday: Date? = Date()
+    lateinit var name: String
 
-    var introduction: String? = null
+    lateinit var introduction: String
 
     var address: String? = null
+
+    var head: String? = null
 
     var background: String? = null
 
     var focus: FollowState = FollowState.SElF
 
-    constructor() {
-    }
+    constructor()
 
     constructor(user: User) {
         BeanUtils.copyProperties(user, this)

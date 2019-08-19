@@ -43,19 +43,10 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
                 errorReadList.add(fileName)
                 continue
             }
-            var draw = Draw()
-            draw.userId = userId
-            draw.width = read.width.toLong()
-            draw.height = read.height.toLong()
-            draw.url = fileName
-            draw.name = "等待"
-            draw.introduction = "这是一张很好看的图片，这是我从p站上下载回来的，侵删！"
+            var draw = Draw(userId, fileName, read.width.toLong(), read.height.toLong(), fileName, "这是一张很好看的图片，这是我从p站上下载回来的，侵删！")
             try {
                 draw = drawDAO.save(draw)
-                val pixivDraw = PixivDraw()
-                pixivDraw.pixivId = fileName.split("_")[0];
-                pixivDraw.drawId = draw.id
-                pixivDraw.state = TransferState.WAIT
+                val pixivDraw = PixivDraw(fileName.split("_")[0], draw.id!!)
                 pixivDrawDAO.save(pixivDraw)
                 i++
             } catch (e: Exception) {
@@ -153,15 +144,13 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
             pixivDraw.tagList = EmojiUtil.emojiChange(tagString).trim()
             pixivDraw.state = TransferState.SUCCESS
             try {
-                val draw = drawDAO.findById(pixivDraw.drawId!!).orElseThrow { NotFoundException("找不到图片") }
-                draw.name = pixivDraw.pixivName
-                draw.tagList.toMutableSet().addAll(pixivDraw.tagList!!.split("|").toSet().map { it -> Tag(it) })
+                val draw = drawDAO.findById(pixivDraw.drawId).orElseThrow { NotFoundException("找不到图片") }
+                draw.name = pixivDraw.pixivName!!
+                draw.tagList.toMutableSet().addAll(pixivDraw.tagList!!.split("|").asSequence().toSet().asSequence().map { it -> Tag(it) }.toList())
                 pixivDrawDAO.save(pixivDraw)
                 drawDAO.save(draw)
             } catch (e: Exception) {
-                val pixivError = PixivError()
-                pixivError.pixivId = pixivId
-                pixivError.message = e.message
+                val pixivError = PixivError(pixivId, e.message)
                 pixivErrorDAO.save(pixivError)
             }
         }
@@ -186,9 +175,9 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
 
         val list = drawDAO.findAll()
         for (item in list) {
-            val tagLsit = item.tagList.distinctBy { it.name }.toSet()
+            val tagList = item.tagList.asSequence().distinctBy { it.name }.toSet()
             item.tagList.clear()
-            item.tagList.addAll(tagLsit)
+            item.tagList.addAll(tagList)
             drawDAO.save(item)
         }
         return true
@@ -210,6 +199,4 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
     fun initEs(): Long {
         return drawService.synchronizationIndexDraw()
     }
-
-
 }

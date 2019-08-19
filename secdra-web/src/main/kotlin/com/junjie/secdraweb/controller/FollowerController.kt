@@ -36,8 +36,8 @@ class FollowerController(private val followService: FollowService, private val u
                 }, pageable)
         val userVOList = ArrayList<UserVO>()
         for (follow in page.content) {
-            val userVO = UserVO(userService.getInfo(follow.followerId!!))
-            userVO.focus = followService.exists(followingId, userVO.id!!)
+            val userVO = UserVO(userService.getInfo(follow.followerId))
+            userVO.focus = followService.exists(followingId, userVO.id)
             userVOList.add(userVO)
         }
         return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)

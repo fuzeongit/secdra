@@ -39,7 +39,7 @@ class GlobalHandler : ResponseBodyAdvice<Any?> {
     @ResponseBody
     @ExceptionHandler(UndeclaredThrowableException::class)
     fun exceptionHandler(e: UndeclaredThrowableException): Result<Any?> {
-        val baseException = e.undeclaredThrowable as? BaseException ?: BaseException(e.message!!, 500)
+        val baseException = e.undeclaredThrowable as? BaseException ?: BaseException(e.message, 500)
         return Result(baseException.status, baseException.message, baseException.data)
 
     }

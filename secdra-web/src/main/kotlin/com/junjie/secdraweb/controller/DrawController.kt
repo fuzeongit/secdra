@@ -4,6 +4,7 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
@@ -70,9 +71,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     @RestfulPack
     fun get(id: String, @CurrentUserId userId: String?): DrawVO {
         val draw = drawDocumentService.get(id)
-        if (draw.privacy == PrivacyState.PRIVATE && draw.userId != userId) {
-            draw.url = ""
-        }
+        (draw.privacy == PrivacyState.PRIVATE && draw.userId != userId) && throw PermissionException("你没有权限查看该图片")
         return getVO(DrawVO(draw), userId)
     }
 
@@ -83,8 +82,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     @GetMapping("getFirstByTag")
     @RestfulPack
     fun getFirstByTag(tag: String): DrawVO {
-        val draw = drawDocumentService.getFirstByTag(tag)
-        return getVO(DrawVO(draw), null)
+        return getVO(DrawVO(drawDocumentService.getFirstByTag(tag)), null)
     }
 
     /**
@@ -103,23 +101,18 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     @PostMapping("/save")
     @RestfulPack
     fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Set<String>?): DrawVO {
-        val draw = Draw()
-        draw.url = url
-        draw.userId = userId
-        draw.name = name
-        draw.introduction = introduction
+        val draw = Draw(userId, url, name, introduction!!)
         draw.privacy = privacy
         if (tagList != null && !tagList.isEmpty()) {
             for (tagName in tagList) {
-                val tag = Tag()
-                tag.name = tagName
+                val tag = Tag(tagName)
                 draw.tagList.toMutableSet().add(tag)
             }
         }
 
         qiniuComponent.move(url, baseConfig.qiniuBucket)
-        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl)
-        draw.width = imageInfo!!.width
+        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
+        draw.width = imageInfo.width
         draw.height = imageInfo.height
         return getVO(DrawVO(drawService.save(draw)))
     }
@@ -132,15 +125,9 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     @RestfulPack
     fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
         val draw = drawService.get(id)
-        if (draw.userId != userId) {
-            PermissionException("您无权修改该图片")
-        }
-        if (!name.isNullOrEmpty()) {
-            draw.name = name
-        }
-        if (!introduction.isNullOrEmpty()) {
-            draw.introduction = introduction
-        }
+        draw.userId != userId && throw PermissionException("您无权修改该图片")
+        if (!name.isNullOrEmpty()) draw.name = name!!
+        if (!introduction.isNullOrEmpty()) draw.introduction = introduction!!
         draw.privacy = privacy
         if (tagList != null && !tagList.isEmpty()) {
             val tagNameList = draw.tagList.map { it.name }
@@ -172,12 +159,8 @@ class DrawController(private val drawService: DrawService, private val drawDocum
                 if (userId != draw.userId) {
                     continue
                 }
-                if (!name.isNullOrEmpty()) {
-                    draw.name = name
-                }
-                if (!introduction.isNullOrEmpty()) {
-                    draw.introduction = introduction
-                }
+                if (!name.isNullOrEmpty()) draw.name = name!!
+                if (!introduction.isNullOrEmpty()) draw.introduction = introduction!!
                 if (privacy != null) {
                     draw.privacy = privacy
                 }
@@ -197,10 +180,10 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     }
 
     private fun getVO(drawVO: DrawVO, userId: String? = null): DrawVO {
-        val userVO = UserVO(userService.getInfo(drawVO.userId!!))
-        userVO.focus = followService.exists(userId, userVO.id!!)
+        val userVO = UserVO(userService.getInfo(drawVO.userId))
+        userVO.focus = followService.exists(userId, userVO.id)
         if (!userId.isNullOrEmpty()) {
-            drawVO.focus = collectionService.exists(userId!!, drawVO.id!!)
+            drawVO.focus = collectionService.exists(userId!!, drawVO.id)
         }
         drawVO.user = userVO
         return drawVO

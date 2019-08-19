@@ -43,8 +43,8 @@ class WebSocketUserInterceptor(private val baseConfig: BaseConfig, private val r
                     //最后更改密码时间写入redis
                     redisTemplate.opsForValue().set(
                             String.format(baseConfig.updatePasswordTimePrefix, userId),
-                            info.rePasswordDate?.time.toString())
-                    info.rePasswordDate!!
+                            info.rePasswordDate.time.toString())
+                    info.rePasswordDate
                 } else {
                     Date(rePasswordDateStr?.toLong()!!)
                 }

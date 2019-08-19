@@ -20,6 +20,8 @@ class PixivDraw : Serializable {
 
     lateinit var pixivId: String
 
+    lateinit var drawId: String
+
     var pixivName: String? = null
 
     var pixivUserName: String? = null
@@ -30,11 +32,16 @@ class PixivDraw : Serializable {
 
     var state: TransferState = TransferState.WAIT
 
-    var drawId: String? = null
-
     @CreatedDate
     var createDate: Date = Date()
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(pixivId: String, drawId: String) {
+        this.pixivId = pixivId
+        this.drawId = drawId
+    }
 }

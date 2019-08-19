@@ -30,7 +30,7 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
 
     @MessageMapping("/sendBroadcast")
     @SendTo("/broadcast")
-    fun sendBroadcast(message: Message<Map<String, Any>>, a: String?){
+    fun sendBroadcast(message: Message<Map<String, Any>>, a: String?) {
         sendBroadcast()
     }
 
@@ -47,6 +47,6 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
     }
 
     private fun sendBroadcast() {
-        simpMessagingTemplate.convertAndSend("/broadcast", Result(200,null,Draw()))
+        simpMessagingTemplate.convertAndSend("/broadcast", Result(200, null, null))
     }
 }

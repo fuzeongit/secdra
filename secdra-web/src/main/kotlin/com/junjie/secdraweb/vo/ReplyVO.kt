@@ -7,27 +7,27 @@ import java.util.*
 class ReplyVO {
     var id: String? = null
     //评论id
-    var commentId: String? = null
+    lateinit var commentId: String
     //图片作者id
-    var authorId: String? = null
+    lateinit var authorId: String
     //评论人id
-    var criticId: String? = null
+    lateinit var criticId: String
     //回答者id
-    var answererId: String? = null
+    lateinit var answererId: String
     //图片id
-    var drawId: String? = null
+    lateinit var drawId: String
 
-    var content: String? = null
+    lateinit var content: String
 
     var createDate: Date = Date()
 
     var modifiedDate: Date = Date()
 
-    var critic :UserVO? = null
+    lateinit var critic: UserVO
 
-    var answerer :UserVO? = null
+    lateinit var answerer: UserVO
 
-    constructor() {}
+    constructor()
 
     constructor(comment: Reply) {
         BeanUtils.copyProperties(comment, this)

@@ -7,14 +7,12 @@ import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
-import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.vo.DrawVO
+import com.junjie.secdraweb.vo.CollectionDrawVO
 import com.junjie.secdraweb.vo.UserVO
-import org.springframework.beans.BeanUtils
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -35,9 +33,7 @@ class CollectionController(private val collectionService: CollectionService,
     @RestfulPack
     fun focus(@CurrentUserId userId: String, drawId: String): CollectState {
         val draw = drawDocumentService.get(drawId)
-        if (draw.userId == userId) {
-            throw ProgramException("不能收藏自己的作品")
-        }
+        draw.userId == userId && throw ProgramException("不能收藏自己的作品")
         val flag = if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
             if (draw.privacy == PrivacyState.PRIVATE) {
                 throw ProgramException("不能收藏私密图片")
@@ -84,45 +80,30 @@ class CollectionController(private val collectionService: CollectionService,
     @Auth
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<DrawVO> {
-        val page = collectionService.paging(
-                if (id.isNullOrEmpty()) {
-                    userId
-                } else {
-                    id!!
-                }, pageable)
-        val drawVOList = ArrayList<DrawVO>()
+    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
+        val page = collectionService.paging(if (id.isNullOrEmpty()) userId else id!!, pageable)
+        val collectionDrawVOList = ArrayList<CollectionDrawVO>()
         for (collection in page.content) {
-            var draw: DrawDocument
-            try {
-                draw = drawDocumentService.get(collection.drawId!!)
+            val collectionDrawVO = try {
+                val draw = drawDocumentService.get(collection.drawId)
+                //图片被隐藏
                 if (draw.privacy == PrivacyState.PRIVATE) {
+                    //TODO 隐藏图片的默认路径
                     draw.url = ""
                 }
+                val userVO = UserVO(userService.getInfo(draw.userId))
+                userVO.focus = followService.exists(userId, draw.userId)
+                CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, draw.id!!), userVO)
             } catch (e: Exception) {
+                //图片被删除
                 if (e is NotFoundException) {
-                    draw = DrawDocument()
-                    draw.id = collection.drawId
-                    draw.privacy = PrivacyState.PRIVATE
+                    CollectionDrawVO(collection.drawId)
                 } else {
                     throw e
                 }
             }
-            val drawVO = DrawVO()
-            BeanUtils.copyProperties(draw, drawVO)
-
-            val userVO = UserVO()
-            val user = userService.getInfo(draw.userId!!)
-            BeanUtils.copyProperties(user, userVO)
-            userVO.focus = followService.exists(userId, draw.userId!!)
-            drawVO.focus = if (id.isNullOrEmpty() || id == userId) {
-                CollectState.CONCERNED
-            } else {
-                collectionService.exists(userId, draw.id!!)
-            }
-            drawVO.user = userVO
-            drawVOList.add(drawVO)
+            collectionDrawVOList.add(collectionDrawVO)
         }
-        return PageImpl<DrawVO>(drawVOList, page.pageable, page.totalElements)
+        return PageImpl(collectionDrawVOList, page.pageable, page.totalElements)
     }
 }

@@ -20,13 +20,20 @@ class Follow : Serializable {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var followerId: String? = null
+    lateinit var followerId: String
 
-    var followingId: String? = null
+    lateinit var followingId: String
 
     @CreatedDate
     var createDate: Date = Date()
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(followerId: String, followingId: String) {
+        this.followerId = followerId
+        this.followingId = followingId
+    }
 }

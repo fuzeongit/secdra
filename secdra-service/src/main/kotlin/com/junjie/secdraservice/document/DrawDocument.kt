@@ -15,17 +15,17 @@ class DrawDocument : Serializable {
     @Field(type = FieldType.Keyword)
     var id: String? = null
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    var name: String? = null
-
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    var introduction: String? = null
+    @Field(type = FieldType.Keyword)
+    lateinit var userId: String
 
     @Field(type = FieldType.Keyword, index = false)
-    var url: String? = null
+    lateinit var url: String
 
-    @Field(type = FieldType.Keyword)
-    var userId: String? = null
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    var name: String = "无题"
+
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    var introduction: String = "身无彩凤双飞翼，心有灵犀一点通"
 
     @Field(type = FieldType.Keyword)
     var privacy: PrivacyState = PrivacyState.PUBLIC
@@ -66,6 +66,6 @@ class DrawDocument : Serializable {
         this.height = draw.height
         this.createDate = draw.createDate
         this.modifiedDate = draw.modifiedDate
-        this.tagList = draw.tagList.map { it.name }.toMutableList()
+        this.tagList = draw.tagList.asSequence().map { it.name }.toMutableList()
     }
 }

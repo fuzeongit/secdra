@@ -21,14 +21,11 @@ class UserServiceImpl(val userDAO: UserDAO) : UserService {
         return userDAO.existsByPhone(phone)
     }
 
-    override fun register(phone:String,password: String,rePasswordDate: Date): User {
+    override fun register(phone: String, password: String, rePasswordDate: Date): User {
         if (existsByPhone(phone)) {
             throw PermissionException("手机号已存在")
         }
-        val user = User()
-        user.phone = phone
-        user.password = password
-        user.rePasswordDate = rePasswordDate
+        val user = User(phone, password, rePasswordDate)
         return userDAO.save(user)
     }
 
@@ -38,7 +35,6 @@ class UserServiceImpl(val userDAO: UserDAO) : UserService {
         }
         return userDAO.findOneByPhoneAndPassword(phone, password).orElseThrow { SignInException("账号密码不正确") }
     }
-
 
 
     override fun rePassword(phone: String, password: String, rePasswordTime: Date): User {

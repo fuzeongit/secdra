@@ -8,23 +8,23 @@ import org.springframework.beans.BeanUtils
 import java.util.*
 
 class DrawVO {
-    var id: String? = null
+    lateinit var id: String
 
-    var introduction: String? = null
+    lateinit var introduction: String
 
-    var url: String? = null
+    lateinit var url: String
 
-    var userId: String? = null
+    lateinit var userId: String
 
-    var name: String? = null
+    lateinit var name: String
 
     var privacy: PrivacyState = PrivacyState.PUBLIC
 
     var focus: CollectState = CollectState.STRANGE
 
-    var viewAmount: Long? = null
+    var viewAmount: Long = 0
 
-    var likeAmount: Long? = null
+    var likeAmount: Long = 0
 
     var width: Long = 0;
 
@@ -32,21 +32,26 @@ class DrawVO {
 
     var tagList: List<String> = mutableListOf()
 
-    var user: UserVO? = null
+    lateinit var user: UserVO
 
     var createDate: Date = Date()
 
     var modifiedDate: Date = Date()
 
-    constructor() {
-    }
+    constructor()
 
     constructor(draw: DrawDocument) {
         BeanUtils.copyProperties(draw, this)
     }
 
+    constructor(draw: DrawDocument, focus: CollectState, user: UserVO) {
+        BeanUtils.copyProperties(draw, this)
+        this.focus = focus
+        this.user = user
+    }
+
     constructor(draw: Draw) {
-        this.id = draw.id
+        this.id = draw.id!!
         this.introduction = draw.introduction
         this.url = draw.url
         this.userId = draw.userId
@@ -59,8 +64,8 @@ class DrawVO {
         this.tagList = draw.tagList.map { it.name }
     }
 
-    constructor(draw: Draw,viewAmount:Long,likeAmount:Long) {
-        this.id = draw.id
+    constructor(draw: Draw, viewAmount: Long, likeAmount: Long) {
+        this.id = draw.id!!
         this.introduction = draw.introduction
         this.url = draw.url
         this.userId = draw.userId

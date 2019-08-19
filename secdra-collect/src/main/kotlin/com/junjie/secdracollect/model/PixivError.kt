@@ -15,7 +15,7 @@ class PixivError {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var pixivId: String? = null
+    lateinit var pixivId: String
 
     var message: String? = null
 
@@ -26,4 +26,12 @@ class PixivError {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(pixivId: String, message: String?) {
+        this.pixivId = pixivId
+        this.message = message
+
+    }
 }

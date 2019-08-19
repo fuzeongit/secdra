@@ -25,13 +25,13 @@ class Draw : Serializable {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var userId: String? = null
+    lateinit var userId: String
 
-    var name: String? = null
+    lateinit var url: String
 
-    var introduction: String? = null
+    var name: String = "无题"
 
-    var url: String? = null
+    var introduction: String = "身无彩凤双飞翼，心有灵犀一点通"
 
     var privacy: PrivacyState = PrivacyState.PUBLIC
 
@@ -51,4 +51,24 @@ class Draw : Serializable {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+
+    constructor()
+
+
+    constructor(userId: String, url: String, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通") {
+        this.userId = userId
+        this.url = url
+        this.name = name
+        this.introduction = introduction
+    }
+
+    constructor(userId: String, url: String, width: Long, height: Long, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通") {
+        this.userId = userId
+        this.url = url
+        this.name = name
+        this.introduction = introduction
+        this.width = width
+        this.height = height
+    }
 }

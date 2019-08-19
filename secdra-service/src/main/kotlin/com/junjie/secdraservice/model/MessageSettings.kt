@@ -12,14 +12,14 @@ import javax.persistence.*
  * @author fjj
  */
 @Entity
-@Table(uniqueConstraints= [UniqueConstraint(columnNames = arrayOf("userId"))])
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("userId"))])
 class MessageSettings : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var userId: String? = null
+    lateinit var userId: String
 
     var commentStatus: Boolean = true
 
@@ -34,4 +34,10 @@ class MessageSettings : Serializable {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(userId: String) {
+        this.userId = userId
+    }
 }

@@ -10,7 +10,6 @@ import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdracore.util.RegexUtil
 import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.constant.VerificationCodeOperation
-import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.base.component.BaseConfig
@@ -88,12 +87,7 @@ class UserController(private val userService: UserService, private val baseConfi
         }
         //获取系统时间
         val nowMillis = System.currentTimeMillis()
-        var user = User()
-        user.phone = phone
-        user.password = password
-        user.rePasswordDate = Date(nowMillis)
-        //注册
-        user = userService.register(phone, password, Date(nowMillis))
+        val user = userService.register(phone, password, Date(nowMillis))
         //清理验证码
         redisTemplate.delete(String.format(baseConfig.registerVerificationCodePrefix, phone))
         //把修改密码时间放到redis
@@ -157,12 +151,8 @@ class UserController(private val userService: UserService, private val baseConfi
     @GetMapping("/getInfo")
     @RestfulPack
     fun getInfo(@CurrentUserId userId: String, id: String?): UserVO {
-        val userVO = UserVO(userService.getInfo(if (id.isNullOrEmpty() || id == userId) {
-            userId
-        } else {
-            id!!
-        }))
-        userVO.focus = followService.exists(userId, userVO.id!!)
+        val userVO = UserVO(userService.getInfo(if (id.isNullOrEmpty() || id == userId) userId else id!!))
+        userVO.focus = followService.exists(userId, userVO.id)
         return userVO
     }
 
@@ -175,11 +165,11 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVO {
         val info = userService.getInfo(userId)
-        if (!name.isNullOrEmpty()) info.name = name
+        if (!name.isNullOrEmpty()) info.name = name!!
         if (gender != null) info.gender = gender
         if (birthday != null) info.birthday = birthday
-        if (introduction.isNullOrEmpty()) info.introduction = introduction
-        if (address.isNullOrEmpty()) info.address = address
+        if (!introduction.isNullOrEmpty()) info.introduction = introduction!!
+        if (!address.isNullOrEmpty()) info.address = address
         return UserVO(userService.save(info))
     }
 
@@ -192,7 +182,7 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun updateHead(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket)
+        if (info.head != null) qiniuComponent.move(info.head!!, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket)
         qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
         info.head = url
         return UserVO(userService.save(info))
@@ -207,7 +197,7 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun updateBack(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket)
+        if (info.background != null) qiniuComponent.move(info.background!!, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket)
         qiniuComponent.move(url, baseConfig.qiniuBackBucket)
         info.background = url
         return UserVO(userService.save(info))

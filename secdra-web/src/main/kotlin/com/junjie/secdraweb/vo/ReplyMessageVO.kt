@@ -5,21 +5,21 @@ import org.springframework.beans.BeanUtils
 import java.util.*
 
 class ReplyMessageVO {
-    var id: String? = null
+    lateinit var id: String
     //评论id
-    var commentId: String? = null
+    lateinit var commentId: String
     //回复id
-    var replyId: String? = null
+    lateinit var replyId: String
     //图片作者id
-    var authorId: String? = null
+    lateinit var authorId: String
     //图片id
-    var drawId: String? = null
+    lateinit var drawId: String
     //评论人id
-    var criticId: String? = null
+    lateinit var criticId: String
     //回答者id
-    var answererId: String? = null
+    lateinit var answererId: String
 
-    var content: String? = null
+    lateinit var content: String
 
     var isRead: Boolean = false
 
@@ -27,9 +27,9 @@ class ReplyMessageVO {
 
     var modifiedDate: Date = Date()
 
-    var answerer:UserVO? = null
+    lateinit var answerer: UserVO
 
-    constructor() {}
+    constructor()
 
     constructor(replyMessage: ReplyMessage) {
         BeanUtils.copyProperties(replyMessage, this)

@@ -5,25 +5,25 @@ import org.springframework.beans.BeanUtils
 import java.util.*
 
 class CommentVO {
-    var id: String? = null
+    lateinit var id: String
     //图片作者id
-    var authorId: String? = null
+    lateinit var authorId: String
     //评论人id
-    var criticId: String? = null
+    lateinit var criticId: String
 
-    var drawId: String? = null
+    lateinit var drawId: String
 
-    var content: String? = null
+    lateinit var content: String
 
     var createDate: Date = Date()
 
     var modifiedDate: Date = Date()
 
-    var author: UserVO? = null
-    
-    var critic: UserVO? = null
+    lateinit var author: UserVO
 
-    constructor() {}
+    lateinit var critic: UserVO
+
+    constructor()
 
     constructor(comment: Comment) {
         BeanUtils.copyProperties(comment, this)

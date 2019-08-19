@@ -8,11 +8,11 @@ import org.springframework.data.annotation.LastModifiedDate
 import java.util.*
 
 class FollowMessageVO {
-    var id: String? = null
+    lateinit var id: String
 
-    var followerId: String? = null
+    lateinit var followerId: String
 
-    var followingId: String? = null
+    lateinit var followingId: String
 
     var isRead: Boolean = false
 
@@ -20,9 +20,9 @@ class FollowMessageVO {
 
     var modifiedDate: Date = Date()
 
-    var follower: UserVO? = null
+    lateinit var follower: UserVO
 
-    constructor() {}
+    constructor()
 
     constructor(followMessage: FollowMessage) {
         BeanUtils.copyProperties(followMessage, this)

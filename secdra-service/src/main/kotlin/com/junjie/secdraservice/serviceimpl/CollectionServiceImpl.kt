@@ -20,9 +20,7 @@ class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : Collecti
     }
 
     override fun save(userId: String, drawId: String): Collection {
-        val collection = Collection()
-        collection.userId = userId
-        collection.drawId = drawId
+        val collection = Collection(userId, drawId)
         return collectionDAO.save(collection)
     }
 

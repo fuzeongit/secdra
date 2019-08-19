@@ -19,9 +19,9 @@ class FollowMessage {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var followerId: String? = null
+    lateinit var followerId: String
 
-    var followingId: String? = null
+    lateinit var followingId: String
 
     var isRead: Boolean = false
 
@@ -30,4 +30,11 @@ class FollowMessage {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(followerId: String, followingId: String) {
+        this.followerId = followerId
+        this.followingId = followingId
+    }
 }

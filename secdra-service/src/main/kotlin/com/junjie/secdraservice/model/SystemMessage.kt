@@ -20,12 +20,12 @@ class SystemMessage {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var userId: String? = null
+    lateinit var userId: String
 
-    var title: String? = null
+    lateinit var title: String
 
-    @Column(columnDefinition="text")
-    var content: String? = null
+    @Column(columnDefinition = "text")
+    lateinit var content: String
 
     var isRead: Boolean = false
 
@@ -34,4 +34,12 @@ class SystemMessage {
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(userId: String, title: String, content: String) {
+        this.userId = userId
+        this.title = title
+        this.content = content
+    }
 }

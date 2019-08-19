@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
     override fun exists(followerId: String?, followingId: String): FollowState {
-        if(followerId==null){
+        if (followerId == null) {
             return FollowState.CONCERNED
         }
         if (followerId == followingId) {
@@ -25,9 +25,7 @@ class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
     }
 
     override fun save(followerId: String, followingId: String): Follow {
-        val follow = Follow()
-        follow.followerId = followerId
-        follow.followingId = followingId
+        val follow = Follow(followerId, followingId)
         return followDAO.save(follow)
     }
 

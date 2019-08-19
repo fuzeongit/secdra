@@ -41,19 +41,9 @@ class CommentController(private val commentService: CommentService,
     fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")
         (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
-        val comment = Comment()
-        comment.authorId = authorId
-        comment.criticId = criticId
-        comment.drawId = drawId
-        comment.content = content
-
+        val comment = Comment(authorId, criticId, drawId, content)
         val vo = getVO(commentService.save(comment))
-        val commentMessage = CommentMessage()
-        commentMessage.commentId = vo.id
-        commentMessage.authorId = vo.authorId
-        commentMessage.drawId = vo.drawId
-        commentMessage.criticId = vo.criticId
-        commentMessage.content = vo.content
+        val commentMessage = CommentMessage(vo.id, vo.authorId, vo.drawId, vo.criticId, vo.content)
         commentMessageService.save(commentMessage)
         webSocketService.sendComment(criticId, authorId)
         return vo
@@ -88,12 +78,8 @@ class CommentController(private val commentService: CommentService,
 
     private fun getVO(comment: Comment, user: User? = null): CommentVO {
         val commentVO = CommentVO(comment)
-        if (user == null) {
-            commentVO.author = UserVO(userService.getInfo(comment.authorId!!))
-        } else {
-            commentVO.author = UserVO(user)
-        }
-        commentVO.critic = UserVO(userService.getInfo(comment.criticId!!))
+        commentVO.author = if (user == null) UserVO(userService.getInfo(comment.authorId)) else UserVO(user)
+        commentVO.critic = UserVO(userService.getInfo(comment.criticId))
         return commentVO
     }
 

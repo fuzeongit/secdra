@@ -35,9 +35,7 @@ class FollowingController(private val followService: FollowService, private val 
         val focus = followService.exists(followerId, followingId)
         return if (focus == FollowState.STRANGE) {
             val follow = followService.save(followerId, followingId)
-            val followMessage = FollowMessage()
-            followMessage.followerId = follow.followerId
-            followMessage.followingId = follow.followingId
+            val followMessage = FollowMessage(follow.followerId, follow.followingId)
             followMessageService.save(followMessage)
             webSocketService.sendFollowingFocus(followerId, followingId)
             FollowState.CONCERNED
@@ -82,8 +80,8 @@ class FollowingController(private val followService: FollowService, private val 
                 }, pageable)
         val userVOList = ArrayList<UserVO>()
         for (follow in page.content) {
-            val userVO = UserVO(userService.getInfo(follow.followingId!!))
-            userVO.focus = followService.exists(followerId, userVO.id!!)
+            val userVO = UserVO(userService.getInfo(follow.followingId))
+            userVO.focus = followService.exists(followerId, userVO.id)
             userVOList.add(userVO)
         }
         return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)

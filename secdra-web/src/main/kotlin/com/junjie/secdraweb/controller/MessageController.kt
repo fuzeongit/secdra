@@ -85,8 +85,7 @@ class MessageController(private val userService: UserService, private val commen
         return try {
             messageSettingsService.get(userId)
         } catch (e: Exception) {
-            val newSettings = MessageSettings()
-            newSettings.userId = userId
+            val newSettings = MessageSettings(userId)
             messageSettingsService.save(newSettings)
         }
     }
@@ -95,9 +94,8 @@ class MessageController(private val userService: UserService, private val commen
     @PostMapping("/saveSettings")
     @RestfulPack
     fun saveSettings(@CurrentUserId userId: String, id: String, commentStatus: Boolean, replyStatus: Boolean, followStatus: Boolean): MessageSettings {
-        val messageSettings = MessageSettings()
+        val messageSettings = MessageSettings(userId)
         messageSettings.id = id
-        messageSettings.userId = userId
         messageSettings.commentStatus = commentStatus
         messageSettings.replyStatus = replyStatus
         messageSettings.followStatus = followStatus
@@ -106,7 +104,7 @@ class MessageController(private val userService: UserService, private val commen
 
     private fun getCommentMessageVO(commentMessage: CommentMessage): CommentMessageVO {
         val vo = CommentMessageVO(commentMessage)
-        vo.critic = UserVO(userService.getInfo(vo.criticId!!))
+        vo.critic = UserVO(userService.getInfo(vo.criticId))
         return vo
     }
 
@@ -125,7 +123,7 @@ class MessageController(private val userService: UserService, private val commen
 
     private fun getReplyMessageVO(replyMessage: ReplyMessage): ReplyMessageVO {
         val vo = ReplyMessageVO(replyMessage)
-        vo.answerer = UserVO(userService.getInfo(vo.answererId!!))
+        vo.answerer = UserVO(userService.getInfo(vo.answererId))
         return vo
     }
 
@@ -144,7 +142,7 @@ class MessageController(private val userService: UserService, private val commen
 
     private fun getFollowMessageVO(followMessage: FollowMessage): FollowMessageVO {
         val vo = FollowMessageVO(followMessage)
-        vo.follower = UserVO(userService.getInfo(vo.followerId!!))
+        vo.follower = UserVO(userService.getInfo(vo.followerId))
         return vo
     }
 

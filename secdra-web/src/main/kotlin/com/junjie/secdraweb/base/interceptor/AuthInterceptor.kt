@@ -41,9 +41,9 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 val claims = JwtUtil.parseJWT(token, baseConfig.jwtSecretString)
                 val userId = claims["userId"] as String
                 //过期时间
-                val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
+                val exp = Date(claims["exp"]!!.toString().toLong() * 1000)
                 //生成时间
-                val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
+                val nbf = Date(claims["nbf"]!!.toString().toLong() * 1000)
                 //最后更改密码时间
                 val rePasswordDateStr = redisTemplate.opsForValue()[String.format(baseConfig.updatePasswordTimePrefix, userId)]
                 val rePasswordDate: Date?
@@ -53,10 +53,10 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                     //最后更改密码时间写入redis
                     redisTemplate.opsForValue().set(
                             String.format(baseConfig.updatePasswordTimePrefix, userId),
-                            info.rePasswordDate?.time.toString())
-                    info.rePasswordDate!!
+                            info.rePasswordDate.time.toString())
+                    info.rePasswordDate
                 } else {
-                    Date(rePasswordDateStr?.toLong()!!)
+                    Date(rePasswordDateStr!!.toLong())
                 }
                 if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
                     throw SignInException("用户登录已过期")

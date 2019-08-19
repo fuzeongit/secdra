@@ -19,21 +19,32 @@ class Reply {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
     //评论id
-    var commentId: String? = null
+    lateinit var commentId: String
     //图片作者id
-    var authorId: String? = null
+    lateinit var authorId: String
     //评论人id
-    var criticId: String? = null
+    lateinit var criticId: String
     //回答者id
-    var answererId: String? = null
+    lateinit var answererId: String
     //图片id
-    var drawId: String? = null
+    lateinit var drawId: String
 
-    var content: String? = null
+    lateinit var content: String
 
     @CreatedDate
     var createDate: Date = Date()
 
     @LastModifiedDate
     var modifiedDate: Date = Date()
+
+    constructor()
+
+    constructor(commentId: String, authorId: String, criticId: String, answererId: String, drawId: String, content: String) {
+        this.commentId = commentId
+        this.authorId = authorId
+        this.criticId = criticId
+        this.answererId = answererId
+        this.drawId = drawId
+        this.content = content
+    }
 }

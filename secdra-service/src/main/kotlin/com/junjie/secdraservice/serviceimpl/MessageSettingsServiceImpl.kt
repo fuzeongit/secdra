@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service
 class MessageSettingsServiceImpl(private val messageSettingsDAO: MessageSettingsDAO) : MessageSettingsService {
     @Cacheable("message::settings::get", key = "#userId")
     override fun get(userId: String): MessageSettings {
-        val query = MessageSettings()
-        query.userId = userId
+        val query = MessageSettings(userId)
         val matcher = ExampleMatcher.matching()
                 .withMatcher("userId", ExampleMatcher.GenericPropertyMatchers.exact())
                 .withIgnorePaths("id")
@@ -26,11 +25,10 @@ class MessageSettingsServiceImpl(private val messageSettingsDAO: MessageSettings
                 .withIgnorePaths("createDate")
                 .withIgnorePaths("modifiedDate")
         val example = Example.of(query, matcher)
-        return try{
-             messageSettingsDAO.findOne(example).orElseThrow { NotFoundException("找不到消息配置") }
-        }catch (e:NotFoundException){
-            val newSettings = MessageSettings()
-            newSettings.userId = userId
+        return try {
+            messageSettingsDAO.findOne(example).orElseThrow { NotFoundException("找不到消息配置") }
+        } catch (e: NotFoundException) {
+            val newSettings = MessageSettings(userId)
             messageSettingsDAO.save(newSettings)
         }
     }
