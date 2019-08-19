@@ -15,9 +15,7 @@ class CommentVO {
 
     lateinit var content: String
 
-    var createDate: Date = Date()
-
-    var modifiedDate: Date = Date()
+    lateinit var createDate: Date
 
     lateinit var author: UserVO
 

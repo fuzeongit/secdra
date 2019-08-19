@@ -64,8 +64,8 @@ class DrawDocument : Serializable {
         this.likeAmount = likeAmount
         this.width = draw.width
         this.height = draw.height
-        this.createDate = draw.createDate
-        this.modifiedDate = draw.modifiedDate
+        this.createDate = draw.createDate!!
+        this.modifiedDate = draw.modifiedDate!!
         this.tagList = draw.tagList.asSequence().map { it.name }.toMutableList()
     }
 }

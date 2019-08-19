@@ -23,9 +23,7 @@ class ReplyMessageVO {
 
     var isRead: Boolean = false
 
-    var createDate: Date = Date()
-
-    var modifiedDate: Date = Date()
+    lateinit var createDate: Date
 
     lateinit var answerer: UserVO
 

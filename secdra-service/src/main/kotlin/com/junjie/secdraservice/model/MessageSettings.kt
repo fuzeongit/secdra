@@ -30,10 +30,10 @@ class MessageSettings : Serializable {
     var systemStatus: Boolean = true
 
     @CreatedDate
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     @LastModifiedDate
-    var modifiedDate: Date = Date()
+    var modifiedDate: Date? = null
 
     constructor()
 

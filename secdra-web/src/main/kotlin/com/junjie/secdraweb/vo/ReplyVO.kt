@@ -5,7 +5,7 @@ import org.springframework.beans.BeanUtils
 import java.util.*
 
 class ReplyVO {
-    var id: String? = null
+    lateinit var id: String
     //评论id
     lateinit var commentId: String
     //图片作者id
@@ -19,9 +19,7 @@ class ReplyVO {
 
     lateinit var content: String
 
-    var createDate: Date = Date()
-
-    var modifiedDate: Date = Date()
+    lateinit var createDate: Date
 
     lateinit var critic: UserVO
 

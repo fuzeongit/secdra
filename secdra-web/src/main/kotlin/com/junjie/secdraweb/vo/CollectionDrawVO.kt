@@ -28,8 +28,6 @@ class CollectionDrawVO {
 
     var createDate: Date = Date()
 
-    var modifiedDate: Date = Date()
-
     constructor()
 
     constructor(id: String) {

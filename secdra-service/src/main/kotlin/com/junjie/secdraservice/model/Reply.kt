@@ -32,10 +32,10 @@ class Reply {
     lateinit var content: String
 
     @CreatedDate
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     @LastModifiedDate
-    var modifiedDate: Date = Date()
+    var modifiedDate: Date? = null
 
     constructor()
 

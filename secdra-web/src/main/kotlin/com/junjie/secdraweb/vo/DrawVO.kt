@@ -34,9 +34,7 @@ class DrawVO {
 
     lateinit var user: UserVO
 
-    var createDate: Date = Date()
-
-    var modifiedDate: Date = Date()
+    lateinit var createDate: Date
 
     constructor()
 
@@ -59,8 +57,7 @@ class DrawVO {
         this.privacy = draw.privacy
         this.width = draw.width
         this.height = draw.height
-        this.createDate = draw.createDate
-        this.modifiedDate = draw.modifiedDate
+        this.createDate = draw.createDate!!
         this.tagList = draw.tagList.map { it.name }
     }
 
@@ -75,8 +72,7 @@ class DrawVO {
         this.likeAmount = likeAmount
         this.width = draw.width
         this.height = draw.height
-        this.createDate = draw.createDate
-        this.modifiedDate = draw.modifiedDate
+        this.createDate = draw.createDate!!
         this.tagList = draw.tagList.map { it.name }
     }
 }

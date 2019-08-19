@@ -11,7 +11,6 @@ import java.util.*
 import javax.persistence.*
 import java.util.TreeSet
 
-
 /**
  * 画册
  * @author fjj
@@ -47,14 +46,12 @@ class Draw : Serializable {
     var tagList: MutableSet<Tag> = TreeSet { o1, o2 -> o1.name.compareTo(o2.name) };
 
     @CreatedDate
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     @LastModifiedDate
-    var modifiedDate: Date = Date()
-
+    var modifiedDate: Date? = null
 
     constructor()
-
 
     constructor(userId: String, url: String, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通") {
         this.userId = userId

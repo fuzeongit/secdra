@@ -21,9 +21,7 @@ class CommentMessageVO {
 
     lateinit var critic: UserVO
 
-    var createDate: Date = Date()
-
-    var modifiedDate: Date = Date()
+    lateinit var createDate: Date
 
     constructor()
 

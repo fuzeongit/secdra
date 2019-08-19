@@ -25,10 +25,10 @@ class Follow : Serializable {
     lateinit var followingId: String
 
     @CreatedDate
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     @LastModifiedDate
-    var modifiedDate: Date = Date()
+    var modifiedDate: Date? = null
 
     constructor()
 

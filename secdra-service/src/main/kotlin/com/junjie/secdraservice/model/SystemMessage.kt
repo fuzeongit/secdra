@@ -30,10 +30,10 @@ class SystemMessage {
     var isRead: Boolean = false
 
     @CreatedDate
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     @LastModifiedDate
-    var modifiedDate: Date = Date()
+    var modifiedDate: Date? = null
 
     constructor()
 

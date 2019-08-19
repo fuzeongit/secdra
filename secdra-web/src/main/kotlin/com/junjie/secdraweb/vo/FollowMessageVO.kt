@@ -16,9 +16,7 @@ class FollowMessageVO {
 
     var isRead: Boolean = false
 
-    var createDate: Date = Date()
-
-    var modifiedDate: Date = Date()
+    lateinit var createDate: Date
 
     lateinit var follower: UserVO
 
