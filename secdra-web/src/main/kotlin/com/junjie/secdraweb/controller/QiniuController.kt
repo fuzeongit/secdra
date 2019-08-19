@@ -35,9 +35,7 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
     @Auth
     @PostMapping("move")
     @RestfulPack
-    fun move(
-            @CurrentUserId userId: String,
-            name: String): Boolean {
+    fun move(@CurrentUserId userId: String, name: String): Boolean {
         //空间名前缀
         val sourceBucket = baseConfig.qiniuTempBucket
         val bucket = baseConfig.qiniuBucket
@@ -60,9 +58,9 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
         headers.add("Authorization", authorization)
         val requestEntity = HttpEntity<MultiValueMap<String, String>>(params, headers)
         //  执行HTTP请求
-        try {
+        return try {
             client.exchange(url, HttpMethod.POST, requestEntity, String::class.java)
-            return true
+            true
         } catch (e: Exception) {
             throw e
         }

@@ -54,13 +54,9 @@ class ReplyController(private val replyService: ReplyService,
         return getListVO(replyService.list(commentId))
     }
 
-    private fun getVO(reply: Reply, critic: User? = null): ReplyVO {
+    private fun getVO(reply: Reply): ReplyVO {
         val replyVO = ReplyVO(reply)
-        if (critic == null) {
-            replyVO.critic = UserVO(userService.getInfo(reply.criticId))
-        } else {
-            replyVO.critic = UserVO(critic)
-        }
+        replyVO.critic = UserVO(userService.getInfo(reply.criticId))
         replyVO.answerer = UserVO(userService.getInfo(replyVO.answererId))
         return replyVO
     }

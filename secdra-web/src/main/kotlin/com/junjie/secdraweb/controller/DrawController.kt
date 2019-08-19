@@ -126,10 +126,10 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): DrawVO {
         val draw = drawService.get(id)
         draw.userId != userId && throw PermissionException("您无权修改该图片")
-        if (!name.isNullOrEmpty()) draw.name = name!!
-        if (!introduction.isNullOrEmpty()) draw.introduction = introduction!!
+        if (name != null && name.isNotEmpty()) draw.name = name
+        if (introduction != null && introduction.isNotEmpty()) draw.introduction = introduction
         draw.privacy = privacy
-        if (tagList != null && !tagList.isEmpty()) {
+        if (tagList != null && tagList.isNotEmpty()) {
             val tagNameList = draw.tagList.map { it.name }
             val sourceTagList = draw.tagList.toMutableSet()
             for (addTagName in tagList) {
@@ -159,17 +159,14 @@ class DrawController(private val drawService: DrawService, private val drawDocum
                 if (userId != draw.userId) {
                     continue
                 }
-                if (!name.isNullOrEmpty()) draw.name = name!!
-                if (!introduction.isNullOrEmpty()) draw.introduction = introduction!!
-                if (privacy != null) {
-                    draw.privacy = privacy
-                }
+                if (name != null && name.isNotEmpty()) draw.name = name
+                if (introduction != null && introduction.isNotEmpty()) draw.introduction = introduction
+                privacy?.let { draw.privacy = privacy }
                 if (tagList != null && !tagList.isEmpty()) {
                     val sourceTagList = draw.tagList.toMutableSet()
                     sourceTagList.addAll(tagList.map { Tag(it) })
-                    val tagLsit = sourceTagList.distinctBy { it.name }
                     draw.tagList.clear()
-                    draw.tagList.addAll(tagLsit)
+                    draw.tagList.addAll(sourceTagList.distinctBy { it.name })
                 }
                 drawList.add(drawService.save(draw))
             } catch (e: Exception) {
@@ -182,9 +179,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     private fun getVO(drawVO: DrawVO, userId: String? = null): DrawVO {
         val userVO = UserVO(userService.getInfo(drawVO.userId))
         userVO.focus = followService.exists(userId, userVO.id)
-        if (!userId.isNullOrEmpty()) {
-            drawVO.focus = collectionService.exists(userId!!, drawVO.id)
-        }
+        userId?.let { drawVO.focus = collectionService.exists(userId, drawVO.id) }
         drawVO.user = userVO
         return drawVO
     }

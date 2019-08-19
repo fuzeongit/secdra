@@ -22,17 +22,13 @@ class UserServiceImpl(val userDAO: UserDAO) : UserService {
     }
 
     override fun register(phone: String, password: String, rePasswordDate: Date): User {
-        if (existsByPhone(phone)) {
-            throw PermissionException("手机号已存在")
-        }
+        existsByPhone(phone) && throw PermissionException("手机号已存在")
         val user = User(phone, password, rePasswordDate)
         return userDAO.save(user)
     }
 
     override fun login(phone: String, password: String): User {
-        if (!existsByPhone(phone)) {
-            throw PermissionException("手机号不存在")
-        }
+        !existsByPhone(phone) && throw PermissionException("手机号不存在")
         return userDAO.findOneByPhoneAndPassword(phone, password).orElseThrow { SignInException("账号密码不正确") }
     }
 

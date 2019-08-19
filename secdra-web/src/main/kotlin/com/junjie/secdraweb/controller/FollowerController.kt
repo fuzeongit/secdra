@@ -28,12 +28,7 @@ class FollowerController(private val followService: FollowService, private val u
     @GetMapping("/paging")
     @RestfulPack
     fun paging(@CurrentUserId followingId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
-        val page = followService.pagingByFollowingId(
-                if (id.isNullOrEmpty()) {
-                    followingId
-                } else {
-                    id!!
-                }, pageable)
+        val page = followService.pagingByFollowingId(if (id != null && id.isNotEmpty()) id else followingId, pageable)
         val userVOList = ArrayList<UserVO>()
         for (follow in page.content) {
             val userVO = UserVO(userService.getInfo(follow.followerId))

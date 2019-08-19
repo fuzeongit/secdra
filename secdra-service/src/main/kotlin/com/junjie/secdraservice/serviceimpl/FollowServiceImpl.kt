@@ -30,9 +30,9 @@ class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
     }
 
     override fun remove(followerId: String, followingId: String): Boolean {
-        try {
+        return try {
             followDAO.deleteByFollowerIdAndFollowingId(followerId, followingId)
-            return true
+            true
         } catch (e: Exception) {
             throw e
         }

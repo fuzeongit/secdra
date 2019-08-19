@@ -25,9 +25,9 @@ class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : Collecti
     }
 
     override fun remove(userId: String, drawId: String): Boolean {
-        try {
+        return try {
             collectionDAO.deleteByUserIdAndDrawId(userId, drawId)
-            return true
+            true
         } catch (e: Exception) {
             throw e
         }

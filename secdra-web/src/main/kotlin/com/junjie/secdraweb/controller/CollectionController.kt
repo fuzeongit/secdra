@@ -96,11 +96,7 @@ class CollectionController(private val collectionService: CollectionService,
                 CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, draw.id!!), userVO)
             } catch (e: Exception) {
                 //图片被删除
-                if (e is NotFoundException) {
-                    CollectionDrawVO(collection.drawId)
-                } else {
-                    throw e
-                }
+                if (e is NotFoundException) CollectionDrawVO(collection.drawId) else throw e
             }
             collectionDrawVOList.add(collectionDrawVO)
         }

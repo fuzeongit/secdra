@@ -25,7 +25,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
 
     override fun paging(pageable: Pageable, tagList: List<String>?, precise: Boolean, name: String?, startDate: Date?, endDate: Date?, userId: String?, self: Boolean): Page<DrawDocument> {
         val mustQuery = QueryBuilders.boolQuery()
-        if (tagList != null && !tagList.isEmpty()) {
+        if (tagList != null && tagList.isNotEmpty()) {
             val tagBoolQuery = QueryBuilders.boolQuery()
             for (tag in tagList) {
                 if (precise) {
@@ -33,7 +33,6 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
                 } else {
                     tagBoolQuery.must(QueryBuilders.wildcardQuery("tagList", "*$tag*"))
                 }
-
             }
             mustQuery.must(tagBoolQuery)
         }
@@ -41,16 +40,14 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
             mustQuery.must(QueryBuilders.matchPhraseQuery("name", name))
         if (startDate != null || endDate != null) {
             val rangeQueryBuilder = QueryBuilders.rangeQuery("createDate")
-            if (startDate != null)
-                rangeQueryBuilder.from(startDate)
-            if (endDate != null)
-                rangeQueryBuilder.to(endDate)
+            startDate?.let { rangeQueryBuilder.from(startDate) }
+            endDate?.let { rangeQueryBuilder.to(endDate) }
             mustQuery.must(rangeQueryBuilder)
         }
         if (userId.isNullOrEmpty() || !self) {
             mustQuery.must(QueryBuilders.termQuery("privacy", PrivacyState.PUBLIC.toString()))
-        }
-        if(!userId.isNullOrEmpty()){
+    }
+        if (!userId.isNullOrEmpty()) {
             mustQuery.must(QueryBuilders.termQuery("userId", userId))
         }
         return drawDocumentDAO.search(mustQuery, pageable)
@@ -80,7 +77,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO, priv
                 .withIndices("index_draw_search")
                 .addAggregation(aggregationBuilders)
                 .build()
-        return  elasticsearchTemplate.query(query) {
+        return elasticsearchTemplate.query(query) {
             it.aggregations.get("tagList")
         }
     }

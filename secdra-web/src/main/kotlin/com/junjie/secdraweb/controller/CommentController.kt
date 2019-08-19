@@ -76,9 +76,9 @@ class CommentController(private val commentService: CommentService,
         return getPageVO(commentService.paging(drawId, pageable))
     }
 
-    private fun getVO(comment: Comment, user: User? = null): CommentVO {
+    private fun getVO(comment: Comment): CommentVO {
         val commentVO = CommentVO(comment)
-        commentVO.author = if (user == null) UserVO(userService.getInfo(comment.authorId)) else UserVO(user)
+        commentVO.author = UserVO(userService.getInfo(comment.authorId))
         commentVO.critic = UserVO(userService.getInfo(comment.criticId))
         return commentVO
     }
