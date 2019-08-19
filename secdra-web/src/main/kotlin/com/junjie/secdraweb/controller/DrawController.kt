@@ -111,7 +111,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
         val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
         draw.width = imageInfo.width
         draw.height = imageInfo.height
-        return getVO(DrawVO(drawService.save(draw)))
+        return getVO(DrawVO(drawService.save(draw)),userId)
     }
 
     /**
@@ -142,7 +142,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
             draw.tagList.clear()
             draw.tagList.addAll(sourceTagList)
         }
-        return getVO(DrawVO(drawService.save(draw)))
+        return getVO(DrawVO(drawService.save(draw)),userId)
     }
 
     @Auth

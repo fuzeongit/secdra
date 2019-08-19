@@ -4,18 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 /**
  * 图片标签
  * @author fjj
  */
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class Tag : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
@@ -30,9 +29,6 @@ class Tag : Serializable {
 
     @CreatedDate
     var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
 
     constructor()
 

@@ -3,9 +3,11 @@ package com.junjie.secdraservice.model
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
@@ -14,6 +16,7 @@ import javax.persistence.Id
  * @author fjj
  */
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class Collection : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
@@ -26,9 +29,6 @@ class Collection : Serializable {
 
     @CreatedDate
     var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
 
     constructor()
 

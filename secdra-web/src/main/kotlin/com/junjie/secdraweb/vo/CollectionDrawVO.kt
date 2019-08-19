@@ -26,14 +26,15 @@ class CollectionDrawVO {
 
     var user: UserVO? = null
 
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     constructor()
 
-    constructor(id: String) {
+    constructor(id: String, focus: CollectState) {
         this.id = id
         //TODO 设置默认图片
         this.url = ""
+        this.focus = focus
         this.state = CollectDrawState.EMPTY
     }
 

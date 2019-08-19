@@ -4,7 +4,9 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.model.Result
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.service.CollectionService
@@ -32,21 +34,33 @@ class CollectionController(private val collectionService: CollectionService,
     @PostMapping("/focus")
     @RestfulPack
     fun focus(@CurrentUserId userId: String, drawId: String): CollectState {
-        val draw = drawDocumentService.get(drawId)
-        draw.userId == userId && throw ProgramException("不能收藏自己的作品")
-        val flag = if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
-            if (draw.privacy == PrivacyState.PRIVATE) {
-                throw ProgramException("不能收藏私密图片")
-            }
-            collectionService.save(userId, drawId)
-            CollectState.CONCERNED
-        } else {
-            collectionService.remove(userId, drawId)
-            CollectState.STRANGE
+        val draw = try {
+            drawDocumentService.get(drawId)
+        } catch (e: NotFoundException) {
+            null
         }
-        draw.likeAmount = collectionService.countByDrawId(drawId)
-        drawDocumentService.save(draw)
-        return flag
+        return if (draw == null) {
+            //关注了但图片为空立即取消关注
+            if (collectionService.exists(userId, drawId) == CollectState.CONCERNED) {
+                collectionService.remove(userId, drawId)
+                CollectState.STRANGE
+            } else {
+                throw PermissionException("不能收藏已移除图片")
+            }
+        } else {
+            draw.userId == userId && throw ProgramException("不能收藏自己的作品")
+            val flag = if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
+                draw.privacy == PrivacyState.PRIVATE && throw PermissionException("不能收藏私密图片")
+                collectionService.save(userId, drawId)
+                CollectState.CONCERNED
+            } else {
+                collectionService.remove(userId, drawId)
+                CollectState.STRANGE
+            }
+            draw.likeAmount = collectionService.countByDrawId(drawId)
+            drawDocumentService.save(draw)
+            flag
+        }
     }
 
     /**
@@ -64,15 +78,17 @@ class CollectionController(private val collectionService: CollectionService,
             if (collectionService.exists(userId, drawId) != CollectState.CONCERNED) {
                 continue
             }
-            try {
-                val draw = drawDocumentService.get(drawId)
-                collectionService.remove(userId, drawId)
-                draw.likeAmount = collectionService.countByDrawId(drawId)
-                drawDocumentService.save(draw)
-                newDrawIdList.add(draw.id!!)
-            } catch (e: Exception) {
-
+            val draw = try {
+                drawDocumentService.get(drawId)
+            } catch (e: NotFoundException) {
+                null
             }
+            collectionService.remove(userId, drawId)
+            draw?.let {
+                it.likeAmount = collectionService.countByDrawId(drawId)
+                drawDocumentService.save(it)
+            }
+            newDrawIdList.add(drawId)
         }
         return newDrawIdList
     }
@@ -93,10 +109,9 @@ class CollectionController(private val collectionService: CollectionService,
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
                 userVO.focus = followService.exists(userId, draw.userId)
-                CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, draw.id!!), userVO)
-            } catch (e: Exception) {
-                //图片被删除
-                if (e is NotFoundException) CollectionDrawVO(collection.drawId) else throw e
+                CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, collection.drawId), userVO)
+            } catch (e: NotFoundException) {
+                CollectionDrawVO(collection.drawId, collectionService.exists(userId, collection.drawId))
             }
             collectionDrawVOList.add(collectionDrawVO)
         }

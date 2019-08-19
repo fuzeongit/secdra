@@ -4,14 +4,17 @@ import com.junjie.secdracollect.constant.TransferState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class PixivDraw : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
@@ -33,10 +36,10 @@ class PixivDraw : Serializable {
     var state: TransferState = TransferState.WAIT
 
     @CreatedDate
-    var createDate: Date = Date()
+    var createDate: Date? = null
 
     @LastModifiedDate
-    var modifiedDate: Date = Date()
+    var modifiedDate: Date? = null
 
     constructor()
 
