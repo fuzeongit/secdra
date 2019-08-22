@@ -43,10 +43,9 @@ class FootprintController(private val footprintService: FootprintService,
         } catch (e: NotFoundException) {
             footprintService.save(userId, drawId)
             // 由于足迹有时效性，所以不能通过表来统计
-            draw.likeAmount++
-            drawDocumentService.save(draw)
+            drawDocumentService.saveViewAmount(draw, draw.viewAmount + 1)
         }
-        return draw.likeAmount
+        return draw.viewAmount
     }
 
 
@@ -65,7 +64,7 @@ class FootprintController(private val footprintService: FootprintService,
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
                 userVO.focus = followService.exists(targetId, draw.userId)
-                FootprintDrawVO(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, footprint.drawId), footprint.createDate!!, userVO)
+                FootprintDrawVO(draw, if (userId != null && userId == footprint.userId) CollectState.SElF else collectionService.exists(targetId, footprint.drawId), footprint.createDate!!, userVO)
             } catch (e: NotFoundException) {
                 FootprintDrawVO(footprint.drawId, collectionService.exists(targetId, footprint.drawId), footprint.createDate!!)
             }

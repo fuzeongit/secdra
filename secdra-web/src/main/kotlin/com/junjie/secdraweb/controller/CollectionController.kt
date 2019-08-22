@@ -58,8 +58,7 @@ class CollectionController(private val collectionService: CollectionService,
                 collectionService.remove(userId, drawId)
                 CollectState.STRANGE
             }
-            draw.likeAmount = collectionService.countByDrawId(drawId)
-            drawDocumentService.save(draw)
+            drawDocumentService.saveLikeAmount(draw, collectionService.countByDrawId(drawId))
             flag
         }
     }
@@ -86,8 +85,7 @@ class CollectionController(private val collectionService: CollectionService,
             }
             collectionService.remove(userId, drawId)
             draw?.let {
-                it.likeAmount = collectionService.countByDrawId(drawId)
-                drawDocumentService.save(it)
+                drawDocumentService.saveLikeAmount(it, collectionService.countByDrawId(drawId))
             }
             newDrawIdList.add(drawId)
         }
@@ -112,7 +110,7 @@ class CollectionController(private val collectionService: CollectionService,
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
                 userVO.focus = followService.exists(targetId, draw.userId)
-                CollectionDrawVO(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, collection.drawId), collection.createDate!!, userVO)
+                CollectionDrawVO(draw, if (userId != null && userId == collection.userId) CollectState.SElF else collectionService.exists(targetId, collection.drawId), collection.createDate!!, userVO)
             } catch (e: NotFoundException) {
                 CollectionDrawVO(collection.drawId, collectionService.exists(targetId, collection.drawId), collection.createDate!!)
             }

@@ -18,4 +18,10 @@ interface DrawDocumentService {
     fun listTagTop30(): Aggregation?
 
     fun save(draw: DrawDocument): DrawDocument
+
+    fun saveViewAmount(draw: DrawDocument, viewAmount: Long): DrawDocument
+
+    fun saveLikeAmount(draw: DrawDocument, likeAmount: Long): DrawDocument
+
+    fun saveAll(drawList: List<DrawDocument>): MutableIterable<DrawDocument>
 }

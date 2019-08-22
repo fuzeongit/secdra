@@ -53,15 +53,13 @@ class DrawDocument : Serializable {
 
     constructor()
 
-    constructor(draw: Draw, viewAmount: Long, likeAmount: Long) {
+    constructor(draw: Draw) {
         this.id = draw.id
         this.introduction = draw.introduction
         this.url = draw.url
         this.userId = draw.userId
         this.name = draw.name
         this.privacy = draw.privacy
-        this.viewAmount = viewAmount
-        this.likeAmount = likeAmount
         this.width = draw.width
         this.height = draw.height
         this.createDate = draw.createDate!!

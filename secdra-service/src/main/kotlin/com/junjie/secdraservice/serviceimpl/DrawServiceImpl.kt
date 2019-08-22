@@ -11,6 +11,7 @@ import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.DrawService
+import com.junjie.secdraservice.service.FootprintService
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -26,7 +27,10 @@ import javax.persistence.criteria.Predicate
 
 
 @Service
-class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO: DrawDocumentDAO, private val drawDocumentService: DrawDocumentService, private val collectionService: CollectionService) : DrawService {
+class DrawServiceImpl(private val drawDAO: DrawDAO,
+                      private val drawDocumentService: DrawDocumentService,
+                      private val collectionService: CollectionService,
+                      private val footprintService: FootprintService) : DrawService {
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
@@ -91,20 +95,12 @@ class DrawServiceImpl(private val drawDAO: DrawDAO, private val drawDocumentDAO:
 
     //    @CachePut("draw::get", key = "#draw.id")
     override fun save(draw: Draw): DrawDocument {
-        //TODO viewAmount
-        return drawDocumentService
-                .save(DrawDocument(drawDAO.save(draw), 0, collectionService.countByDrawId(draw.id!!)))
+        return drawDocumentService.save(DrawDocument(drawDAO.save(draw)))
     }
 
     override fun synchronizationIndexDraw(): Long {
-        val sourceList = drawDAO.findAll()
-        val drawList = mutableListOf<DrawDocument>()
-        for (source in sourceList) {
-            //TODO viewAmount
-            val draw = DrawDocument(source, 0, collectionService.countByDrawId(source.id!!))
-            drawList.add(draw)
-        }
-        drawDocumentDAO.saveAll(drawList)
-        return sourceList.size.toLong()
+        return drawDocumentService.saveAll(drawDAO.findAll().map {
+            DrawDocument(it)
+        }).toList().size.toLong()
     }
 }

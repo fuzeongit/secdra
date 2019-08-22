@@ -1,22 +1,18 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
-import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.dao.FootprintDAO
-import com.junjie.secdraservice.model.Collection
 import com.junjie.secdraservice.model.Footprint
 import com.junjie.secdraservice.service.FootprintService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import java.util.ArrayList
-import javax.persistence.criteria.Predicate
+import java.util.*
 
 @Service
 class FootprintServiceImpl(private val footprintDAO: FootprintDAO) : FootprintService {
     override fun get(userId: String, drawId: String): Footprint {
-        return footprintDAO.findFirstByUserIdAndDrawId(userId, drawId).orElseThrow { NotFoundException("找不到足迹") }
+        return footprintDAO.getFirstByUserIdAndDrawId(userId, drawId).orElseThrow { NotFoundException("找不到足迹") }
     }
 
     override fun exists(userId: String, drawId: String): Boolean {
@@ -29,6 +25,8 @@ class FootprintServiceImpl(private val footprintDAO: FootprintDAO) : FootprintSe
 
     override fun update(userId: String, drawId: String): Footprint {
         val footprint = get(userId, drawId)
+        // 比较特殊，因为没有数据发生变化，所以修改时间不会进行更改，所以要手动修改
+        footprint.modifiedDate = Date()
         return footprintDAO.save(footprint)
     }
 

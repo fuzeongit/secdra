@@ -12,7 +12,7 @@ import java.util.*
 
 @Repository
 interface FootprintDAO : JpaRepository<Footprint, String>, JpaSpecificationExecutor<Footprint> {
-    fun findFirstByUserIdAndDrawId(userId: String, drawId: String): Optional<Footprint>
+    fun getFirstByUserIdAndDrawId(userId: String, drawId: String): Optional<Footprint>
 
     fun existsByUserIdAndDrawId(userId: String, drawId: String): Boolean
 
