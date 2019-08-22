@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable
  */
 
 interface CollectionService {
-    fun exists(userId: String, drawId: String): CollectState
+    fun exists(userId: String?, drawId: String): CollectState
 
     fun save(userId: String, drawId: String): Collection
 
@@ -21,5 +21,7 @@ interface CollectionService {
 
     fun countByDrawId(drawId: String):Long
 
-    fun paging(userId:String, pageable: Pageable): Page<Collection>
+    fun pagingByUserId(userId:String, pageable: Pageable): Page<Collection>
+
+    fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Collection>
 }

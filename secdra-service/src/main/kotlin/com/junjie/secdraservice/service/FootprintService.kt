@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.service
 
+import com.junjie.secdraservice.model.Collection
 import com.junjie.secdraservice.model.Footprint
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -17,5 +18,7 @@ interface FootprintService {
 
     fun countByDrawId(drawId: String): Long
 
-    fun paging(userId: String, pageable: Pageable): Page<Footprint>
+    fun pagingByUserId(userId:String, pageable: Pageable): Page<Footprint>
+
+    fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Footprint>
 }

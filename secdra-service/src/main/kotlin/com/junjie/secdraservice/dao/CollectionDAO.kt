@@ -16,4 +16,6 @@ interface CollectionDAO : JpaRepository<Collection, String> {
     fun countByDrawId(drawId: String): Long
 
     fun findAllByUserId(userId: String, pageable: Pageable): Page<Collection>
+
+    fun findAllByDrawId(drawId: String, pageable: Pageable): Page<Collection>
 }

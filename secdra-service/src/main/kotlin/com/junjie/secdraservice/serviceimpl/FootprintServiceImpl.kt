@@ -1,12 +1,17 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.dao.FootprintDAO
+import com.junjie.secdraservice.model.Collection
 import com.junjie.secdraservice.model.Footprint
 import com.junjie.secdraservice.service.FootprintService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
+import java.util.ArrayList
+import javax.persistence.criteria.Predicate
 
 @Service
 class FootprintServiceImpl(private val footprintDAO: FootprintDAO) : FootprintService {
@@ -40,7 +45,11 @@ class FootprintServiceImpl(private val footprintDAO: FootprintDAO) : FootprintSe
         return footprintDAO.countByDrawId(drawId)
     }
 
-    override fun paging(userId: String, pageable: Pageable): Page<Footprint> {
+    override fun pagingByUserId(userId: String, pageable: Pageable): Page<Footprint> {
         return footprintDAO.findAllByUserId(userId, pageable)
+    }
+
+    override fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Footprint> {
+        return footprintDAO.findAllByDrawId(drawId, pageable)
     }
 }

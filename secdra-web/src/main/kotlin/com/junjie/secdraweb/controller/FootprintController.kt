@@ -38,25 +38,23 @@ class FootprintController(private val footprintService: FootprintService,
     fun save(@CurrentUserId userId: String, drawId: String): Long {
         val draw = drawDocumentService.get(drawId)
         draw.privacy == PrivacyState.PRIVATE && throw PermissionException("私有图片不能操作")
-
         try {
             footprintService.update(userId, drawId)
         } catch (e: NotFoundException) {
             footprintService.save(userId, drawId)
-            draw.likeAmount = footprintService.countByDrawId(drawId)
+            // 由于足迹有时效性，所以不能通过表来统计
+            draw.likeAmount++
             drawDocumentService.save(draw)
         }
         return draw.likeAmount
     }
 
 
-    @Auth
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintDrawVO> {
-        val page = footprintService.paging(if (id.isNullOrEmpty()) userId else id!!, pageable)
+    fun paging(@CurrentUserId userId: String?, targetId: String, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintDrawVO> {
+        val page = footprintService.pagingByUserId(targetId, pageable)
         val footprintDrawVOList = ArrayList<FootprintDrawVO>()
-
         for (footprint in page.content) {
             val footprintDrawVO = try {
                 val draw = drawDocumentService.get(footprint.drawId)
@@ -66,13 +64,26 @@ class FootprintController(private val footprintService: FootprintService,
                     draw.url = ""
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
-                userVO.focus = followService.exists(userId, draw.userId)
-                FootprintDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, footprint.drawId), footprint.createDate!!, userVO)
+                userVO.focus = followService.exists(targetId, draw.userId)
+                FootprintDrawVO(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, footprint.drawId), footprint.createDate!!, userVO)
             } catch (e: NotFoundException) {
-                FootprintDrawVO(footprint.drawId, collectionService.exists(userId, footprint.drawId), footprint.createDate!!)
+                FootprintDrawVO(footprint.drawId, collectionService.exists(targetId, footprint.drawId), footprint.createDate!!)
             }
             footprintDrawVOList.add(footprintDrawVO)
         }
         return PageImpl(footprintDrawVOList, page.pageable, page.totalElements)
+    }
+
+    @GetMapping("/pagingUser")
+    @RestfulPack
+    fun pagingUser(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
+        val page = footprintService.pagingByDrawId(drawId, pageable)
+        val draw = drawDocumentService.get(drawId)
+        val userVOList = page.content.map {
+            val userVO = UserVO(userService.getInfo(draw.userId))
+            userVO.focus = followService.exists(userId, it.userId)
+            userVO
+        }
+        return PageImpl(userVOList, page.pageable, page.totalElements)
     }
 }

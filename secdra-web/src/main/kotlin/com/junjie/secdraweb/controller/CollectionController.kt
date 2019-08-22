@@ -94,11 +94,13 @@ class CollectionController(private val collectionService: CollectionService,
         return newDrawIdList
     }
 
-    @Auth
+    /**
+     * @param id 这个id是userId
+     */
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
-        val page = collectionService.paging(if (id.isNullOrEmpty()) userId else id!!, pageable)
+    fun paging(@CurrentUserId userId: String?, targetId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
+        val page = collectionService.pagingByUserId(targetId, pageable)
         val collectionDrawVOList = ArrayList<CollectionDrawVO>()
         for (collection in page.content) {
             val collectionDrawVO = try {
@@ -109,13 +111,28 @@ class CollectionController(private val collectionService: CollectionService,
                     draw.url = ""
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
-                userVO.focus = followService.exists(userId, draw.userId)
-                CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, collection.drawId), collection.createDate!!, userVO)
+                userVO.focus = followService.exists(targetId, draw.userId)
+                CollectionDrawVO(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, collection.drawId), collection.createDate!!, userVO)
             } catch (e: NotFoundException) {
-                CollectionDrawVO(collection.drawId, collectionService.exists(userId, collection.drawId), collection.createDate!!)
+                CollectionDrawVO(collection.drawId, collectionService.exists(targetId, collection.drawId), collection.createDate!!)
             }
             collectionDrawVOList.add(collectionDrawVO)
         }
         return PageImpl(collectionDrawVOList, page.pageable, page.totalElements)
     }
+
+
+    @GetMapping("/pagingUser")
+    @RestfulPack
+    fun pagingUser(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
+        val page = collectionService.pagingByDrawId(drawId, pageable)
+        val draw = drawDocumentService.get(drawId)
+        val userVOList = page.content.map {
+            val userVO = UserVO(userService.getInfo(draw.userId))
+            userVO.focus = followService.exists(userId, it.userId)
+            userVO
+        }
+        return PageImpl(userVOList, page.pageable, page.totalElements)
+    }
+
 }
