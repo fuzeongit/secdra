@@ -15,8 +15,6 @@ import org.springframework.data.domain.Pageable
 interface CollectionService {
     fun exists(userId: String, drawId: String): CollectState
 
-    fun get(userId: String, drawId: String): Collection
-
     fun save(userId: String, drawId: String): Collection
 
     fun remove(userId: String, drawId: String): Boolean

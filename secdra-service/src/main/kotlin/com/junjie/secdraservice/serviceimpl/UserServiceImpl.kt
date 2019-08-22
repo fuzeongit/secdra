@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class UserServiceImpl(val userDAO: UserDAO) : UserService {
+class UserServiceImpl(private val userDAO: UserDAO) : UserService {
     @CachePut("user::getInfo", key = "#user.id")
     override fun save(user: User): User {
         return userDAO.save(user)

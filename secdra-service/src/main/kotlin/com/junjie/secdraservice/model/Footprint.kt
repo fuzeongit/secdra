@@ -22,10 +22,20 @@ class Footprint {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    var userId: String? = null
+    lateinit var userId: String
 
-    var drawId: String? = null
+    lateinit var drawId: String
 
     @CreatedDate
     var createDate: Date? = null
+
+    @LastModifiedDate
+    var modifiedDate: Date? = null
+
+    constructor()
+
+    constructor(userId: String, drawId: String) {
+        this.userId = userId
+        this.drawId = drawId
+    }
 }

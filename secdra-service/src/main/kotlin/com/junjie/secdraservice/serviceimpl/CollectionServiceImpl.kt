@@ -15,13 +15,8 @@ class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : Collecti
         return if (collectionDAO.existsByUserIdAndDrawId(userId, drawId)) CollectState.CONCERNED else CollectState.STRANGE
     }
 
-    override fun get(userId: String, drawId: String): Collection {
-        return collectionDAO.findFirstByUserIdAndDrawId(userId, drawId)
-    }
-
     override fun save(userId: String, drawId: String): Collection {
-        val collection = Collection(userId, drawId)
-        return collectionDAO.save(collection)
+        return collectionDAO.save(Collection(userId, drawId))
     }
 
     override fun remove(userId: String, drawId: String): Boolean {

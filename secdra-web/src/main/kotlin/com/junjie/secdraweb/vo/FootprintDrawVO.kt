@@ -1,18 +1,18 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.constant.DrawLifeState
 import com.junjie.secdraservice.constant.CollectState
+import com.junjie.secdraservice.constant.DrawLifeState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.document.DrawDocument
 import org.springframework.beans.BeanUtils
 import java.util.*
 
 /**
- * 收藏图片的vo
+ * 足迹图片的vo
  * @author fjj
  * 这里的id是图片的id，创建时间为收藏的创建时间
  */
-class CollectionDrawVO {
+class FootprintDrawVO {
     lateinit var id: String
 
     var url: String? = null

@@ -5,10 +5,7 @@ import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
@@ -20,6 +17,7 @@ class PixivError {
 
     lateinit var pixivId: String
 
+    @Column(columnDefinition = "text")
     var message: String? = null
 
     var record: Boolean = false

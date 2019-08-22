@@ -13,8 +13,6 @@ interface CollectionDAO : JpaRepository<Collection, String> {
     @Transactional
     fun deleteByUserIdAndDrawId(userId: String, drawId: String)
 
-    fun findFirstByUserIdAndDrawId(userId: String, drawId: String): Collection
-
     fun countByDrawId(drawId: String): Long
 
     fun findAllByUserId(userId: String, pageable: Pageable): Page<Collection>

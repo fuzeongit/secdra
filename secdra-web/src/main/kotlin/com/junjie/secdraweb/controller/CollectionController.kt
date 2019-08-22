@@ -29,7 +29,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("collection")
 class CollectionController(private val collectionService: CollectionService,
                            private val drawDocumentService: DrawDocumentService,
-                           private val userService: UserService, private val followService: FollowService) {
+                           private val userService: UserService,
+                           private val followService: FollowService) {
     @Auth
     @PostMapping("/focus")
     @RestfulPack
@@ -109,9 +110,9 @@ class CollectionController(private val collectionService: CollectionService,
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
                 userVO.focus = followService.exists(userId, draw.userId)
-                CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, collection.drawId), userVO)
+                CollectionDrawVO(draw, if (id.isNullOrEmpty() || id == userId) CollectState.CONCERNED else collectionService.exists(userId, collection.drawId), collection.createDate!!, userVO)
             } catch (e: NotFoundException) {
-                CollectionDrawVO(collection.drawId, collectionService.exists(userId, collection.drawId))
+                CollectionDrawVO(collection.drawId, collectionService.exists(userId, collection.drawId), collection.createDate!!)
             }
             collectionDrawVOList.add(collectionDrawVO)
         }
