@@ -85,7 +85,7 @@ class CommentController(private val commentService: CommentService,
 
     private fun getPageVO(page: Page<Comment>): Page<CommentVO> {
         val commentVOList = page.content.map { getVO(it) }
-        return PageImpl<CommentVO>(commentVOList, page.pageable, page.totalElements)
+        return PageImpl(commentVOList, page.pageable, page.totalElements)
     }
 
     private fun getListVO(list: List<Comment>): List<CommentVO> {

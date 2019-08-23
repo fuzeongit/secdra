@@ -9,6 +9,7 @@ import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.model.Result
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.FollowService
@@ -20,6 +21,8 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author fjj
@@ -93,7 +96,7 @@ class CollectionController(private val collectionService: CollectionService,
     }
 
     /**
-     * @param id 这个id是userId
+     * 获取列表
      */
     @GetMapping("/paging")
     @RestfulPack
@@ -110,7 +113,7 @@ class CollectionController(private val collectionService: CollectionService,
                 }
                 val userVO = UserVO(userService.getInfo(draw.userId))
                 userVO.focus = followService.exists(targetId, draw.userId)
-                CollectionDrawVO(draw, if (userId != null && userId == collection.userId) CollectState.SElF else collectionService.exists(targetId, collection.drawId), collection.createDate!!, userVO)
+                CollectionDrawVO(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, collection.drawId), collection.createDate!!, userVO)
             } catch (e: NotFoundException) {
                 CollectionDrawVO(collection.drawId, collectionService.exists(targetId, collection.drawId), collection.createDate!!)
             }
@@ -118,6 +121,19 @@ class CollectionController(private val collectionService: CollectionService,
         }
         return PageImpl(collectionDrawVOList, page.pageable, page.totalElements)
     }
+
+
+//    private fun <T> test(userId: String?, targetId: String, drawId: String, clazz: Class<T>): T {
+//        val draw = drawDocumentService.get(drawId)
+//        //图片被隐藏
+//        if (draw.privacy == PrivacyState.PRIVATE) {
+//            draw.url = ""
+//        }
+//        val userVO = UserVO(userService.getInfo(draw.userId))
+//        userVO.focus = followService.exists(targetId, draw.userId)
+//        return clazz.getDeclaredConstructor(DrawDocument::class.java, CollectState::class.java, Date::class.java, UserVO::class.java)
+//                .newInstance(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, drawId), Date(), userVO)
+//    }
 
 
     @GetMapping("/pagingUser")

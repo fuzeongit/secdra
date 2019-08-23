@@ -28,9 +28,13 @@ import kotlin.collections.ArrayList
  */
 @RestController
 @RequestMapping("draw")
-class DrawController(private val drawService: DrawService, private val drawDocumentService: DrawDocumentService, private val userService: UserService,
-                     private val collectionService: CollectionService, private val followService: FollowService,
-                     private val qiniuComponent: QiniuComponent, private val baseConfig: BaseConfig) {
+class DrawController(private val drawService: DrawService,
+                     private val drawDocumentService: DrawDocumentService,
+                     private val userService: UserService,
+                     private val collectionService: CollectionService,
+                     private val followService: FollowService,
+                     private val qiniuComponent: QiniuComponent,
+                     private val baseConfig: BaseConfig) {
     /**
      * 根据标签获取
      */
@@ -49,20 +53,6 @@ class DrawController(private val drawService: DrawService, private val drawDocum
         //由于不会算法，暂时这样写
         return getPageVO(drawDocumentService.paging(pageable, null, false, null, startDate, endDate, null, false), userId)
     }
-
-    /**
-     * 随机获取
-     */
-//    @GetMapping("/listByRecommend")
-//    fun listByRecommend(@CurrentUserId userId: String?): ArrayList<DrawVO> {
-//        val pageable = PageRequest.of(0, 4)
-//        val drawList = drawService.pagingRand(pageable).content
-//        val drawVOList = ArrayList<DrawVO>()
-//        for (draw in drawList) {
-//            drawVOList.add(getVO(draw, userId))
-//        }
-//        return drawVOList
-//    }
 
     /**
      * 获取图片
