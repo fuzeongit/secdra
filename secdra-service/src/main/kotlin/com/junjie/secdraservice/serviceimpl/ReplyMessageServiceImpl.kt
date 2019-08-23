@@ -20,11 +20,11 @@ class ReplyMessageServiceImpl(private val replyMessageDAO: ReplyMessageDAO) : Re
     }
 
     override fun countUnread(criticId: String): Long {
-        return replyMessageDAO.countByCriticIdAndIsRead(criticId, false)
+        return replyMessageDAO.countByCriticIdAndRead(criticId, false)
     }
 
     override fun listUnread(criticId: String): List<ReplyMessage> {
-        return replyMessageDAO.findAllByCriticIdAndIsReadOrderByCreateDateDesc(criticId, false)
+        return replyMessageDAO.findAllByCriticIdAndReadOrderByCreateDateDesc(criticId, false)
     }
 
     override fun deleteByMonthAgo() {

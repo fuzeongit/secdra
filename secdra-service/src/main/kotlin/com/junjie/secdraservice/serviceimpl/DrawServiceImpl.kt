@@ -4,20 +4,14 @@ import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.DrawDAO
-import com.junjie.secdraservice.dao.DrawDocumentDAO
 import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
-import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.DrawService
-import com.junjie.secdraservice.service.FootprintService
-import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
@@ -28,9 +22,7 @@ import javax.persistence.criteria.Predicate
 
 @Service
 class DrawServiceImpl(private val drawDAO: DrawDAO,
-                      private val drawDocumentService: DrawDocumentService,
-                      private val collectionService: CollectionService,
-                      private val footprintService: FootprintService) : DrawService {
+                      private val drawDocumentService: DrawDocumentService) : DrawService {
     @Cacheable("draw::paging")
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->

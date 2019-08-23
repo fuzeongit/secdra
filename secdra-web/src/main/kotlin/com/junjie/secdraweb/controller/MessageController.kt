@@ -67,8 +67,8 @@ class MessageController(private val userService: UserService, private val commen
         if (messageType == MessageType.SYSTEM) {
             val list = systemMessageService.list(userId)
             for (item in list) {
-                item.isRead && continue
-                item.isRead = true
+                item.read && continue
+                item.read = true
                 systemMessageService.save(item)
             }
             return list
@@ -110,8 +110,8 @@ class MessageController(private val userService: UserService, private val commen
         val voList = mutableListOf<CommentMessageVO>()
         for (commentMessage in list) {
             voList.add(getCommentMessageVO(commentMessage))
-            commentMessage.isRead && continue
-            commentMessage.isRead = true
+            commentMessage.read && continue
+            commentMessage.read = true
             commentMessageService.save(commentMessage)
         }
         return voList
@@ -127,8 +127,8 @@ class MessageController(private val userService: UserService, private val commen
         val voList = mutableListOf<ReplyMessageVO>()
         for (replyMessage in list) {
             voList.add(getReplyMessageVO(replyMessage))
-            replyMessage.isRead && continue
-            replyMessage.isRead = true
+            replyMessage.read && continue
+            replyMessage.read = true
             replyMessageService.save(replyMessage)
         }
         return voList
@@ -144,8 +144,8 @@ class MessageController(private val userService: UserService, private val commen
         val voList = mutableListOf<FollowMessageVO>()
         for (followMessage in list) {
             voList.add(getFollowMessageVO(followMessage))
-            followMessage.isRead && continue
-            followMessage.isRead = true
+            followMessage.read && continue
+            followMessage.read = true
             followMessageService.save(followMessage)
         }
         return voList

@@ -10,6 +10,8 @@ import com.junjie.secdraservice.service.FootprintService
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.aggregations.Aggregation
 import org.elasticsearch.search.aggregations.AggregationBuilders
+import org.springframework.cache.annotation.CachePut
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -24,10 +26,13 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
                               private val elasticsearchTemplate: ElasticsearchTemplate,
                               private val collectionService: CollectionService,
                               private val footprintService: FootprintService) : DrawDocumentService {
+
+    @Cacheable("drawDocument::get", key = "#id")
     override fun get(id: String): DrawDocument {
         return drawDocumentDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
+    @Cacheable("drawDocument::paging")
     override fun paging(pageable: Pageable, tagList: List<String>?, precise: Boolean, name: String?, startDate: Date?, endDate: Date?, userId: String?, self: Boolean): Page<DrawDocument> {
         val mustQuery = QueryBuilders.boolQuery()
         if (tagList != null && tagList.isNotEmpty()) {
@@ -58,6 +63,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         return drawDocumentDAO.search(mustQuery, pageable)
     }
 
+    @Cacheable("drawDocument::countByTag", key = "#tag")
     override fun countByTag(tag: String): Long {
         val queryBuilder = QueryBuilders
                 .boolQuery()
@@ -68,6 +74,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         return elasticsearchTemplate.count(searchQuery, DrawDocument::class.java)
     }
 
+    @Cacheable("drawDocument::getFirstByTag", key = "#tag")
     override fun getFirstByTag(tag: String): DrawDocument {
         return paging(
                 PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")),
@@ -76,6 +83,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
                 null, false).content.first()
     }
 
+    @Cacheable("drawDocument::listTagTop30")
     override fun listTagTop30(): Aggregation? {
         val aggregationBuilders = AggregationBuilders.terms("tagList").field("tagList").size(30).showTermDocCountError(true)
         val query = NativeSearchQueryBuilder()
@@ -87,6 +95,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         }
     }
 
+    @CachePut("drawDocument::save", key = "#draw.id")
     override fun save(draw: DrawDocument): DrawDocument {
         val source = drawDocumentDAO.findById(draw.id!!).orElse(draw)
         draw.viewAmount = source.viewAmount
@@ -94,11 +103,13 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         return drawDocumentDAO.save(draw)
     }
 
+    @CachePut("drawDocument::save", key = "#draw.id")
     override fun saveViewAmount(draw: DrawDocument, viewAmount: Long): DrawDocument {
         draw.viewAmount = viewAmount
         return drawDocumentDAO.save(draw)
     }
 
+    @CachePut("drawDocument::save", key = "#draw.id")
     override fun saveLikeAmount(draw: DrawDocument, likeAmount: Long): DrawDocument {
         draw.viewAmount = likeAmount
         return drawDocumentDAO.save(draw)

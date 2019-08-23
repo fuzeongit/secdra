@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 interface ReplyMessageDAO : JpaRepository<ReplyMessage, String>, JpaSpecificationExecutor<ReplyMessage> {
     fun findAllByCriticIdOrderByCreateDateDesc(criticId: String): List<ReplyMessage>
 
-    fun countByCriticIdAndIsRead(criticId: String, isRead: Boolean): Long
+    fun countByCriticIdAndRead(criticId: String, read: Boolean): Long
 
-    fun findAllByCriticIdAndIsReadOrderByCreateDateDesc(criticId: String, isRead: Boolean): List<ReplyMessage>
+    fun findAllByCriticIdAndReadOrderByCreateDateDesc(criticId: String, read: Boolean): List<ReplyMessage>
 }

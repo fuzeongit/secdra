@@ -36,7 +36,7 @@ class ReplyMessage {
 
     lateinit var content: String
 
-    var isRead: Boolean = false
+    var read: Boolean = false
 
     @CreatedDate
     var createDate: Date? = null

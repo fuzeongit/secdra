@@ -17,7 +17,7 @@ class CommentMessageVO {
 
     lateinit var content: String
 
-    var isRead: Boolean = false
+    var read: Boolean = false
 
     lateinit var critic: UserVO
 

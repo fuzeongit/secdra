@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 interface CommentMessageDAO : JpaRepository<CommentMessage, String>, JpaSpecificationExecutor<CommentMessage> {
     fun findAllByAuthorIdOrderByCreateDateDesc(authorId: String): List<CommentMessage>
 
-    fun countByAuthorIdAndIsRead(authorId: String, isRead: Boolean): Long
+    fun countByAuthorIdAndRead(authorId: String, read: Boolean): Long
 
-    fun findAllByAuthorIdAndIsReadOrderByCreateDateDesc(authorId: String, isRead: Boolean): List<CommentMessage>
+    fun findAllByAuthorIdAndReadOrderByCreateDateDesc(authorId: String, read: Boolean): List<CommentMessage>
 }

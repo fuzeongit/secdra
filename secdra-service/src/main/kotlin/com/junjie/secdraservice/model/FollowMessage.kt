@@ -26,7 +26,7 @@ class FollowMessage {
 
     lateinit var followingId: String
 
-    var isRead: Boolean = false
+    var read: Boolean = false
 
     @CreatedDate
     var createDate: Date? = null

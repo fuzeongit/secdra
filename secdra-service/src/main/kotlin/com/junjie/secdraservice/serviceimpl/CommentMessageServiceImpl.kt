@@ -21,11 +21,11 @@ class CommentMessageServiceImpl(private val commentMessageDAO: CommentMessageDAO
     }
 
     override fun countUnread(authorId: String): Long {
-        return commentMessageDAO.countByAuthorIdAndIsRead(authorId, false)
+        return commentMessageDAO.countByAuthorIdAndRead(authorId, false)
     }
 
     override fun listUnread(authorId: String): List<CommentMessage> {
-        return commentMessageDAO.findAllByAuthorIdAndIsReadOrderByCreateDateDesc(authorId, false)
+        return commentMessageDAO.findAllByAuthorIdAndReadOrderByCreateDateDesc(authorId, false)
     }
 
     override fun deleteByMonthAgo() {

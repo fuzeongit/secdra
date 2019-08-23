@@ -25,9 +25,9 @@ class CollectionDrawVO {
 
     var focus: CollectState = CollectState.STRANGE
 
-    var width: Long = 0;
+    var width: Long = 0
 
-    var height: Long = 0;
+    var height: Long = 0
 
     var user: UserVO? = null
 
@@ -40,6 +40,7 @@ class CollectionDrawVO {
         //TODO 设置默认图片
         this.url = ""
         this.focus = focus
+        this.createDate = createDate
         this.life = DrawLifeState.DISAPPEAR
     }
 

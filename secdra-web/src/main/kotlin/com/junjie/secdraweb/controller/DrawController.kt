@@ -103,7 +103,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
     fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Set<String>?): DrawVO {
         val draw = Draw(userId, url, name, introduction!!)
         draw.privacy = privacy
-        if (tagList != null && !tagList.isEmpty()) {
+        if (tagList != null && tagList.isNotEmpty()) {
             draw.tagList.addAll(tagList.map { Tag(it) })
         }
 
@@ -159,7 +159,7 @@ class DrawController(private val drawService: DrawService, private val drawDocum
                 if (name != null && name.isNotEmpty()) draw.name = name
                 if (introduction != null && introduction.isNotEmpty()) draw.introduction = introduction
                 privacy?.let { draw.privacy = it }
-                if (tagList != null && !tagList.isEmpty()) {
+                if (tagList != null && tagList.isNotEmpty()) {
                     val sourceTagList = draw.tagList.toMutableSet()
                     sourceTagList.addAll(tagList.map { Tag(it) })
                     draw.tagList.clear()
