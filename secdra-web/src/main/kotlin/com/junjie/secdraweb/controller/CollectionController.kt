@@ -97,8 +97,9 @@ class CollectionController(override val drawDocumentService: DrawDocumentService
      */
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String?, targetId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
-        val page = collectionService.pagingByUserId(targetId, pageable)
+    fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
+        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw ProgramException("Are You Kidding Me")
+        val page = collectionService.pagingByUserId(targetId ?: userId!!, pageable)
         val collectionDrawVOList = ArrayList<CollectionDrawVO>()
         for (collection in page.content) {
             val collectionDrawVO = try {

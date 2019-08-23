@@ -21,8 +21,6 @@ class ReplyMessageVO {
 
     lateinit var content: String
 
-    var read: Boolean = false
-
     lateinit var createDate: Date
 
     lateinit var answerer: UserVO

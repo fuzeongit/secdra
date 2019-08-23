@@ -5,6 +5,7 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.service.*
@@ -53,8 +54,9 @@ class FootprintController(private val footprintService: FootprintService,
 
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String?, targetId: String, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintDrawVO> {
-        val page = footprintService.pagingByUserId(targetId, pageable)
+    fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintDrawVO> {
+        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw ProgramException("Are You Kidding Me")
+        val page = footprintService.pagingByUserId(targetId ?: userId!!, pageable)
         val footprintDrawVOList = ArrayList<FootprintDrawVO>()
         for (footprint in page.content) {
             val footprintDrawVO = try {

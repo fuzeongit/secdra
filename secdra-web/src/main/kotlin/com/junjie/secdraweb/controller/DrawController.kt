@@ -51,8 +51,7 @@ class DrawController(private val drawService: DrawService,
     @GetMapping("/pagingByRecommend")
     @RestfulPack
     fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawVO> {
-        //由于不会算法，暂时这样写
-        return getPageVO(drawDocumentService.paging(pageable, null, false, null, startDate, endDate, null, false), userId)
+        return getPageVO(drawDocumentService.pagingByRecommend(userId, pageable, startDate, endDate), userId)
     }
 
     /**

@@ -20,11 +20,11 @@ class FollowMessageServiceImpl(private val followMessageDAO: FollowMessageDAO) :
     }
 
     override fun countUnread(followingId: String): Long {
-        return followMessageDAO.countByFollowingIdAndRead(followingId, false)
+        return followMessageDAO.countByFollowingIdAndReview(followingId, false)
     }
 
     override fun listUnread(followingId: String): List<FollowMessage> {
-        return followMessageDAO.findAllByFollowingIdAndReadOrderByCreateDateDesc(followingId, false)
+        return followMessageDAO.findAllByFollowingIdAndReviewOrderByCreateDateDesc(followingId, false)
     }
 
     override fun deleteByMonthAgo() {

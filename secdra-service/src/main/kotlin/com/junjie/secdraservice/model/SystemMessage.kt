@@ -25,8 +25,8 @@ class SystemMessage {
 
     @Column(columnDefinition = "text")
     lateinit var content: String
-
-    var read: Boolean = false
+    // 由于read是数据库保留字
+    var review: Boolean = false
 
     @CreatedDate
     var createDate: Date? = null

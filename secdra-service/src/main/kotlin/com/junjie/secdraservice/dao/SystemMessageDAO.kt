@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 interface SystemMessageDAO : JpaRepository<SystemMessage, String>, JpaSpecificationExecutor<SystemMessage> {
     fun findAllByUserIdOrderByCreateDateDesc(userId: String): List<SystemMessage>
 
-    fun countByUserIdAndRead(userId: String, read: Boolean): Long
+    fun countByUserIdAndReview(userId: String, review: Boolean): Long
 
-    fun findAllByUserIdAndReadOrderByCreateDateDesc(userId: String, read: Boolean): List<SystemMessage>
+    fun findAllByUserIdAndReviewOrderByCreateDateDesc(userId: String, review: Boolean): List<SystemMessage>
 }

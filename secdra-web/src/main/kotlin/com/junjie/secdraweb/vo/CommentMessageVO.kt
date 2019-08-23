@@ -17,8 +17,6 @@ class CommentMessageVO {
 
     lateinit var content: String
 
-    var read: Boolean = false
-
     lateinit var critic: UserVO
 
     lateinit var createDate: Date

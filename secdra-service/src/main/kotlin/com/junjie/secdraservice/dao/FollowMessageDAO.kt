@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 interface FollowMessageDAO : JpaRepository<FollowMessage, String> , JpaSpecificationExecutor<FollowMessage> {
     fun findAllByFollowingIdOrderByCreateDateDesc(followingId: String): List<FollowMessage>
 
-    fun countByFollowingIdAndRead(followingId: String, read: Boolean): Long
+    fun countByFollowingIdAndReview(followingId: String, review: Boolean): Long
 
-    fun findAllByFollowingIdAndReadOrderByCreateDateDesc(followingId: String, read: Boolean): List<FollowMessage>
+    fun findAllByFollowingIdAndReviewOrderByCreateDateDesc(followingId: String, review: Boolean): List<FollowMessage>
 }

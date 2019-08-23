@@ -20,11 +20,11 @@ class SystemMessageServiceImpl(private val systemMessageDAO: SystemMessageDAO) :
     }
 
     override fun countUnread(userId: String): Long {
-        return systemMessageDAO.countByUserIdAndRead(userId,false)
+        return systemMessageDAO.countByUserIdAndReview(userId,false)
     }
 
     override fun listUnread(userId: String): List<SystemMessage> {
-        return systemMessageDAO.findAllByUserIdAndReadOrderByCreateDateDesc(userId,false)
+        return systemMessageDAO.findAllByUserIdAndReviewOrderByCreateDateDesc(userId,false)
     }
 
     override fun deleteByMonthAgo() {

@@ -3,7 +3,6 @@ package com.junjie.secdraservice.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
@@ -15,7 +14,7 @@ import javax.persistence.*
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Tag : Serializable {
+class Tag: Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")

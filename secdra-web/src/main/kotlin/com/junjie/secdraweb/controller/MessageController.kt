@@ -72,8 +72,8 @@ class MessageController(private val commentMessageService: CommentMessageService
         if (messageType == MessageType.SYSTEM) {
             val list = systemMessageService.list(userId)
             for (item in list) {
-                item.read && continue
-                item.read = true
+                item.review && continue
+                item.review = true
                 systemMessageService.save(item)
             }
             return list
@@ -109,8 +109,8 @@ class MessageController(private val commentMessageService: CommentMessageService
         val voList = mutableListOf<CommentMessageVO>()
         for (commentMessage in list) {
             voList.add(CommentMessageVO(commentMessage, getUserVO(commentMessage.criticId, commentMessage.authorId)))
-            commentMessage.read && continue
-            commentMessage.read = true
+            commentMessage.review && continue
+            commentMessage.review = true
             commentMessageService.save(commentMessage)
         }
         return voList
@@ -120,8 +120,8 @@ class MessageController(private val commentMessageService: CommentMessageService
         val voList = mutableListOf<ReplyMessageVO>()
         for (replyMessage in list) {
             voList.add(ReplyMessageVO(replyMessage, getUserVO(userService.getInfo(replyMessage.answererId), replyMessage.criticId)))
-            replyMessage.read && continue
-            replyMessage.read = true
+            replyMessage.review && continue
+            replyMessage.review = true
             replyMessageService.save(replyMessage)
         }
         return voList
@@ -131,8 +131,8 @@ class MessageController(private val commentMessageService: CommentMessageService
         val voList = mutableListOf<FollowMessageVO>()
         for (followMessage in list) {
             voList.add(FollowMessageVO(followMessage, getUserVO(userService.getInfo(followMessage.followerId), followMessage.followingId)))
-            followMessage.read && continue
-            followMessage.read = true
+            followMessage.review && continue
+            followMessage.review = true
             followMessageService.save(followMessage)
         }
         return voList

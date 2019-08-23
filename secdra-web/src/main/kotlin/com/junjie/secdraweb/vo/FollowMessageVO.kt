@@ -14,8 +14,6 @@ class FollowMessageVO {
 
     lateinit var followingId: String
 
-    var read: Boolean = false
-
     lateinit var createDate: Date
 
     lateinit var follower: UserVO
