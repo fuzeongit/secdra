@@ -23,8 +23,8 @@ class QiniuComponent(private val baseConfig: BaseConfig) {
      * 移动目标
      */
     fun move(url: String, bucket: String, sourceBucket: String? = baseConfig.qiniuTempBucket): Boolean {
-        val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$url")
-        val nameEncodeBase64 = UrlSafeBase64.encodeToString("$bucket:$url")
+        val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$url")!!
+        val nameEncodeBase64 = UrlSafeBase64.encodeToString("$bucket:$url")!!
 
         val qiniuUrl = "http://rs.qiniu.com/move/$sourceNameEncodeBase64/$nameEncodeBase64"
 

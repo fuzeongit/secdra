@@ -12,6 +12,7 @@ import com.junjie.secdraservice.constant.Gender
 import com.junjie.secdraservice.constant.VerificationCodeOperation
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.vo.UserVO
@@ -30,9 +31,11 @@ import javax.servlet.http.HttpServletResponse
  */
 @RestController
 @RequestMapping("user")
-class UserController(private val userService: UserService, private val baseConfig: BaseConfig,
-                     private val qiniuComponent: QiniuComponent, private val redisTemplate: StringRedisTemplate,
-                     private val followService: FollowService) {
+class UserController(private val baseConfig: BaseConfig,
+                     private val qiniuComponent: QiniuComponent,
+                     private val redisTemplate: StringRedisTemplate,
+                     override val userService: UserService,
+                     override val followService: FollowService) : UserVOAbstract() {
     /**
      * 发送验证码
      */
@@ -83,7 +86,7 @@ class UserController(private val userService: UserService, private val baseConfi
         //生成token
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtSecretString)
         response.setHeader("token", token)
-        return UserVO(user)
+        return getUserVO(user, user.id)
     }
 
 
@@ -101,7 +104,7 @@ class UserController(private val userService: UserService, private val baseConfi
         val user = userService.rePassword(phone, password, Date(nowMillis))
         redisTemplate.delete(String.format(baseConfig.forgetVerificationCodePrefix, phone))
         redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
-        return UserVO(user)
+        return getUserVO(user, user.id)
     }
 
     /**
@@ -114,7 +117,7 @@ class UserController(private val userService: UserService, private val baseConfi
         val nowMillis = System.currentTimeMillis()
         val token = JwtUtil.createJWT(user.id!!, nowMillis, baseConfig.jwtExpiresSecond, baseConfig.jwtSecretString)
         response.setHeader("token", token)
-        return UserVO(user)
+        return getUserVO(user, user.id)
     }
 
     @Auth
@@ -128,13 +131,11 @@ class UserController(private val userService: UserService, private val baseConfi
     /**
      * 获取用户信息
      */
-    @Auth
     @GetMapping("/getInfo")
     @RestfulPack
-    fun getInfo(@CurrentUserId userId: String, id: String?): UserVO {
-        val userVO = UserVO(userService.getInfo(if (id.isNullOrEmpty()) userId else id!!))
-        userVO.focus = followService.exists(userId, userVO.id)
-        return userVO
+    fun getInfo(@CurrentUserId userId: String?, id: String?): UserVO {
+        (userId.isNullOrEmpty() && id.isNullOrEmpty()) && throw ProgramException("Are You Kidding Me")
+        return getUserVO(id ?: userId!!, userId)
     }
 
 
@@ -151,7 +152,7 @@ class UserController(private val userService: UserService, private val baseConfi
         birthday?.let { info.birthday = it }
         if (introduction != null && introduction.isNotEmpty()) info.introduction = introduction
         if (address != null && address.isNotEmpty()) info.address = address
-        return UserVO(userService.save(info))
+        return getUserVO(userService.save(info), userId)
     }
 
 
@@ -163,10 +164,8 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun updateHead(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        info.head?.let { qiniuComponent.move(it, baseConfig.qiniuTempBucket, baseConfig.qiniuHeadBucket) }
-        qiniuComponent.move(url, baseConfig.qiniuHeadBucket)
-        info.head = url
-        return UserVO(userService.save(info))
+        info.head = movePictureAndSave(info.head, url, baseConfig.qiniuHeadBucket)
+        return getUserVO(userService.save(info), userId)
     }
 
 
@@ -178,9 +177,13 @@ class UserController(private val userService: UserService, private val baseConfi
     @RestfulPack
     fun updateBack(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.getInfo(userId)
-        info.background?.let { qiniuComponent.move(it, baseConfig.qiniuTempBucket, baseConfig.qiniuBackBucket) }
-        qiniuComponent.move(url, baseConfig.qiniuBackBucket)
-        info.background = url
-        return UserVO(userService.save(info))
+        info.background = movePictureAndSave(info.background, url, baseConfig.qiniuBackBucket)
+        return getUserVO(userService.save(info), userId)
+    }
+
+    private fun movePictureAndSave(sourceUrl: String?, url: String, targetBucket: String): String {
+        sourceUrl?.let { qiniuComponent.move(it, baseConfig.qiniuTempBucket, targetBucket) }
+        qiniuComponent.move(url, targetBucket)
+        return url
     }
 }

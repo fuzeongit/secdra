@@ -30,4 +30,10 @@ class ReplyVO {
     constructor(comment: Reply) {
         BeanUtils.copyProperties(comment, this)
     }
+
+    constructor(comment: Reply, critic: UserVO, answerer: UserVO) {
+        BeanUtils.copyProperties(comment, this)
+        this.critic = critic
+        this.answerer = answerer
+    }
 }

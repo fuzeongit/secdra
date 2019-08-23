@@ -5,13 +5,13 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.model.Reply
 import com.junjie.secdraservice.model.ReplyMessage
-import com.junjie.secdraservice.model.User
+import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.ReplyMessageService
 import com.junjie.secdraservice.service.ReplyService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.ReplyVO
-import com.junjie.secdraweb.vo.UserVO
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,9 +24,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("reply")
 class ReplyController(private val replyService: ReplyService,
-                      private val userService: UserService,
                       private val replyMessageService: ReplyMessageService,
-                      private val webSocketService: WebSocketService) {
+                      private val webSocketService: WebSocketService,
+                      override val userService: UserService,
+                      override val followService: FollowService) : UserVOAbstract() {
 
     /**
      * 发表评论
@@ -38,7 +39,7 @@ class ReplyController(private val replyService: ReplyService,
         content.isEmpty() && throw Exception("回复不能为空")
         (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
         val reply = Reply(commentId, authorId, criticId, answererId, drawId, content)
-        val vo = getVO(replyService.save(reply))
+        val vo = ReplyVO(replyService.save(reply), getUserVO(criticId, answererId), getUserVO(answererId, answererId))
         val replyMessage = ReplyMessage(vo.commentId, vo.id, vo.authorId, vo.drawId, vo.criticId, vo.answererId, vo.content)
         replyMessageService.save(replyMessage)
         webSocketService.sendReply(answererId, criticId)
@@ -50,18 +51,9 @@ class ReplyController(private val replyService: ReplyService,
      */
     @GetMapping("list")
     @RestfulPack
-    fun list(commentId: String): List<ReplyVO> {
-        return getListVO(replyService.list(commentId))
-    }
-
-    private fun getVO(reply: Reply): ReplyVO {
-        val replyVO = ReplyVO(reply)
-        replyVO.critic = UserVO(userService.getInfo(reply.criticId))
-        replyVO.answerer = UserVO(userService.getInfo(replyVO.answererId))
-        return replyVO
-    }
-
-    private fun getListVO(list: List<Reply>): List<ReplyVO> {
-        return list.map { getVO(it) }
+    fun list(@CurrentUserId userId: String, commentId: String): List<ReplyVO> {
+        return replyService.list(commentId).map {
+            ReplyVO(it, getUserVO(it.criticId, userId), getUserVO(it.answererId, userId))
+        }
     }
 }

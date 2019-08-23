@@ -31,65 +31,6 @@ class QiniuController(private val baseConfig: BaseConfig, private val drawDAO: D
         val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
         return Result(200, "", auth.uploadToken(baseConfig.qiniuTempBucket))
     }
-
-    @Auth
-    @PostMapping("move")
-    @RestfulPack
-    fun move(@CurrentUserId userId: String, name: String): Boolean {
-        //空间名前缀
-        val sourceBucket = baseConfig.qiniuTempBucket
-        val bucket = baseConfig.qiniuBucket
-        val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$name")
-        val nameEncodeBase64 = UrlSafeBase64.encodeToString("$bucket:$name")
-
-        val url = "http://rs.qiniu.com/move/$sourceNameEncodeBase64/$nameEncodeBase64"
-        val auth = QiniuAuth.create(baseConfig.qiniuAccessKey, baseConfig.qiniuSecretKey)
-        val authorizationMap = auth.authorization(url, null, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        val authorization = authorizationMap.get("Authorization") as String
-
-        val client = RestTemplate()
-        val headers = HttpHeaders()
-        val params = LinkedMultiValueMap<String, String>()
-        //  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交
-        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-        headers.add("Host", "rs.qiniu.com")
-        headers.add("Accept", "*/*")
-        headers.add("Content-Type", "application/json")
-        headers.add("Authorization", authorization)
-        val requestEntity = HttpEntity<MultiValueMap<String, String>>(params, headers)
-        //  执行HTTP请求
-        return try {
-            client.exchange(url, HttpMethod.POST, requestEntity, String::class.java)
-            true
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    @GetMapping("getImageInfo")
-    @RestfulPack
-    fun getImageInfo(): Boolean {
-        val all = drawDAO.findAll()
-        val client = RestTemplate()
-        for (item in all) {
-            if (item.width == 0.toLong()) {
-                val qiniuImageInfo = client.getForObject("http://ph9jy186h.bkt.clouddn.com/${item.url}?imageInfo", QiniuImageInfo::class.java)
-                item.height = qiniuImageInfo!!.height
-                item.width = qiniuImageInfo.width
-                drawDAO.save(item)
-            }
-        }
-        return true
-    }
-
-    @GetMapping("testGetImageInfo")
-    @RestfulPack
-    fun testGetImageInfo(): QiniuImageInfo? {
-        val client = RestTemplate()
-        val qiniuImageInfo = client.getForObject("http://ph9jy186h.bkt.clouddn.com/32740714_p0.jpg?imageInfo", QiniuImageInfo::class.java)
-        println(qiniuImageInfo!!.size)
-        return qiniuImageInfo
-    }
 }
 
 
