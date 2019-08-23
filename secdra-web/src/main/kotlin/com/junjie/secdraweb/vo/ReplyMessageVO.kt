@@ -32,4 +32,9 @@ class ReplyMessageVO {
     constructor(replyMessage: ReplyMessage) {
         BeanUtils.copyProperties(replyMessage, this)
     }
+
+    constructor(replyMessage: ReplyMessage, answerer: UserVO) {
+        BeanUtils.copyProperties(replyMessage, this)
+        this.answerer = answerer
+    }
 }

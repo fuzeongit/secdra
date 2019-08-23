@@ -10,9 +10,7 @@ abstract class UserVOAbstract {
     abstract val followService: FollowService
 
     fun getUserVO(targetId: String, userId: String? = null): UserVO {
-        val userVO = UserVO(userService.getInfo(targetId))
-        userVO.focus = followService.exists(userId, targetId)
-        return userVO
+        return getUserVO(userService.getInfo(targetId),userId)
     }
 
     fun getUserVO(user: User, userId: String? = null): UserVO {

@@ -25,4 +25,9 @@ class FollowMessageVO {
     constructor(followMessage: FollowMessage) {
         BeanUtils.copyProperties(followMessage, this)
     }
+
+    constructor(followMessage: FollowMessage, follower: UserVO) {
+        BeanUtils.copyProperties(followMessage, this)
+        this.follower = follower
+    }
 }

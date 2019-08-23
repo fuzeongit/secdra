@@ -8,7 +8,9 @@ import com.junjie.secdraservice.model.CommentMessage
 import com.junjie.secdraservice.model.User
 import com.junjie.secdraservice.service.CommentMessageService
 import com.junjie.secdraservice.service.CommentService
+import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.CommentVO
 import com.junjie.secdraweb.vo.UserVO
@@ -28,9 +30,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("comment")
 class CommentController(private val commentService: CommentService,
-                        private val userService: UserService,
                         private val commentMessageService: CommentMessageService,
-                        private val webSocketService: WebSocketService) {
+                        private val webSocketService: WebSocketService,
+                        override val userService: UserService,
+                        override val followService: FollowService) : UserVOAbstract() {
 
     /**
      * 发表评论
@@ -42,7 +45,11 @@ class CommentController(private val commentService: CommentService,
         content.isEmpty() && throw Exception("评论不能为空")
         (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
         val comment = Comment(authorId, criticId, drawId, content)
-        val vo = getVO(commentService.save(comment))
+        val vo = CommentVO(
+                commentService.save(comment),
+                getUserVO(authorId, criticId),
+                getUserVO(criticId, criticId)
+        )
         val commentMessage = CommentMessage(vo.id, vo.authorId, vo.drawId, vo.criticId, vo.content)
         commentMessageService.save(commentMessage)
         webSocketService.sendComment(criticId, authorId)
@@ -54,8 +61,8 @@ class CommentController(private val commentService: CommentService,
      */
     @GetMapping("listTop4")
     @RestfulPack
-    fun listTop4(drawId: String): List<CommentVO> {
-        return getListVO(commentService.listTop4(drawId))
+    fun listTop4(@CurrentUserId userId: String?, drawId: String): List<CommentVO> {
+        return getListVO(commentService.listTop4(drawId), userId)
     }
 
     /**
@@ -63,8 +70,8 @@ class CommentController(private val commentService: CommentService,
      */
     @GetMapping("list")
     @RestfulPack
-    fun list(drawId: String): List<CommentVO> {
-        return getListVO(commentService.list(drawId))
+    fun list(@CurrentUserId userId: String?, drawId: String): List<CommentVO> {
+        return getListVO(commentService.list(drawId), userId)
     }
 
     /**
@@ -72,23 +79,22 @@ class CommentController(private val commentService: CommentService,
      */
     @GetMapping("pagingByDrawId")
     @RestfulPack
-    fun pagingByDrawId(drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVO> {
-        return getPageVO(commentService.paging(drawId, pageable))
+    fun pagingByDrawId(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVO> {
+        return getPageVO(commentService.paging(drawId, pageable), userId)
     }
 
-    private fun getVO(comment: Comment): CommentVO {
-        val commentVO = CommentVO(comment)
-        commentVO.author = UserVO(userService.getInfo(comment.authorId))
-        commentVO.critic = UserVO(userService.getInfo(comment.criticId))
-        return commentVO
-    }
-
-    private fun getPageVO(page: Page<Comment>): Page<CommentVO> {
-        val commentVOList = page.content.map { getVO(it) }
+    private fun getPageVO(page: Page<Comment>, userId: String? = null): Page<CommentVO> {
+        val commentVOList = getListVO(page.content, userId)
         return PageImpl(commentVOList, page.pageable, page.totalElements)
     }
 
-    private fun getListVO(list: List<Comment>): List<CommentVO> {
-        return list.map { getVO(it) }
+    private fun getListVO(list: List<Comment>, userId: String? = null): List<CommentVO> {
+        return list.map {
+            CommentVO(
+                    it,
+                    getUserVO(it.authorId, userId),
+                    getUserVO(it.criticId, userId)
+            )
+        }
     }
 }

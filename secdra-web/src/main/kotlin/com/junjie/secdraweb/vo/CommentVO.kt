@@ -26,4 +26,10 @@ class CommentVO {
     constructor(comment: Comment) {
         BeanUtils.copyProperties(comment, this)
     }
+
+    constructor(comment: Comment, author: UserVO, critic: UserVO) {
+        BeanUtils.copyProperties(comment, this)
+        this.author = author
+        this.critic = critic
+    }
 }

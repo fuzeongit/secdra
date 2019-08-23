@@ -6,14 +6,13 @@ import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdracore.model.Result
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
-import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.base.communal.DrawVOAbstract
 import com.junjie.secdraweb.vo.CollectionDrawVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
@@ -21,8 +20,6 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author fjj
@@ -30,10 +27,10 @@ import kotlin.collections.ArrayList
  */
 @RestController
 @RequestMapping("collection")
-class CollectionController(private val collectionService: CollectionService,
-                           private val drawDocumentService: DrawDocumentService,
-                           private val userService: UserService,
-                           private val followService: FollowService) {
+class CollectionController(override val drawDocumentService: DrawDocumentService,
+                           override val collectionService: CollectionService,
+                           override val userService: UserService,
+                           override val followService: FollowService) : DrawVOAbstract() {
     @Auth
     @PostMapping("/focus")
     @RestfulPack
@@ -111,9 +108,11 @@ class CollectionController(private val collectionService: CollectionService,
                     //TODO 隐藏图片的默认路径
                     draw.url = ""
                 }
-                val userVO = UserVO(userService.getInfo(draw.userId))
-                userVO.focus = followService.exists(targetId, draw.userId)
-                CollectionDrawVO(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, collection.drawId), collection.createDate!!, userVO)
+                CollectionDrawVO(
+                        draw,
+                        getDrawVO(draw, userId).focus,
+                        collection.createDate!!,
+                        getUserVO(draw.userId, userId))
             } catch (e: NotFoundException) {
                 CollectionDrawVO(collection.drawId, collectionService.exists(targetId, collection.drawId), collection.createDate!!)
             }
@@ -140,11 +139,8 @@ class CollectionController(private val collectionService: CollectionService,
     @RestfulPack
     fun pagingUser(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = collectionService.pagingByDrawId(drawId, pageable)
-        val draw = drawDocumentService.get(drawId)
         val userVOList = page.content.map {
-            val userVO = UserVO(userService.getInfo(draw.userId))
-            userVO.focus = followService.exists(userId, it.userId)
-            userVO
+            getUserVO(it.userId, userId)
         }
         return PageImpl(userVOList, page.pageable, page.totalElements)
     }

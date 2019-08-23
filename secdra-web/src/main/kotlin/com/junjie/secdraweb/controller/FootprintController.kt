@@ -8,6 +8,8 @@ import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.service.*
+import com.junjie.secdraweb.base.communal.DrawVOAbstract
+import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.vo.CollectionDrawVO
 import com.junjie.secdraweb.vo.FootprintDrawVO
 import com.junjie.secdraweb.vo.UserVO
@@ -28,10 +30,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("footprint")
 class FootprintController(private val footprintService: FootprintService,
-                          private val drawDocumentService: DrawDocumentService,
-                          private val userService: UserService,
-                          private val collectionService: CollectionService,
-                          private val followService: FollowService) {
+                          override val drawDocumentService: DrawDocumentService,
+                          override val collectionService: CollectionService,
+                          override val userService: UserService,
+                          override val followService: FollowService) : DrawVOAbstract() {
     @Auth
     @PostMapping("/save")
     @RestfulPack
@@ -62,9 +64,12 @@ class FootprintController(private val footprintService: FootprintService,
                     //TODO 隐藏图片的默认路径
                     draw.url = ""
                 }
-                val userVO = UserVO(userService.getInfo(draw.userId))
-                userVO.focus = followService.exists(targetId, draw.userId)
-                FootprintDrawVO(draw, if (userId != null && userId == footprint.userId) CollectState.SElF else collectionService.exists(targetId, footprint.drawId), footprint.createDate!!, userVO)
+                FootprintDrawVO(
+                        draw,
+                        getDrawVO(draw, userId).focus,
+                        footprint.createDate!!,
+                        getUserVO(footprint.userId, userId)
+                )
             } catch (e: NotFoundException) {
                 FootprintDrawVO(footprint.drawId, collectionService.exists(targetId, footprint.drawId), footprint.createDate!!)
             }
@@ -79,9 +84,7 @@ class FootprintController(private val footprintService: FootprintService,
         val page = footprintService.pagingByDrawId(drawId, pageable)
         val draw = drawDocumentService.get(drawId)
         val userVOList = page.content.map {
-            val userVO = UserVO(userService.getInfo(draw.userId))
-            userVO.focus = followService.exists(userId, it.userId)
-            userVO
+            getUserVO(draw.userId, userId)
         }
         return PageImpl(userVOList, page.pageable, page.totalElements)
     }

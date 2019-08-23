@@ -28,4 +28,9 @@ class CommentMessageVO {
     constructor(commentMessage: CommentMessage) {
         BeanUtils.copyProperties(commentMessage, this)
     }
+
+    constructor(commentMessage: CommentMessage, critic: UserVO) {
+        BeanUtils.copyProperties(commentMessage, this)
+        this.critic = critic
+    }
 }

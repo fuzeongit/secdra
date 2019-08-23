@@ -5,6 +5,7 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
+import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("follower")
-class FollowerController(private val followService: FollowService, private val userService: UserService) {
+class FollowerController(override val userService: UserService, override val followService: FollowService) : UserVOAbstract() {
     /**
      * 获取粉丝列表
      */
@@ -30,10 +31,8 @@ class FollowerController(private val followService: FollowService, private val u
     fun paging(@CurrentUserId followingId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = followService.pagingByFollowingId(if (id != null && id.isNotEmpty()) id else followingId, pageable)
         val userVOList = page.content.map {
-            val userVO = UserVO(userService.getInfo(it.followerId))
-            userVO.focus = followService.exists(followingId, userVO.id)
-            userVO
+            getUserVO(it.followerId, followingId)
         }
-        return PageImpl<UserVO>(userVOList, page.pageable, page.totalElements)
+        return PageImpl(userVOList, page.pageable, page.totalElements)
     }
 }

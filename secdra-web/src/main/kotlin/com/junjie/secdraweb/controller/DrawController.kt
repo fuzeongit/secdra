@@ -10,6 +10,7 @@ import com.junjie.secdraservice.document.DrawDocument
 import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraservice.model.Tag
 import com.junjie.secdraservice.service.*
+import com.junjie.secdraweb.base.communal.DrawVOAbstract
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVO
@@ -29,12 +30,12 @@ import kotlin.collections.ArrayList
 @RestController
 @RequestMapping("draw")
 class DrawController(private val drawService: DrawService,
-                     private val drawDocumentService: DrawDocumentService,
-                     private val userService: UserService,
-                     private val collectionService: CollectionService,
-                     private val followService: FollowService,
                      private val qiniuComponent: QiniuComponent,
-                     private val baseConfig: BaseConfig) {
+                     private val baseConfig: BaseConfig,
+                     override val drawDocumentService: DrawDocumentService,
+                     override val collectionService: CollectionService,
+                     override val userService: UserService,
+                     override val followService: FollowService) : DrawVOAbstract() {
     /**
      * 根据标签获取
      */
@@ -60,9 +61,7 @@ class DrawController(private val drawService: DrawService,
     @GetMapping("/get")
     @RestfulPack
     fun get(id: String, @CurrentUserId userId: String?): DrawVO {
-        val draw = drawDocumentService.get(id)
-        (draw.privacy == PrivacyState.PRIVATE && draw.userId != userId) && throw PermissionException("你没有权限查看该图片")
-        return getVO(DrawVO(draw), userId)
+        return getDrawVO(id, userId)
     }
 
     /**
@@ -72,7 +71,7 @@ class DrawController(private val drawService: DrawService,
     @GetMapping("getFirstByTag")
     @RestfulPack
     fun getFirstByTag(tag: String): DrawVO {
-        return getVO(DrawVO(drawDocumentService.getFirstByTag(tag)), null)
+        return getDrawVO(drawDocumentService.getFirstByTag(tag))
     }
 
     /**
@@ -101,7 +100,7 @@ class DrawController(private val drawService: DrawService,
         val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
         draw.width = imageInfo.width
         draw.height = imageInfo.height
-        return getVO(DrawVO(drawService.save(draw)),userId)
+        return getDrawVO(drawService.save(draw), userId)
     }
 
     /**
@@ -132,7 +131,7 @@ class DrawController(private val drawService: DrawService,
             draw.tagList.clear()
             draw.tagList.addAll(sourceTagList)
         }
-        return getVO(DrawVO(drawService.save(draw)),userId)
+        return getDrawVO(drawService.save(draw), userId)
     }
 
     @Auth
@@ -163,16 +162,8 @@ class DrawController(private val drawService: DrawService,
         return drawList
     }
 
-    private fun getVO(drawVO: DrawVO, userId: String? = null): DrawVO {
-        val userVO = UserVO(userService.getInfo(drawVO.userId))
-        userVO.focus = followService.exists(userId, userVO.id)
-        userId?.let { drawVO.focus = collectionService.exists(it, drawVO.id) }
-        drawVO.user = userVO
-        return drawVO
-    }
-
     private fun getPageVO(page: Page<DrawDocument>, userId: String? = null): Page<DrawVO> {
-        val drawVOList = page.content.map { getVO(DrawVO(it), userId) }
-        return PageImpl<DrawVO>(drawVOList, page.pageable, page.totalElements)
+        val drawVOList = page.content.map { getDrawVO(it, userId) }
+        return PageImpl(drawVOList, page.pageable, page.totalElements)
     }
 }

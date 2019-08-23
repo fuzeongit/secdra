@@ -6,6 +6,7 @@ import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.constant.MessageType
 import com.junjie.secdraservice.model.*
 import com.junjie.secdraservice.service.*
+import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.vo.CommentMessageVO
 import com.junjie.secdraweb.vo.FollowMessageVO
 import com.junjie.secdraweb.vo.ReplyMessageVO
@@ -17,9 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("message")
-class MessageController(private val userService: UserService, private val commentMessageService: CommentMessageService,
-                        private val replyMessageService: ReplyMessageService, private val followMessageService: FollowMessageService,
-                        private val systemMessageService: SystemMessageService, private val messageSettingsService: MessageSettingsService) {
+class MessageController(private val commentMessageService: CommentMessageService,
+                        private val replyMessageService: ReplyMessageService,
+                        private val followMessageService: FollowMessageService,
+                        private val systemMessageService: SystemMessageService,
+                        private val messageSettingsService: MessageSettingsService,
+                        override val userService: UserService,
+                        override val followService: FollowService) : UserVOAbstract() {
     @Auth
     @GetMapping("/count")
     @RestfulPack
@@ -100,16 +105,10 @@ class MessageController(private val userService: UserService, private val commen
         return messageSettingsService.save(messageSettings)
     }
 
-    private fun getCommentMessageVO(commentMessage: CommentMessage): CommentMessageVO {
-        val vo = CommentMessageVO(commentMessage)
-        vo.critic = UserVO(userService.getInfo(vo.criticId))
-        return vo
-    }
-
     private fun getCommentMessageListVO(list: List<CommentMessage>): List<CommentMessageVO> {
         val voList = mutableListOf<CommentMessageVO>()
         for (commentMessage in list) {
-            voList.add(getCommentMessageVO(commentMessage))
+            voList.add(CommentMessageVO(commentMessage, getUserVO(commentMessage.criticId, commentMessage.authorId)))
             commentMessage.read && continue
             commentMessage.read = true
             commentMessageService.save(commentMessage)
@@ -117,16 +116,10 @@ class MessageController(private val userService: UserService, private val commen
         return voList
     }
 
-    private fun getReplyMessageVO(replyMessage: ReplyMessage): ReplyMessageVO {
-        val vo = ReplyMessageVO(replyMessage)
-        vo.answerer = UserVO(userService.getInfo(vo.answererId))
-        return vo
-    }
-
     private fun getReplyMessageListVO(list: List<ReplyMessage>): List<ReplyMessageVO> {
         val voList = mutableListOf<ReplyMessageVO>()
         for (replyMessage in list) {
-            voList.add(getReplyMessageVO(replyMessage))
+            voList.add(ReplyMessageVO(replyMessage, getUserVO(userService.getInfo(replyMessage.answererId), replyMessage.criticId)))
             replyMessage.read && continue
             replyMessage.read = true
             replyMessageService.save(replyMessage)
@@ -134,16 +127,10 @@ class MessageController(private val userService: UserService, private val commen
         return voList
     }
 
-    private fun getFollowMessageVO(followMessage: FollowMessage): FollowMessageVO {
-        val vo = FollowMessageVO(followMessage)
-        vo.follower = UserVO(userService.getInfo(vo.followerId))
-        return vo
-    }
-
     private fun getFollowMessageListVO(list: List<FollowMessage>): List<FollowMessageVO> {
         val voList = mutableListOf<FollowMessageVO>()
         for (followMessage in list) {
-            voList.add(getFollowMessageVO(followMessage))
+            voList.add(FollowMessageVO(followMessage, getUserVO(userService.getInfo(followMessage.followerId), followMessage.followingId)))
             followMessage.read && continue
             followMessage.read = true
             followMessageService.save(followMessage)
