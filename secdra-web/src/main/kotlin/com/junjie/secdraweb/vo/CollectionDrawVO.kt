@@ -37,7 +37,6 @@ class CollectionDrawVO {
 
     constructor(id: String, focus: CollectState, createDate: Date) {
         this.id = id
-        //TODO 设置默认图片
         this.url = ""
         this.focus = focus
         this.createDate = createDate

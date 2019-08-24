@@ -106,7 +106,6 @@ class CollectionController(override val drawDocumentService: DrawDocumentService
                 val draw = drawDocumentService.get(collection.drawId)
                 //图片被隐藏
                 if (draw.privacy == PrivacyState.PRIVATE) {
-                    //TODO 隐藏图片的默认路径
                     draw.url = ""
                 }
                 CollectionDrawVO(

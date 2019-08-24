@@ -1,6 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdraservice.constant.DrawState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.dao.DrawDocumentDAO
 import com.junjie.secdraservice.document.DrawDocument
@@ -8,11 +9,9 @@ import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.FootprintService
 import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.aggregations.Aggregation
 import org.elasticsearch.search.aggregations.AggregationBuilders
-import org.elasticsearch.search.aggregations.Aggregations
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms
-import org.elasticsearch.search.sort.SortBuilders
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -23,11 +22,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.stereotype.Service
 import java.util.*
-import org.springframework.data.elasticsearch.core.ResultsExtractor
-import java.io.Serializable
-import org.elasticsearch.search.sort.SortBuilders.fieldSort
-import org.elasticsearch.search.sort.SortOrder
-import kotlin.math.log
 
 
 @Service
@@ -35,7 +29,6 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
                               private val elasticsearchTemplate: ElasticsearchTemplate,
                               private val collectionService: CollectionService,
                               private val footprintService: FootprintService) : DrawDocumentService {
-
     @Cacheable("drawDocument::get", key = "#id")
     override fun get(id: String): DrawDocument {
         return drawDocumentDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
@@ -120,7 +113,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         } ?: listOf()
     }
 
-    @CachePut("drawDocument::save", key = "#draw.id")
+    @CachePut("drawDocument::get", key = "#draw.id")
     override fun save(draw: DrawDocument): DrawDocument {
         val source = drawDocumentDAO.findById(draw.id!!).orElse(draw)
         draw.viewAmount = source.viewAmount
@@ -128,15 +121,15 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         return drawDocumentDAO.save(draw)
     }
 
-    @CachePut("drawDocument::save", key = "#draw.id")
+    @CachePut("drawDocument::get", key = "#draw.id")
     override fun saveViewAmount(draw: DrawDocument, viewAmount: Long): DrawDocument {
         draw.viewAmount = viewAmount
         return drawDocumentDAO.save(draw)
     }
 
-    @CachePut("drawDocument::save", key = "#draw.id")
+    @CachePut("drawDocument::get", key = "#draw.id")
     override fun saveLikeAmount(draw: DrawDocument, likeAmount: Long): DrawDocument {
-        draw.viewAmount = likeAmount
+        draw.likeAmount = likeAmount
         return drawDocumentDAO.save(draw)
     }
 

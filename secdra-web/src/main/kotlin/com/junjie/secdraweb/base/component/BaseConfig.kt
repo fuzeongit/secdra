@@ -12,9 +12,9 @@ import java.util.*
 @ConfigurationProperties("base")
 class BaseConfig {
     //注册验证码存redis的key前缀
-    var registerVerificationCodePrefix: String = ""
+    lateinit var registerVerificationCodePrefix: String
     //忘记密码验证码存redis的key前缀
-    var forgetVerificationCodePrefix: String = ""
+    lateinit var forgetVerificationCodePrefix: String
     //验证码过期毫秒数
     var verificationCodeTimeout: Long = 0
 
@@ -25,27 +25,27 @@ class BaseConfig {
             return Base64.getEncoder().encodeToString(field.toByteArray(charset("utf-8")))
         }
 
-    var updatePasswordTimePrefix: String = ""
+    lateinit var updatePasswordTimePrefix: String
 
-    var notUUID: String = ""
+    lateinit var notUUID: String
 
-    var qiniuAccessKey: String = ""
+    lateinit var qiniuAccessKey: String
 
-    var qiniuSecretKey: String = ""
+    lateinit var qiniuSecretKey: String
     //临时储存空间
-    var qiniuTempBucket: String = ""
+    lateinit var qiniuTempBucket: String
     //头像储存空间
-    var qiniuHeadBucket: String = ""
+    lateinit var qiniuHeadBucket: String
     //背景储存空间
-    var qiniuBackBucket: String = ""
+    lateinit var qiniuBackBucket: String
     //主储存空间
-    var qiniuBucket: String = ""
+    lateinit var qiniuBucket: String
     //临时储存空间
-    var qiniuTempBucketUrl: String = ""
+    lateinit var qiniuTempBucketUrl: String
     //头像储存空间
-    var qiniuHeadBucketUrl: String = ""
+    lateinit var qiniuHeadBucketUrl: String
     //背景储存空间
-    var qiniuBackBucketUrl: String = ""
+    lateinit var qiniuBackBucketUrl: String
     //主储存空间
-    var qiniuBucketUrl: String = ""
+    lateinit var qiniuBucketUrl: String
 }

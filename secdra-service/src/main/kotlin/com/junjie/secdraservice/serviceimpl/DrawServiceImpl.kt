@@ -23,7 +23,7 @@ import javax.persistence.criteria.Predicate
 @Service
 class DrawServiceImpl(private val drawDAO: DrawDAO,
                       private val drawDocumentService: DrawDocumentService) : DrawService {
-    @Cacheable("draw::paging")
+
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Draw> {
         val specification = Specification<Draw> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
@@ -63,7 +63,6 @@ class DrawServiceImpl(private val drawDAO: DrawDAO,
         return drawDAO.findAll(specification, pageable)
     }
 
-    @Cacheable("draw::pagingRand")
     override fun pagingRand(pageable: Pageable): Page<Draw> {
         return drawDAO.pagingRand(pageable)
     }
@@ -80,12 +79,10 @@ class DrawServiceImpl(private val drawDAO: DrawDAO,
         return drawDAO.count(specification)
     }
 
-    //    @Cacheable("draw::get", key = "#id")
     override fun get(id: String): Draw {
         return drawDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
-    //    @CachePut("draw::get", key = "#draw.id")
     override fun save(draw: Draw): DrawDocument {
         return drawDocumentService.save(DrawDocument(drawDAO.save(draw)))
     }

@@ -14,14 +14,12 @@ import com.junjie.secdraweb.base.communal.DrawVOAbstract
 import com.junjie.secdraweb.base.component.BaseConfig
 import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.vo.DrawVO
-import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author fjj

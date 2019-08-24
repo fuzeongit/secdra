@@ -4,13 +4,15 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.constant.MessageType
-import com.junjie.secdraservice.model.*
+import com.junjie.secdraservice.model.CommentMessage
+import com.junjie.secdraservice.model.FollowMessage
+import com.junjie.secdraservice.model.MessageSettings
+import com.junjie.secdraservice.model.ReplyMessage
 import com.junjie.secdraservice.service.*
 import com.junjie.secdraweb.base.communal.UserVOAbstract
 import com.junjie.secdraweb.vo.CommentMessageVO
 import com.junjie.secdraweb.vo.FollowMessageVO
 import com.junjie.secdraweb.vo.ReplyMessageVO
-import com.junjie.secdraweb.vo.UserVO
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping

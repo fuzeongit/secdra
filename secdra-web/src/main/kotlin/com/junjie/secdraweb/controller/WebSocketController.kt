@@ -1,7 +1,6 @@
 package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.model.Result
-import com.junjie.secdraservice.model.Draw
 import com.junjie.secdraweb.base.component.BaseConfig
 import org.springframework.messaging.Message
 import org.springframework.messaging.handler.annotation.Headers

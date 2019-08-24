@@ -6,12 +6,9 @@ import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdraservice.constant.CollectState
 import com.junjie.secdraservice.constant.PrivacyState
 import com.junjie.secdraservice.service.*
 import com.junjie.secdraweb.base.communal.DrawVOAbstract
-import com.junjie.secdraweb.base.communal.UserVOAbstract
-import com.junjie.secdraweb.vo.CollectionDrawVO
 import com.junjie.secdraweb.vo.FootprintDrawVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
@@ -63,7 +60,6 @@ class FootprintController(private val footprintService: FootprintService,
                 val draw = drawDocumentService.get(footprint.drawId)
                 //图片被隐藏
                 if (draw.privacy == PrivacyState.PRIVATE) {
-                    //TODO 隐藏图片的默认路径
                     draw.url = ""
                 }
                 FootprintDrawVO(

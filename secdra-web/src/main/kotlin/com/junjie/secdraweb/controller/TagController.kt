@@ -2,8 +2,6 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.service.DrawDocumentService
-import org.elasticsearch.search.aggregations.Aggregation
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
