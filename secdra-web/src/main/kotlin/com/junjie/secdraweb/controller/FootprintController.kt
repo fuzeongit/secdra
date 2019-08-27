@@ -66,7 +66,7 @@ class FootprintController(private val footprintService: FootprintService,
                         draw,
                         getDrawVO(draw, userId).focus,
                         footprint.createDate!!,
-                        getUserVO(footprint.userId, userId)
+                        getUserVO(draw.userId, userId)
                 )
             } catch (e: NotFoundException) {
                 FootprintDrawVO(footprint.drawId, collectionService.exists(targetId, footprint.drawId), footprint.createDate!!)
