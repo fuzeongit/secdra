@@ -1,16 +1,16 @@
 package com.junjie.secdraadmin.controller
 
-import com.junjie.secdracollect.constant.TransferState
-import com.junjie.secdracollect.dao.PixivDrawDAO
-import com.junjie.secdracollect.dao.PixivErrorDAO
-import com.junjie.secdracollect.model.PixivDraw
-import com.junjie.secdracollect.model.PixivError
+import com.junjie.secdradata.constant.TransferState
+import com.junjie.secdradata.database.collect.dao.PixivDrawDAO
+import com.junjie.secdradata.database.collect.dao.PixivErrorDAO
+import com.junjie.secdradata.database.collect.entity.PixivDraw
+import com.junjie.secdradata.database.collect.entity.PixivError
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.util.EmojiUtil
-import com.junjie.secdraservice.dao.DrawDAO
-import com.junjie.secdraservice.document.DrawDocument
-import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.model.Tag
+import com.junjie.secdradata.database.primary.dao.DrawDAO
+import com.junjie.secdradata.index.primary.document.DrawDocument
+import com.junjie.secdradata.database.primary.entity.Draw
+import com.junjie.secdradata.database.primary.entity.Tag
 import com.junjie.secdraservice.service.DrawService
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,7 +32,7 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
         val errorReadList = mutableListOf<String>()
         val userId = "402880e566ddba740166ddbce0b70000"
         val map: HashMap<String, Any> = hashMapOf()
-        val fileNameList = File(folderPath).list()
+        val fileNameList = File(folderPath).list() ?: arrayOf()
         fileNameList.toList().filter { it.toLowerCase().endsWith(".png") || it.toLowerCase().endsWith(".jpg") || it.toLowerCase().endsWith(".jpeg") }
 
         for (fileName in fileNameList) {

@@ -1,6 +1,6 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.model.Reply
+import com.junjie.secdradata.database.primary.entity.Reply
 import org.springframework.beans.BeanUtils
 import java.util.*
 

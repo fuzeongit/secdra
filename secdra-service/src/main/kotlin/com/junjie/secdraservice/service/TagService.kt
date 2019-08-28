@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.Tag
+import com.junjie.secdradata.database.primary.entity.Tag
 
 interface TagService {
     @Deprecated("由于ES的引入，弃用改查询，使用ES的listTag")

@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.util.DateUtil
-import com.junjie.secdraservice.dao.CommentMessageDAO
-import com.junjie.secdraservice.model.CommentMessage
+import com.junjie.secdradata.database.primary.dao.CommentMessageDAO
+import com.junjie.secdradata.database.primary.entity.CommentMessage
 import com.junjie.secdraservice.service.CommentMessageService
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service

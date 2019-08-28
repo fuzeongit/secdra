@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.ReplyMessage
+import com.junjie.secdradata.database.primary.entity.ReplyMessage
 
 interface ReplyMessageService {
     fun save(replyMessage: ReplyMessage): ReplyMessage

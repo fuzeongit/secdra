@@ -17,32 +17,36 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>6.8.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.elasticsearch.client</groupId>
-			<artifactId>transport</artifactId>
-			<version>6.8.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-data-jpa</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>mysql</groupId>-->
+<!--			<artifactId>mysql-connector-java</artifactId>-->
+<!--			<scope>runtime</scope>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.elasticsearch</groupId>-->
+<!--			<artifactId>elasticsearch</artifactId>-->
+<!--			<version>6.8.1</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.elasticsearch.client</groupId>-->
+<!--			<artifactId>transport</artifactId>-->
+<!--			<version>6.8.1</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.junjie</groupId>
 			<artifactId>secdra-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.junjie</groupId>
+			<artifactId>secdra-data</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

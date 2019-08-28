@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.Comment
+import com.junjie.secdradata.database.primary.entity.Comment
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 

@@ -2,8 +2,8 @@ package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.SignInException
-import com.junjie.secdraservice.dao.UserDAO
-import com.junjie.secdraservice.model.User
+import com.junjie.secdradata.database.primary.dao.UserDAO
+import com.junjie.secdradata.database.primary.entity.User
 import com.junjie.secdraservice.service.UserService
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable

@@ -13,6 +13,7 @@
 
     <modules>
         <module>secdra-core</module>
+        <module>secdra-data</module>
         <module>secdra-service</module>
         <module>secdra-collect</module>
         <module>secdra-web</module>
@@ -38,6 +39,11 @@
             <dependency>
                 <groupId>com.junjie</groupId>
                 <artifactId>secdra-core</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.junjie</groupId>
+                <artifactId>secdra-data</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>

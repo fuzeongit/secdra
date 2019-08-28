@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.MessageSettings
+import com.junjie.secdradata.database.primary.entity.MessageSettings
 
 interface MessageSettingsService {
     fun get(userId: String): MessageSettings

@@ -1,7 +1,7 @@
 package com.junjie.secdraweb.service
 
-import com.junjie.secdraweb.base.component.BaseConfig
-import com.junjie.secdraweb.base.qiniu.Auth
+import com.junjie.secdraweb.core.component.BaseConfig
+import com.junjie.secdraweb.core.qiniu.Auth
 import com.junjie.secdraweb.model.QiniuImageInfo
 import com.qiniu.util.UrlSafeBase64
 import org.springframework.http.HttpEntity

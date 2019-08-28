@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.User
+import com.junjie.secdradata.database.primary.entity.User
 import java.util.*
 
 /**

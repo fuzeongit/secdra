@@ -1,9 +1,8 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.constant.CollectState
-import com.junjie.secdraservice.constant.PrivacyState
-import com.junjie.secdraservice.document.DrawDocument
-import com.junjie.secdraservice.model.Draw
+import com.junjie.secdradata.constant.CollectState
+import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.index.primary.document.DrawDocument
 import org.springframework.beans.BeanUtils
 import java.util.*
 

@@ -5,10 +5,11 @@ spring:
     host: 127.0.0.1
     port: 6379
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
-    username: root
-    password: root
+    primary:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
   jpa:
     hibernate:
       ddl-auto: update

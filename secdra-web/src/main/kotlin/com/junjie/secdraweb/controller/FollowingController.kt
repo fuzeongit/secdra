@@ -4,12 +4,12 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdraservice.constant.FollowState
-import com.junjie.secdraservice.model.FollowMessage
+import com.junjie.secdradata.constant.FollowState
+import com.junjie.secdradata.database.primary.entity.FollowMessage
 import com.junjie.secdraservice.service.FollowMessageService
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.base.communal.UserVOAbstract
+import com.junjie.secdraweb.core.communal.UserVOAbstract
 import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page

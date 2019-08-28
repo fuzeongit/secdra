@@ -5,7 +5,7 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.base.communal.UserVOAbstract
+import com.junjie.secdraweb.core.communal.UserVOAbstract
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

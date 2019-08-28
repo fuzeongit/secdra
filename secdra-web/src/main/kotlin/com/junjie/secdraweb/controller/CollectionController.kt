@@ -6,13 +6,13 @@ import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
-import com.junjie.secdraservice.constant.CollectState
-import com.junjie.secdraservice.constant.PrivacyState
+import com.junjie.secdradata.constant.CollectState
+import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.base.communal.DrawVOAbstract
+import com.junjie.secdraweb.core.communal.DrawVOAbstract
 import com.junjie.secdraweb.vo.CollectionDrawVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page

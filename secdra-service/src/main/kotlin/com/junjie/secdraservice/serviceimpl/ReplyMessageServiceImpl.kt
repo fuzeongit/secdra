@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.util.DateUtil
-import com.junjie.secdraservice.dao.ReplyMessageDAO
-import com.junjie.secdraservice.model.ReplyMessage
+import com.junjie.secdradata.database.primary.dao.ReplyMessageDAO
+import com.junjie.secdradata.database.primary.entity.ReplyMessage
 import com.junjie.secdraservice.service.ReplyMessageService
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service

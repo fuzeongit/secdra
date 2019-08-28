@@ -3,13 +3,13 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
-import com.junjie.secdraservice.model.Reply
-import com.junjie.secdraservice.model.ReplyMessage
+import com.junjie.secdradata.database.primary.entity.Reply
+import com.junjie.secdradata.database.primary.entity.ReplyMessage
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.ReplyMessageService
 import com.junjie.secdraservice.service.ReplyService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.base.communal.UserVOAbstract
+import com.junjie.secdraweb.core.communal.UserVOAbstract
 import com.junjie.secdraweb.service.WebSocketService
 import com.junjie.secdraweb.vo.ReplyVO
 import org.springframework.web.bind.annotation.GetMapping

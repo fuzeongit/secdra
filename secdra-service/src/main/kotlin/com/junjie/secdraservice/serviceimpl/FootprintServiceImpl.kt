@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
-import com.junjie.secdraservice.dao.FootprintDAO
-import com.junjie.secdraservice.model.Footprint
+import com.junjie.secdradata.database.primary.dao.FootprintDAO
+import com.junjie.secdradata.database.primary.entity.Footprint
 import com.junjie.secdraservice.service.FootprintService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

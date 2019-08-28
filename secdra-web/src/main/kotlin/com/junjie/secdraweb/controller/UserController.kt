@@ -8,12 +8,12 @@ import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.model.Result
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdracore.util.RegexUtil
-import com.junjie.secdraservice.constant.Gender
-import com.junjie.secdraservice.constant.VerificationCodeOperation
+import com.junjie.secdradata.constant.Gender
+import com.junjie.secdradata.constant.VerificationCodeOperation
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.base.communal.UserVOAbstract
-import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdraweb.core.communal.UserVOAbstract
+import com.junjie.secdraweb.core.component.BaseConfig
 import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.redis.core.StringRedisTemplate

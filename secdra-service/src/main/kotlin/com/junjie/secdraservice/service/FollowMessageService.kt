@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.FollowMessage
+import com.junjie.secdradata.database.primary.entity.FollowMessage
 
 interface FollowMessageService {
     fun save(followMessage: FollowMessage): FollowMessage

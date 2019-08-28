@@ -1,17 +1,15 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
-import com.junjie.secdraservice.constant.DrawState
-import com.junjie.secdraservice.constant.PrivacyState
-import com.junjie.secdraservice.dao.DrawDocumentDAO
-import com.junjie.secdraservice.document.DrawDocument
+import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.index.primary.dao.DrawDocumentDAO
+import com.junjie.secdradata.index.primary.document.DrawDocument
 import com.junjie.secdraservice.service.CollectionService
 import com.junjie.secdraservice.service.DrawDocumentService
 import com.junjie.secdraservice.service.FootprintService
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.aggregations.AggregationBuilders
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page

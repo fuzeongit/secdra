@@ -1,10 +1,10 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdraservice.constant.DrawState
-import com.junjie.secdraservice.constant.PrivacyState
-import com.junjie.secdraservice.dao.TagDAO
-import com.junjie.secdraservice.model.Draw
-import com.junjie.secdraservice.model.Tag
+import com.junjie.secdradata.constant.DrawState
+import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.database.primary.dao.TagDAO
+import com.junjie.secdradata.database.primary.entity.Draw
+import com.junjie.secdradata.database.primary.entity.Tag
 import com.junjie.secdraservice.service.TagService
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.PageRequest

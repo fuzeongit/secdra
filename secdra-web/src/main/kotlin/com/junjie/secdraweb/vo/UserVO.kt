@@ -1,8 +1,8 @@
 package com.junjie.secdraweb.vo
 
-import com.junjie.secdraservice.constant.FollowState
-import com.junjie.secdraservice.constant.Gender
-import com.junjie.secdraservice.model.User
+import com.junjie.secdradata.constant.FollowState
+import com.junjie.secdradata.constant.Gender
+import com.junjie.secdradata.database.primary.entity.User
 import org.springframework.beans.BeanUtils
 import java.util.*
 

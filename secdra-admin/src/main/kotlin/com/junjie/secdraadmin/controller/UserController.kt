@@ -1,8 +1,8 @@
 package com.junjie.secdraadmin.controller
 
-import com.junjie.secdraservice.constant.Gender
-import com.junjie.secdraservice.dao.UserDAO
-import com.junjie.secdraservice.model.User
+import com.junjie.secdradata.constant.Gender
+import com.junjie.secdradata.database.primary.dao.UserDAO
+import com.junjie.secdradata.database.primary.entity.User
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -34,7 +34,7 @@ class UserController(private var userDAO: UserDAO) {
             for (i in 0 until count) {
                 val user = User(
                         phone = phone.toString(),
-                        password =  "123456",
+                        password = "123456",
                         gender = if (i % 2 == 0) Gender.FEMALE else Gender.MALE,
                         name = nameList!!.toMutableList().shuffled().first(),
                         address = null,

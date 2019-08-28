@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
-import com.junjie.secdraservice.dao.MessageSettingsDAO
-import com.junjie.secdraservice.model.MessageSettings
+import com.junjie.secdradata.database.primary.dao.MessageSettingsDAO
+import com.junjie.secdradata.database.primary.entity.MessageSettings
 import com.junjie.secdraservice.service.MessageSettingsService
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable

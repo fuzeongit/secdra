@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.SystemMessage
+import com.junjie.secdradata.database.primary.entity.SystemMessage
 
 interface SystemMessageService {
     fun save(systemMessage: SystemMessage): SystemMessage

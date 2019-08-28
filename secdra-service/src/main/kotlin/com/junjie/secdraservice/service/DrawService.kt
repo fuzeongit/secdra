@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.document.DrawDocument
-import com.junjie.secdraservice.model.Draw
+import com.junjie.secdradata.index.primary.document.DrawDocument
+import com.junjie.secdradata.database.primary.entity.Draw
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.util.*

@@ -1,7 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.Collection
-import com.junjie.secdraservice.model.Footprint
+import com.junjie.secdradata.database.primary.entity.Footprint
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 

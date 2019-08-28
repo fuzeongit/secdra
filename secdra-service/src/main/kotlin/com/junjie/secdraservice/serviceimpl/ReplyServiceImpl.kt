@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdraservice.dao.ReplyDAO
-import com.junjie.secdraservice.model.Reply
+import com.junjie.secdradata.database.primary.dao.ReplyDAO
+import com.junjie.secdradata.database.primary.entity.Reply
 import com.junjie.secdraservice.service.ReplyService
 import org.springframework.stereotype.Service
 

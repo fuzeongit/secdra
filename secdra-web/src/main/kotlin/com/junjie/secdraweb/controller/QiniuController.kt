@@ -2,12 +2,12 @@ package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.model.Result
-import com.junjie.secdraservice.dao.DrawDAO
-import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdradata.database.primary.dao.DrawDAO
+import com.junjie.secdraweb.core.component.BaseConfig
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import com.junjie.secdraweb.base.qiniu.Auth as QiniuAuth
+import com.junjie.secdraweb.core.qiniu.Auth as QiniuAuth
 
 
 @RestController

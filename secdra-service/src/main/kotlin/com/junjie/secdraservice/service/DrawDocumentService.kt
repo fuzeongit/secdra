@@ -1,8 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.document.DrawDocument
-import org.elasticsearch.search.aggregations.Aggregation
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms
+import com.junjie.secdradata.index.primary.document.DrawDocument
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.util.*

@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.CommentMessage
+import com.junjie.secdradata.database.primary.entity.CommentMessage
 
 interface CommentMessageService {
     fun save(commentMessage: CommentMessage): CommentMessage

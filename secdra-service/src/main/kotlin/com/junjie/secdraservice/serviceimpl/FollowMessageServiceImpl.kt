@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.util.DateUtil
-import com.junjie.secdraservice.dao.FollowMessageDAO
-import com.junjie.secdraservice.model.FollowMessage
+import com.junjie.secdradata.database.primary.dao.FollowMessageDAO
+import com.junjie.secdradata.database.primary.entity.FollowMessage
 import com.junjie.secdraservice.service.FollowMessageService
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service

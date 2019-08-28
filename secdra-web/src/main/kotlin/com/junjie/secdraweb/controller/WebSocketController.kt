@@ -1,7 +1,7 @@
 package com.junjie.secdraweb.controller
 
 import com.junjie.secdracore.model.Result
-import com.junjie.secdraweb.base.component.BaseConfig
+import com.junjie.secdraweb.core.component.BaseConfig
 import org.springframework.messaging.Message
 import org.springframework.messaging.handler.annotation.Headers
 import org.springframework.messaging.handler.annotation.MessageMapping

@@ -1,7 +1,7 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.constant.FollowState
-import com.junjie.secdraservice.model.Follow
+import com.junjie.secdradata.constant.FollowState
+import com.junjie.secdradata.database.primary.entity.Follow
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 

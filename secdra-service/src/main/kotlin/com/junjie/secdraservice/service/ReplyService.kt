@@ -1,6 +1,6 @@
 package com.junjie.secdraservice.service
 
-import com.junjie.secdraservice.model.Reply
+import com.junjie.secdradata.database.primary.entity.Reply
 
 /**
  * 回复的服务

@@ -1,8 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdraservice.constant.CollectState
-import com.junjie.secdraservice.dao.CollectionDAO
-import com.junjie.secdraservice.model.Collection
+import com.junjie.secdradata.constant.CollectState
+import com.junjie.secdradata.database.primary.dao.CollectionDAO
+import com.junjie.secdradata.database.primary.entity.Collection
 import com.junjie.secdraservice.service.CollectionService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
