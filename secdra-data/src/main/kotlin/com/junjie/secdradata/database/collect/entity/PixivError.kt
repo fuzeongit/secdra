@@ -33,6 +33,5 @@ class PixivError {
     constructor(pixivId: String, message: String?) {
         this.pixivId = pixivId
         this.message = message
-
     }
 }

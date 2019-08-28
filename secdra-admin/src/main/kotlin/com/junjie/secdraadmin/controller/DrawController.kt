@@ -160,9 +160,7 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
     //保存pixiv采集错误
     @PostMapping("/pixivErrorSave")
     fun pixivErrorSave(pixivId: String, message: String): PixivError {
-        val pixivError = PixivError()
-        pixivError.pixivId = pixivId
-        pixivError.message = message
+        val pixivError = PixivError(pixivId, message)
         return pixivErrorDAO.save(pixivError)
     }
 
@@ -172,7 +170,6 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
      */
     @GetMapping("/duplicateRemoval")
     fun duplicateRemoval(): Boolean {
-
         val list = drawDAO.findAll()
         for (item in list) {
             val tagList = item.tagList.asSequence().distinctBy { it.name }.toSet()
