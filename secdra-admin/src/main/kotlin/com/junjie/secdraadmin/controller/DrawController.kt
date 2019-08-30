@@ -70,45 +70,23 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
 //        return pixivErrorDAO.save(pixivError)
 //    }
 //
-//    //从pixiv初始化标签
+    //从pixiv初始化标签
 //    @GetMapping("/initTag")
 //    fun initTag(): Boolean {
-//        val pixivDrawList = pixivDrawDAO.findAllByInit(false)
+//        val pixivDrawList = pixivDrawDAO.findAll()
 //        for (pixivDraw in pixivDrawList) {
-//            val drawList = drawDAO.findAllByUrlLike(pixivDraw.pixivId!! + "%")
-//            for (draw in drawList) {
-//                pixivDraw.init = true
-//
-//                draw.name = if (pixivDraw.name.isNullOrBlank()) {
-//                    draw.name
-//                } else {
-//                    pixivDraw.name
-//                }
-//
-//                val tagList = pixivDraw.tagList!!.split("|")
-//                val tagNameList = draw.tagList.map { it.name }
-//                for (addTagName in tagList) {
-//                    if (tagNameList.indexOf(addTagName) == -1) {
-//                        val tag = Tag()
-//                        tag.name = addTagName
-//                        draw.tagList.add(tag)
-//                    }
-//                }
-//                for (tag in draw.tagList.toList()) {
-//                    if (tagList.indexOf(tag.name) == -1) {
-//                        draw.tagList.remove(tag)
-//                    }
-//                }
-//
+//            try {
+//                val draw = drawService.get(pixivDraw.drawId)
+//                draw.tagList.addAll((pixivDraw.tagList
+//                        ?: "").split("|").asSequence().toSet().asSequence().map { it -> Tag(it) }.toList())
 //                drawDAO.save(draw)
+//            } catch (e: Exception) {
+//                print(pixivDraw.pixivId)
 //            }
-//
-//            pixivDrawDAO.save(pixivDraw)
-//
 //        }
 //        return true
 //    }
-//
+
 
     //获取没有tag的图片
     @GetMapping("/check")
@@ -146,7 +124,7 @@ class DrawController(private val drawDAO: DrawDAO, private val pixivDrawDAO: Pix
             try {
                 val draw = drawDAO.findById(pixivDraw.drawId).orElseThrow { NotFoundException("找不到图片") }
                 draw.name = pixivDraw.pixivName!!
-                draw.tagList.toMutableSet().addAll(pixivDraw.tagList!!.split("|").asSequence().toSet().asSequence().map { it -> Tag(it) }.toList())
+                draw.tagList.addAll(pixivDraw.tagList!!.split("|").asSequence().toSet().asSequence().map { it -> Tag(it) }.toList())
                 pixivDrawDAO.save(pixivDraw)
                 drawDAO.save(draw)
             } catch (e: Exception) {
