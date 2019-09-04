@@ -34,6 +34,10 @@
             <groupId>com.junjie</groupId>
             <artifactId>secdra-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.junjie</groupId>
+            <artifactId>secdra-account</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

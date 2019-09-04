@@ -1,6 +1,8 @@
 package com.junjie.secdraweb.core.configurer
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.junjie.secdraaccount.core.component.AccountConfig
+import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.component.BaseConfig
 import com.junjie.secdraweb.core.interceptor.WebSocketUserInterceptor
@@ -20,7 +22,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
  * webSocket配置
  */
 @Configuration
-class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate, private val userService: UserService) : WebSocketMessageBrokerConfigurer {
+class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate,
+                          private val userService: UserService,
+                          private val accountService: AccountService) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         //配置在webSocket二级目录下
@@ -49,12 +53,17 @@ class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate, privat
 
     @Bean
     internal fun webSocketUserInterceptor(): WebSocketUserInterceptor {
-        return WebSocketUserInterceptor(baseConfig(), redisTemplate, userService)
+        return WebSocketUserInterceptor(baseConfig(), accountConfig(), redisTemplate, accountService, userService)
     }
 
     @Bean
     internal fun baseConfig(): BaseConfig {
         return BaseConfig()
+    }
+
+    @Bean
+    internal fun accountConfig(): AccountConfig {
+        return AccountConfig()
     }
 
     override fun configureMessageConverters(messageConverters: MutableList<MessageConverter>): Boolean {
@@ -65,17 +74,17 @@ class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate, privat
 
     @Bean
     fun mappingJackson2MessageConverter(): MappingJackson2MessageConverter {
-        val converter = MappingJackson2MessageConverter();
+        val converter = MappingJackson2MessageConverter()
         //设置日期格式
-        val objectMapper = ObjectMapper();
+        val objectMapper = ObjectMapper()
 //        val smt = SimpleDateFormat("yyyy-MM-dd");
 //        objectMapper.dateFormat = smt;
-        converter.objectMapper = objectMapper;
+        converter.objectMapper = objectMapper
 //        //设置中文编码格式
 //       val list = ArrayList<MediaType>();
 //        list.add(MediaType.APPLICATION_JSON_UTF8);
 //        mappingJackson2MessageConverter.
-        return converter;
+        return converter
     }
 //    @Bean
 //    fun converter(): StringMessageConverter {

@@ -18,7 +18,7 @@ class WebSocketService(private val simpMessagingTemplate: SimpMessagingTemplate,
         val messageSettings = messageSettingsService.get(authorId)
         val countUnread = commentMessageService.countUnread(authorId)
         if (messageSettings.followStatus) {
-            simpMessagingTemplate.convertAndSendToUser(authorId, "/comment/send", Result<Any>(200, userService.getInfo(criticId).name + "评论了你的作品", countUnread))
+            simpMessagingTemplate.convertAndSendToUser(authorId, "/comment/send", Result<Any>(200, userService.get(criticId).name + "评论了你的作品", countUnread))
         } else {
             simpMessagingTemplate.convertAndSendToUser(authorId, "/comment/send", Result<Any>(200, null, countUnread))
         }
@@ -30,7 +30,7 @@ class WebSocketService(private val simpMessagingTemplate: SimpMessagingTemplate,
         val messageSettings = messageSettingsService.get(criticId)
         val countUnread = replyMessageService.countUnread(criticId)
         if (messageSettings.followStatus) {
-            simpMessagingTemplate.convertAndSendToUser(criticId, "/reply/send", Result<Any>(200, userService.getInfo(answererId).name + "回复了你的评论", countUnread))
+            simpMessagingTemplate.convertAndSendToUser(criticId, "/reply/send", Result<Any>(200, userService.get(answererId).name + "回复了你的评论", countUnread))
         } else {
             simpMessagingTemplate.convertAndSendToUser(criticId, "/reply/send", Result<Any>(200, null, countUnread))
         }
@@ -41,7 +41,7 @@ class WebSocketService(private val simpMessagingTemplate: SimpMessagingTemplate,
         val messageSettings = messageSettingsService.get(followingId)
         val countUnread = followMessageService.countUnread(followingId)
         if (messageSettings.followStatus) {
-            simpMessagingTemplate.convertAndSendToUser(followingId, "/following/focus", Result<Any>(200, userService.getInfo(followerId).name + "关注了你", countUnread))
+            simpMessagingTemplate.convertAndSendToUser(followingId, "/following/focus", Result<Any>(200, userService.get(followerId).name + "关注了你", countUnread))
         } else {
             simpMessagingTemplate.convertAndSendToUser(followingId, "/following/focus", Result<Any>(200, null, countUnread))
         }

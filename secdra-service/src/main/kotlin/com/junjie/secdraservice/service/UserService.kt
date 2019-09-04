@@ -15,36 +15,14 @@ interface UserService {
     fun save(user: User): User
 
     /**
-     * 是否存在手机
-     */
-    fun existsByPhone(phone: String): Boolean
-
-    /**
-     * 注册
-     */
-    fun register(phone:String,password: String,rePasswordDate: Date): User
-
-    /**
-     * 登录
-     */
-    fun login(phone: String, password: String): User
-
-
-    /**
-     * 修改密码
-     */
-    fun rePassword(phone: String, password: String, rePasswordTime: Date): User
-
-    /**
      * 获取用户信息
      */
-    fun getInfo(id: String): User
+    fun get(id: String): User
 
     /**
-     * 根据画的id获取用户信息
+     * 根据账户id获取用户信息
      */
-    fun getInfoByDrawId(drawId: String): User
-
+    fun getByAccountId(accountId: String): User
     /**
      * 修改用户信息
      */

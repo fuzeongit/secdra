@@ -77,7 +77,7 @@ class FollowingController(private val followMessageService: FollowMessageService
     fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = followService.pagingByFollowerId(if (id != null && id.isNotEmpty()) id else followerId, pageable)
         val userVOList = page.content.map{
-            val userVO = UserVO(userService.getInfo(it.followingId))
+            val userVO = UserVO(userService.get(it.followingId))
             userVO.focus = followService.exists(followerId, userVO.id)
             userVO
         }

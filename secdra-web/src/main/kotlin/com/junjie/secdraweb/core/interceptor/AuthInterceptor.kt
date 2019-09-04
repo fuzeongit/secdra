@@ -1,12 +1,13 @@
 package com.junjie.secdraweb.core.interceptor
 
+import com.junjie.secdraaccount.core.component.AccountConfig
+import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.CookieUtil
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.core.component.BaseConfig
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.lang.Nullable
 import org.springframework.web.method.HandlerMethod
@@ -20,7 +21,10 @@ import javax.servlet.http.HttpServletResponse
  * @author fjj
  * 登录验证拦截器
  */
-class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, val userService: UserService) : HandlerInterceptor {
+class AuthInterceptor(private val accountConfig: AccountConfig,
+                      private val redisTemplate: StringRedisTemplate,
+                      private val accountService: AccountService,
+                      private val userService: UserService) : HandlerInterceptor {
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod) {
@@ -33,26 +37,26 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
             try {
                 val cookieMap = CookieUtil.readCookieMap(request)
                 val tokenCookie = cookieMap["token"]
-                val token= if(tokenCookie!=null){
+                val token = if (tokenCookie != null) {
                     tokenCookie.value
-                }else{
+                } else {
                     request.getHeader("token")
                 }
-                val claims = JwtUtil.parseJWT(token, baseConfig.jwtSecretString)
-                val userId = claims["userId"] as String
+                val claims = JwtUtil.parseJWT(token, accountConfig.jwtSecretString)
+                val accountId = claims["accountId"] as String
                 //过期时间
                 val exp = Date(claims["exp"]!!.toString().toLong() * 1000)
                 //生成时间
                 val nbf = Date(claims["nbf"]!!.toString().toLong() * 1000)
                 //最后更改密码时间
-                val rePasswordDateStr = redisTemplate.opsForValue()[String.format(baseConfig.updatePasswordTimePrefix, userId)]
+                val rePasswordDateStr = redisTemplate.opsForValue()[String.format(accountConfig.updatePasswordTimePrefix, accountId)]
                 val rePasswordDate: Date?
                 //缓存穿透
                 rePasswordDate = if (rePasswordDateStr.isNullOrEmpty()) {
-                    val info = userService.getInfo(userId)
+                    val info = accountService.get(accountId)
                     //最后更改密码时间写入redis
                     redisTemplate.opsForValue().set(
-                            String.format(baseConfig.updatePasswordTimePrefix, userId),
+                            String.format(accountConfig.updatePasswordTimePrefix, accountId),
                             info.rePasswordDate.time.toString())
                     info.rePasswordDate
                 } else {
@@ -61,14 +65,14 @@ class AuthInterceptor(private val baseConfig: BaseConfig, private val redisTempl
                 if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
                     throw SignInException("用户登录已过期")
                 }
-                if (userId.isEmpty()) {
+                if (accountId.isEmpty()) {
                     throw SignInException("请重新登录")
                 }
                 if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-                    redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, userId), "")
+                    redisTemplate.opsForValue().set(String.format(accountConfig.updatePasswordTimePrefix, accountId), "")
                     throw SignInException("请重新登录")
                 }
-                request.setAttribute("userId", userId)
+                request.setAttribute("userId", userService.getByAccountId(accountId).id!!)
             } catch (e: Exception) {
                 if (m.isAnnotationPresent(Auth::class.java)) {
                     throw  e as? SignInException ?: SignInException("请重新登录")

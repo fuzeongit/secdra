@@ -16,7 +16,6 @@ import javax.persistence.*
  * @author fjj
  */
 @Entity
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("phone"))])
 @EntityListeners(AuditingEntityListener::class)
 class User : Serializable {
     @Id
@@ -24,9 +23,7 @@ class User : Serializable {
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
 
-    lateinit var phone: String
-
-    lateinit var password: String
+    lateinit var accountId: String
 
     var gender: Gender = Gender.MALE
 
@@ -42,10 +39,6 @@ class User : Serializable {
 
     var background: String? = null
 
-    var rePasswordDate: Date = Date()
-
-    var userState: UserState = UserState.PASS
-
     @CreatedDate
     var createDate: Date? = null
 
@@ -54,15 +47,8 @@ class User : Serializable {
 
     constructor()
 
-    constructor(phone: String, password: String, rePasswordDate: Date = Date()) {
-        this.phone = phone
-        this.password = password
-        this.rePasswordDate = rePasswordDate
-    }
-
-    constructor(phone: String, password: String, gender: Gender = Gender.MALE, birthday: Date = Date(), name: String = "9527", introduction: String = "大家好啊", address: String?, head: String?, background: String?) {
-        this.phone = phone
-        this.password = password
+    constructor(accountId: String, gender: Gender = Gender.MALE, birthday: Date = Date(), name: String = "9527", introduction: String = "大家好啊", address: String?, head: String?, background: String?) {
+        this.accountId = accountId
         this.gender = gender
         this.birthday = birthday
         this.name = name

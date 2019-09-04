@@ -17,33 +17,14 @@ class UserServiceImpl(private val userDAO: UserDAO) : UserService {
         return userDAO.save(user)
     }
 
-    override fun existsByPhone(phone: String): Boolean {
-        return userDAO.existsByPhone(phone)
-    }
-
-    override fun register(phone: String, password: String, rePasswordDate: Date): User {
-        existsByPhone(phone) && throw PermissionException("手机号已存在")
-        val user = User(phone, password, rePasswordDate)
-        return userDAO.save(user)
-    }
-
-    override fun login(phone: String, password: String): User {
-        !existsByPhone(phone) && throw PermissionException("手机号不存在")
-        return userDAO.findOneByPhoneAndPassword(phone, password).orElseThrow { SignInException("账号密码不正确") }
-    }
-
-
-    override fun rePassword(phone: String, password: String, rePasswordTime: Date): User {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    @Cacheable("user::getInfo")
-    override fun getInfo(id: String): User {
+    @Cacheable("user::get")
+    override fun get(id: String): User {
         return userDAO.findById(id).orElseThrow { PermissionException("用户信息不存在") }
     }
 
-    override fun getInfoByDrawId(drawId: String): User {
-        return userDAO.findByDrawId(drawId).orElseThrow { PermissionException("用户信息不存在") }
+    @Cacheable("user::getByAccountId")
+    override fun getByAccountId(accountId: String): User {
+        return userDAO.findOneByAccountId(accountId).orElseThrow { PermissionException("用户信息不存在") }
     }
 
     override fun updateInfo(user: User): User {

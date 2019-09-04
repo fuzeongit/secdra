@@ -10,6 +10,11 @@ spring:
       jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
       username: root
       password: root
+    account:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra_account?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,12 +26,6 @@ spring:
   main:
     allow-bean-definition-overriding: true
 base:
-  registerVerificationCodePrefix: register_verification_code:%s
-  forgetVerificationCodePrefix: forget_verification_code:%s
-  verificationCodeTimeout: 300000
-  jwtExpiresSecond: 5184000000
-  jwtSecretString: www.secdra.com
-  updatePasswordTimePrefix: base:update_password_time:%s
   notUUID: 00000000000000000000000000000000
   qiniuAccessKey: XXX
   qiniuSecretKey: XXX
@@ -38,3 +37,10 @@ base:
   qiniuHeadBucketUrl: http://secdrahead.secdra.com
   qiniuBackBucketUrl: http://secdraback.secdra.com
   qiniuBucketUrl: http://secdraimg.secdra.com
+account:
+  registerVerificationCodePrefix: register_verification_code:%s
+  forgetVerificationCodePrefix: forget_verification_code:%s
+  verificationCodeTimeout: 300000
+  jwtExpiresSecond: 5184000000
+  jwtSecretString: www.secdra.com
+  updatePasswordTimePrefix: base:update_password_time:%s

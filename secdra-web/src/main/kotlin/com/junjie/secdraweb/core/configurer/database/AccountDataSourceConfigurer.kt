@@ -1,4 +1,4 @@
-package com.junjie.secdraadmin.core.configurer.database
+package com.junjie.secdraweb.core.configurer.database
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties
@@ -21,37 +21,37 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "entityManagerFactoryCollect",
-        transactionManagerRef = "transactionManagerCollect",
-        basePackages = ["com.junjie.secdradata.database.collect.dao"]) //设置Repository所在位置
-class CollectDataSourceConfigurer(private val jpaProperties: JpaProperties) {
+        entityManagerFactoryRef = "entityManagerFactoryAccount",
+        transactionManagerRef = "transactionManagerAccount",
+        basePackages = ["com.junjie.secdradata.database.account.dao"]) //设置Repository所在位置
+class AccountDataSourceConfigurer(private val jpaProperties: JpaProperties) {
     @Bean
-    @Qualifier("collectDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.collect")
-    fun collectDataSource(): DataSource {
+    @Qualifier("accountDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.account")
+    fun accountDataSource(): DataSource {
         return DataSourceBuilder.create().build()
     }
 
 
     @Bean
-    fun entityManagerCollect(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): EntityManager {
-        return entityManagerFactoryCollect(builder, hibernateProperties).`object`!!.createEntityManager()
+    fun entityManagerAccount(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): EntityManager {
+        return entityManagerFactoryAccount(builder, hibernateProperties).`object`!!.createEntityManager()
     }
 
     @Bean
-    fun entityManagerFactoryCollect(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): LocalContainerEntityManagerFactoryBean {
+    fun entityManagerFactoryAccount(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): LocalContainerEntityManagerFactoryBean {
         val properties = hibernateProperties.determineHibernateProperties(
                 jpaProperties.properties, HibernateSettings())
         return builder
-                .dataSource(collectDataSource())
+                .dataSource(accountDataSource())
                 .properties(properties)
-                .packages("com.junjie.secdradata.database.collect.entity") //设置实体类所在位置
-                .persistenceUnit("collectPersistenceUnit")
+                .packages("com.junjie.secdradata.database.account.entity") //设置实体类所在位置
+                .persistenceUnit("accountPersistenceUnit")
                 .build()
     }
 
     @Bean
-    fun transactionManagerCollect(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): PlatformTransactionManager {
-        return JpaTransactionManager(entityManagerFactoryCollect(builder, hibernateProperties).`object`!!)
+    fun transactionManagerAccount(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): PlatformTransactionManager {
+        return JpaTransactionManager(entityManagerFactoryAccount(builder, hibernateProperties).`object`!!)
     }
 }

@@ -121,7 +121,7 @@ class MessageController(private val commentMessageService: CommentMessageService
     private fun getReplyMessageListVO(list: List<ReplyMessage>): List<ReplyMessageVO> {
         val voList = mutableListOf<ReplyMessageVO>()
         for (replyMessage in list) {
-            voList.add(ReplyMessageVO(replyMessage, getUserVO(userService.getInfo(replyMessage.answererId), replyMessage.criticId)))
+            voList.add(ReplyMessageVO(replyMessage, getUserVO(userService.get(replyMessage.answererId), replyMessage.criticId)))
             replyMessage.review && continue
             replyMessage.review = true
             replyMessageService.save(replyMessage)
@@ -132,7 +132,7 @@ class MessageController(private val commentMessageService: CommentMessageService
     private fun getFollowMessageListVO(list: List<FollowMessage>): List<FollowMessageVO> {
         val voList = mutableListOf<FollowMessageVO>()
         for (followMessage in list) {
-            voList.add(FollowMessageVO(followMessage, getUserVO(userService.getInfo(followMessage.followerId), followMessage.followingId)))
+            voList.add(FollowMessageVO(followMessage, getUserVO(userService.get(followMessage.followerId), followMessage.followingId)))
             followMessage.review && continue
             followMessage.review = true
             followMessageService.save(followMessage)

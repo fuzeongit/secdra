@@ -1,9 +1,11 @@
 package com.junjie.secdraweb.core.configurer
 
+import com.junjie.secdraaccount.core.component.AccountConfig
+import com.junjie.secdraweb.core.interceptor.AuthInterceptor
+import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.component.BaseConfig
 import com.junjie.secdraweb.core.component.RedisComponent
-import com.junjie.secdraweb.core.interceptor.AuthInterceptor
 import com.junjie.secdraweb.core.resolver.CurrentUserIdMethodArgumentResolver
 import com.junjie.secdraweb.service.QiniuComponent
 import org.springframework.context.annotation.Bean
@@ -22,7 +24,9 @@ import java.util.*
  * 程序的配置清单
  */
 @Configuration
-class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private val userService: UserService) : WebMvcConfigurer {
+class ProgramConfigurer(private val redisTemplate: StringRedisTemplate,
+                        private val accountService: AccountService,
+                        private val userService: UserService) : WebMvcConfigurer {
     /**
      * 拦截器
      */
@@ -39,7 +43,7 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
      */
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(currentUserMethodArgumentResolver())
-        super.addArgumentResolvers(argumentResolvers);
+        super.addArgumentResolvers(argumentResolvers)
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
@@ -52,12 +56,12 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
                 //设置允许的方法
                 .allowedMethods("*")
                 //跨域允许时间
-                .maxAge(3600);
+                .maxAge(3600)
     }
 
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
-        return AuthInterceptor(baseConfig(), redisTemplate, userService)
+        return AuthInterceptor(accountConfig(), redisTemplate, accountService, userService)
     }
 
     @Bean
@@ -68,6 +72,11 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate, private 
     @Bean
     internal fun baseConfig(): BaseConfig {
         return BaseConfig()
+    }
+
+    @Bean
+    internal fun accountConfig(): AccountConfig {
+        return AccountConfig()
     }
 
     @Bean

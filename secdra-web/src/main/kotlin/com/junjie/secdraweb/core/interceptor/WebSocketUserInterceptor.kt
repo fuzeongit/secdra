@@ -1,5 +1,7 @@
 package com.junjie.secdraweb.core.interceptor
 
+import com.junjie.secdraaccount.core.component.AccountConfig
+import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
@@ -17,32 +19,37 @@ import org.springframework.messaging.support.MessageHeaderAccessor
 import java.util.*
 
 
-class WebSocketUserInterceptor(private val baseConfig: BaseConfig, private val redisTemplate: StringRedisTemplate, val userService: UserService) : ChannelInterceptor {
+class WebSocketUserInterceptor(private val baseConfig: BaseConfig,
+                               private val accountConfig: AccountConfig,
+                               private val redisTemplate: StringRedisTemplate,
+                               private val accountService: AccountService,
+                               private val userService: UserService) : ChannelInterceptor {
 
     override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
         val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
         if (StompCommand.CONNECT == accessor!!.command) {
             try {
+
                 //获取头信息
                 val raw = message.headers[SimpMessageHeaderAccessor.NATIVE_HEADERS] as Map<*, *>
 //                val token = raw["token"] as LinkedList<*>
                 val token = (raw["token"] as LinkedList<*>)[0].toString()
 
-                val claims = JwtUtil.parseJWT(token, baseConfig.jwtSecretString)
-                val userId = claims["userId"] as String
+                val claims = JwtUtil.parseJWT(token, accountConfig.jwtSecretString)
+                val accountId = claims["accountId"] as String
                 //过期时间
                 val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
                 //生成时间
                 val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
                 //最后更改密码时间
-                val rePasswordDateStr = redisTemplate.opsForValue()[String.format(baseConfig.updatePasswordTimePrefix, userId)]
+                val rePasswordDateStr = redisTemplate.opsForValue()[String.format(accountConfig.updatePasswordTimePrefix, accountId)]
                 val rePasswordDate: Date?
                 //缓存穿透
                 rePasswordDate = if (rePasswordDateStr.isNullOrEmpty()) {
-                    val info = userService.getInfo(userId)
+                    val info = accountService.get(accountId)
                     //最后更改密码时间写入redis
                     redisTemplate.opsForValue().set(
-                            String.format(baseConfig.updatePasswordTimePrefix, userId),
+                            String.format(accountConfig.updatePasswordTimePrefix, accountId),
                             info.rePasswordDate.time.toString())
                     info.rePasswordDate
                 } else {
@@ -51,14 +58,14 @@ class WebSocketUserInterceptor(private val baseConfig: BaseConfig, private val r
                 if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
                     throw SignInException("用户登录已过期")
                 }
-                if (userId.isEmpty()) {
+                if (accountId.isEmpty()) {
                     throw SignInException("请重新登录")
                 }
                 if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-                    redisTemplate.opsForValue().set(String.format(baseConfig.updatePasswordTimePrefix, userId), "")
+                    redisTemplate.opsForValue().set(String.format(accountConfig.updatePasswordTimePrefix, accountId), "")
                     throw SignInException("请重新登录")
                 }
-                accessor.user = WebSocketUser(userId)
+                accessor.user = WebSocketUser(userService.getByAccountId(accountId).id!!)
             } catch (e: Exception) {
                 accessor.user = WebSocketUser(baseConfig.notUUID)
             }

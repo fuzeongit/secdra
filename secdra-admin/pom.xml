@@ -32,6 +32,11 @@
         </dependency>
         <dependency>
             <groupId>com.junjie</groupId>
+            <artifactId>secdra-account</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.junjie</groupId>
             <artifactId>secdra-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
