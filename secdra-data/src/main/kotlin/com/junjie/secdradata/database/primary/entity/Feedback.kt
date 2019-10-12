@@ -21,6 +21,8 @@ class Feedback {
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
     var id: String? = null
+
+    var userId: String? = null
     //评论id
     lateinit var content: String
     //图片作者id
@@ -31,7 +33,8 @@ class Feedback {
 
     constructor()
 
-    constructor(content: String, email: String?) {
+    constructor(userId: String?, content: String, email: String?) {
+        this.userId = userId
         this.content = content
         this.email = email
     }

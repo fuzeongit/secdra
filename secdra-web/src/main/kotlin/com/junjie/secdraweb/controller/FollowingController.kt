@@ -4,6 +4,7 @@ import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.FollowState
 import com.junjie.secdradata.database.primary.entity.FollowMessage
 import com.junjie.secdraservice.service.FollowMessageService
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.*
 class FollowingController(private val followMessageService: FollowMessageService,
                           private val webSocketService: WebSocketService,
                           override val userService: UserService,
-                          override val followService: FollowService): UserVOAbstract() {
+                          override val followService: FollowService) : UserVOAbstract() {
     @Auth
     @PostMapping("/focus")
     @RestfulPack
@@ -71,12 +72,12 @@ class FollowingController(private val followMessageService: FollowMessageService
     /**
      * 获取关注列表
      */
-    @Auth
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId followerId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
-        val page = followService.pagingByFollowerId(if (id != null && id.isNotEmpty()) id else followerId, pageable)
-        val userVOList = page.content.map{
+    fun paging(@CurrentUserId followerId: String?, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
+        if (followerId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请登录")
+        val page = followService.pagingByFollowerId(id ?: followerId!!, pageable)
+        val userVOList = page.content.map {
             val userVO = UserVO(userService.get(it.followingId))
             userVO.focus = followService.exists(followerId, userVO.id)
             userVO

@@ -3,7 +3,7 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
-import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.Gender
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
@@ -34,7 +34,7 @@ class UserController(private val baseConfig: BaseConfig,
     @GetMapping("/get")
     @RestfulPack
     fun get(@CurrentUserId userId: String?, id: String?): UserVO {
-        (userId.isNullOrEmpty() && id.isNullOrEmpty()) && throw ProgramException("Are You Kidding Me")
+        (userId.isNullOrEmpty() && id.isNullOrEmpty()) && throw SignInException("请登录")
         return getUserVO(id ?: userId!!, userId)
     }
 

@@ -3,6 +3,7 @@ package com.junjie.secdraweb.controller
 import com.junjie.secdracore.annotations.Auth
 import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.communal.UserVOAbstract
@@ -25,11 +26,11 @@ class FollowerController(override val userService: UserService, override val fol
     /**
      * 获取粉丝列表
      */
-    @Auth
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId followingId: String, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
-        val page = followService.pagingByFollowingId(if (id != null && id.isNotEmpty()) id else followingId, pageable)
+    fun paging(@CurrentUserId followingId: String?, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
+        if (followingId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请登录")
+        val page = followService.pagingByFollowingId(id ?: followingId!!, pageable)
         val userVOList = page.content.map {
             getUserVO(it.followerId, followingId)
         }

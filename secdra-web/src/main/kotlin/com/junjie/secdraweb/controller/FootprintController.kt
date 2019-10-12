@@ -5,7 +5,7 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
-import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.*
 import com.junjie.secdraweb.core.communal.DrawVOAbstract
@@ -52,7 +52,7 @@ class FootprintController(private val footprintService: FootprintService,
     @GetMapping("/paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintDrawVO> {
-        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw ProgramException("Are You Kidding Me")
+        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
         val page = footprintService.pagingByUserId(targetId ?: userId!!, pageable)
         val footprintDrawVOList = ArrayList<FootprintDrawVO>()
         for (footprint in page.content) {

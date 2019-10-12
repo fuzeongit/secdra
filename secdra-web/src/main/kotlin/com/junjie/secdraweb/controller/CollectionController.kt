@@ -6,6 +6,7 @@ import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.CollectState
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.CollectionService
@@ -98,7 +99,7 @@ class CollectionController(override val drawDocumentService: DrawDocumentService
     @GetMapping("/paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
-        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw ProgramException("Are You Kidding Me")
+        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
         val page = collectionService.pagingByUserId(targetId ?: userId!!, pageable)
         val collectionDrawVOList = ArrayList<CollectionDrawVO>()
         for (collection in page.content) {
