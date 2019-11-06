@@ -26,6 +26,8 @@ interface DrawService {
 
     fun get(id: String): Draw
 
+    fun list(): List<Draw>
+
     fun save(draw: Draw): DrawDocument
 
     fun synchronizationIndexDraw(): Long

@@ -16,6 +16,10 @@ class AccountServiceImpl(private val accountDAO: AccountDAO) : AccountService {
         return accountDAO.findById(id).orElseThrow { NotFoundException("账号不存在") }
     }
 
+    override fun getByPhone(phone: String): Account {
+        return accountDAO.findOneByPhone(phone).orElseThrow { NotFoundException("账号不存在") }
+    }
+
     override fun existsByPhone(phone: String): Boolean {
         return accountDAO.existsByPhone(phone)
     }

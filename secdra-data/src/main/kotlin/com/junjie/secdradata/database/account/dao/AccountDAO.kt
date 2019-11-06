@@ -10,5 +10,7 @@ import java.util.*
 interface AccountDAO : JpaRepository<Account, String> {
     fun existsByPhone(phone: String): Boolean
 
+    fun findOneByPhone(phone: String): Optional<Account>
+
     fun findOneByPhoneAndPassword(phone: String, password: String): Optional<Account>
 }

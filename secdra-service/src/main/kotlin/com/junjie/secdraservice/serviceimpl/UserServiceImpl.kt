@@ -12,6 +12,7 @@ import java.util.*
 
 @Service
 class UserServiceImpl(private val userDAO: UserDAO) : UserService {
+
     @CachePut("user::getInfo", key = "#user.id")
     override fun save(user: User): User {
         return userDAO.save(user)
@@ -25,6 +26,10 @@ class UserServiceImpl(private val userDAO: UserDAO) : UserService {
     @Cacheable("user::getByAccountId")
     override fun getByAccountId(accountId: String): User {
         return userDAO.findOneByAccountId(accountId).orElseThrow { PermissionException("用户信息不存在") }
+    }
+
+    override fun list(): List<User> {
+        return userDAO.findAll()
     }
 
     override fun updateInfo(user: User): User {

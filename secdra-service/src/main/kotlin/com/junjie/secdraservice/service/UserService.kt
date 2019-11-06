@@ -23,6 +23,12 @@ interface UserService {
      * 根据账户id获取用户信息
      */
     fun getByAccountId(accountId: String): User
+
+    /**
+     * 获取全部用户
+     */
+    fun list(): List<User>
+
     /**
      * 修改用户信息
      */

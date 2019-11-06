@@ -47,7 +47,7 @@ class User : Serializable {
 
     constructor()
 
-    constructor(accountId: String, gender: Gender = Gender.MALE, birthday: Date = Date(), name: String = "9527", introduction: String = "大家好啊", address: String?, head: String?, background: String?) {
+    constructor(accountId: String, gender: Gender = Gender.MALE, birthday: Date = Date(), name: String = "9527", introduction: String = "大家好啊", address: String? = null, head: String? = null, background: String? = null) {
         this.accountId = accountId
         this.gender = gender
         this.birthday = birthday

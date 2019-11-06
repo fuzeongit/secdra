@@ -7,6 +7,8 @@ import java.util.*
 interface AccountService {
     fun get(id: String): Account
 
+
+    fun getByPhone(phone: String): Account
     /**
      * 是否存在手机
      */
