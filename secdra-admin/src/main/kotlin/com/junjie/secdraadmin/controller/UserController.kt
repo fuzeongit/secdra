@@ -1,11 +1,15 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdraaccount.service.AccountService
+import com.junjie.secdraadmin.code.communal.CommonAbstract
 import com.junjie.secdraadmin.constant.UserConstant
+import com.junjie.secdracollect.service.PixivDrawService
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdradata.constant.Gender
+import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.primary.dao.UserDAO
 import com.junjie.secdradata.database.primary.entity.User
+import com.junjie.secdraservice.service.UserService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -13,21 +17,30 @@ import java.util.*
 
 @RestController
 @RequestMapping("user")
-class UserController(private val userDAO: UserDAO, private val accountService: AccountService) {
+class UserController(
+        override val userService: UserService,
+        override val accountService: AccountService,
+        private val pixivDrawService: PixivDrawService) : CommonAbstract() {
     @PostMapping("init")
     @RestfulPack
     fun init(number: Int): ArrayList<String> {
         val phoneList = arrayListOf<String>()
         for (i in 0 until number) {
-            val phone = (0..10000).shuffled().last()
-            try {
-                val account = accountService.signUp(phone.toString(), "123456", Date())
-                val gender = if (phone % 2 == 0) Gender.FEMALE else Gender.MALE
-                val user = User(accountId = account.id!!, gender = gender, name = UserConstant.nameList.shuffled().last())
-                phoneList.add(userDAO.save(user).id!!)
-            } catch (e: Exception) {
-            }
+            phoneList.add(initUser().id!!)
         }
         return phoneList
+    }
+
+    @PostMapping("initByPixiv")
+    @RestfulPack
+    fun initByPixiv(): Boolean {
+        val list = pixivDrawService.listByState(TransferState.SUCCESS)
+        for (item in list) {
+            if (!pixivDrawService.existsAccountByPixivUserId(item.pixivUserId!!)) {
+                val user = initUser()
+                pixivDrawService.saveAccount(user.accountId, item.pixivUserId!!)
+            }
+        }
+        return true
     }
 }

@@ -32,7 +32,6 @@ class AccountDataSourceConfigurer(private val jpaProperties: JpaProperties) {
         return DataSourceBuilder.create().build()
     }
 
-
     @Bean
     fun entityManagerAccount(builder: EntityManagerFactoryBuilder, hibernateProperties: HibernateProperties): EntityManager {
         return entityManagerFactoryAccount(builder, hibernateProperties).`object`!!.createEntityManager()

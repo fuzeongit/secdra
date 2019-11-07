@@ -1,10 +1,13 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdraaccount.service.AccountService
+import com.junjie.secdraadmin.code.communal.CommonAbstract
 import com.junjie.secdraadmin.vo.DrawInitVO
 import com.junjie.secdracollect.service.PixivDrawService
 import com.junjie.secdracore.annotations.RestfulPack
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.ProgramException
+import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivDraw
 import com.junjie.secdradata.database.primary.entity.Draw
 import com.junjie.secdradata.index.primary.document.DrawDocument
@@ -22,11 +25,11 @@ import javax.imageio.ImageIO
 @RestController
 @RequestMapping("draw")
 class DrawController(
-        private val accountService: AccountService,
-        private val userService: UserService,
+        override val accountService: AccountService,
+        override val userService: UserService,
         private val drawService: DrawService,
         private val pixivDrawService: PixivDrawService,
-        private val elasticsearchTemplate: ElasticsearchTemplate) {
+        private val elasticsearchTemplate: ElasticsearchTemplate) : CommonAbstract() {
 
     @PostMapping("/init")
     @RestfulPack
@@ -82,11 +85,10 @@ class DrawController(
         return nullTagNumber
     }
 
-
     /**
      * 清除重复tag
      */
-    @GetMapping("/duplicateRemoval")
+    @PostMapping("/duplicateRemoval")
     @RestfulPack
     fun duplicateRemoval(): Boolean {
         val list = drawService.list()
@@ -99,11 +101,33 @@ class DrawController(
         return true
     }
 
+    /**
+     * 绑定user
+     */
+    @PostMapping("/bindUser")
+    @RestfulPack
+    fun bindUser(): Boolean {
+        val drawList = drawService.list()
+        for (draw in drawList) {
+            val pixivDraw = pixivDrawService.getByDrawId(draw.id!!)
+            if (pixivDraw.state == TransferState.SUCCESS) {
+                val user = try {
+                    val accountToPixivUser = pixivDrawService.getAccountByPixivUserId(pixivDraw.pixivUserId!!)
+                    userService.getByAccountId(accountToPixivUser.accountId)
+                } catch (e: NotFoundException) {
+                    initUser()
+                }
+                draw.userId = user.id!!
+                drawService.save(draw)
+            }
+        }
+        return true
+    }
 
     /**
      * 建立ES索引
      */
-    @GetMapping("/initIndex")
+    @PostMapping("/initIndex")
     @RestfulPack
     fun initIndex(): Boolean {
         elasticsearchTemplate.createIndex(DrawDocument::class.java)
@@ -113,7 +137,7 @@ class DrawController(
     /**
      * 初始化进ES
      */
-    @GetMapping("/initEs")
+    @PostMapping("/initEs")
     @RestfulPack
     fun initEs(): Long {
         return drawService.synchronizationIndexDraw()

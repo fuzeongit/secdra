@@ -30,7 +30,7 @@ class PixivDraw : Serializable {
     var pixivUserName: String? = null
 
     var pixivUserId: String? = null
-
+    //竖线隔开
     var tagList: String? = null
 
     var state: TransferState = TransferState.WAIT
