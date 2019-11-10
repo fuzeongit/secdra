@@ -13,14 +13,14 @@ abstract class CommonAbstract {
     abstract val userService: UserService
 
     fun initUser(): User {
-        val phoneRange = (0..13999999999)
-        var phone = phoneRange.shuffled().last()
+        var phone = Random().nextInt(10)
         while (accountService.existsByPhone(phone.toString())) {
-            phone = phoneRange.shuffled().last()
+            phone += Random().nextInt(1000)
         }
         val account = accountService.signUp(phone.toString(), "123456", Date())
-        val gender = if (phone % 2 == 0.toLong()) Gender.FEMALE else Gender.MALE
+        val gender = if (phone % 2 == 0) Gender.FEMALE else Gender.MALE
         val user = User(accountId = account.id!!, gender = gender, name = UserConstant.nameList.shuffled().last())
         return userService.save(user)
     }
 }
+

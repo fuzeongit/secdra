@@ -45,7 +45,7 @@ class DrawController(
             userList.isEmpty() && throw ProgramException("用户列表为空，请先初始化用户")
             userList.shuffled().last().id!!
         }
-        val fileNameList = File(folderPath).list() ?: listOf()
+        val fileNameList = File(folderPath).list() ?: arrayOf()
         fileNameList.toList().filter { it.toLowerCase().endsWith(".png") || it.toLowerCase().endsWith(".jpg") || it.toLowerCase().endsWith(".jpeg") }
 
         for (fileName in fileNameList) {
@@ -115,7 +115,9 @@ class DrawController(
                     val accountToPixivUser = pixivDrawService.getAccountByPixivUserId(pixivDraw.pixivUserId!!)
                     userService.getByAccountId(accountToPixivUser.accountId)
                 } catch (e: NotFoundException) {
-                    initUser()
+                    val user = initUser()
+                    pixivDrawService.saveAccount(user.accountId, pixivDraw.pixivUserId!!)
+                    user
                 }
                 draw.userId = user.id!!
                 drawService.save(draw)

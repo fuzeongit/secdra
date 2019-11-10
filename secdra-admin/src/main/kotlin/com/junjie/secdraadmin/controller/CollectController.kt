@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
  * @author fjj
  */
 @RestController
-@RequestMapping("controller")
+@RequestMapping("collect")
 class CollectController(
         private val drawService: DrawService,
         private val pixivDrawService: PixivDrawService,

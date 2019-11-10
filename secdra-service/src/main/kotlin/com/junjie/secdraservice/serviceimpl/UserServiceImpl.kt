@@ -13,7 +13,7 @@ import java.util.*
 @Service
 class UserServiceImpl(private val userDAO: UserDAO) : UserService {
 
-    @CachePut("user::getInfo", key = "#user.id")
+    @CachePut("user::get", key = "#user.id")
     override fun save(user: User): User {
         return userDAO.save(user)
     }
