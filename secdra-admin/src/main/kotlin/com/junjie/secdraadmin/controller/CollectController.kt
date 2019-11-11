@@ -51,7 +51,7 @@ class CollectController(
             try {
                 val draw = drawService.get(pixivDraw.drawId)
                 draw.name = pixivDraw.pixivName!!
-                draw.tagList.addAll(pixivDraw.tagList!!.split("|").asSequence().toSet().asSequence().map { it -> Tag(it) }.toList())
+                draw.tagList.addAll(pixivDraw.tagList!!.split("|").asSequence().toSet().asSequence().map { Tag(it) }.toList())
                 pixivDrawService.save(pixivDraw)
                 drawService.save(draw)
             } catch (e: Exception) {

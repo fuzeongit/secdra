@@ -23,4 +23,6 @@ interface DrawDAO : JpaRepository<Draw, String>, JpaSpecificationExecutor<Draw> 
     // @EntityGraph(value = "Draw.Tag", type = EntityGraph.EntityGraphType.FETCH)
     @Query(value = "SELECT * FROM draw ORDER BY RAND()", countQuery = "SELECT count(*) FROM draw", nativeQuery = true)
     fun pagingRand(pageable: Pageable): Page<Draw>
+
+    fun findAllByUserId(userId: String): List<Draw>
 }

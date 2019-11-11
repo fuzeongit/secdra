@@ -33,18 +33,11 @@ class DrawController(
 
     @PostMapping("/init")
     @RestfulPack
-    fun init(folderPath: String, phone: String?): DrawInitVO {
+    fun init(folderPath: String): DrawInitVO {
         var readNumber = 0
         val errorUrlList = mutableListOf<String>()
         val errorReadList = mutableListOf<String>()
-        val userId = if (phone != null) {
-            val account = accountService.getByPhone(phone)
-            userService.getByAccountId(account.id!!).id!!
-        } else {
-            val userList = userService.list()
-            userList.isEmpty() && throw ProgramException("用户列表为空，请先初始化用户")
-            userList.shuffled().last().id!!
-        }
+        val userId = ""
         val fileNameList = File(folderPath).list() ?: arrayOf()
         fileNameList.toList().filter { it.toLowerCase().endsWith(".png") || it.toLowerCase().endsWith(".jpg") || it.toLowerCase().endsWith(".jpeg") }
 
@@ -107,7 +100,7 @@ class DrawController(
     @PostMapping("/bindUser")
     @RestfulPack
     fun bindUser(): Boolean {
-        val drawList = drawService.list()
+        val drawList = drawService.listByUserId("")
         for (draw in drawList) {
             val pixivDraw = pixivDrawService.getByDrawId(draw.id!!)
             if (pixivDraw.state == TransferState.SUCCESS) {

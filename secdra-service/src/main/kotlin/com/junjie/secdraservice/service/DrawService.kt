@@ -28,6 +28,8 @@ interface DrawService {
 
     fun list(): List<Draw>
 
+    fun listByUserId(userId: String): List<Draw>
+
     fun save(draw: Draw): DrawDocument
 
     fun synchronizationIndexDraw(): Long

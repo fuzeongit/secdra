@@ -85,12 +85,16 @@ class DrawServiceImpl(private val drawDAO: DrawDAO,
         return drawDAO.findAll()
     }
 
+    override fun listByUserId(userId: String): List<Draw> {
+        return drawDAO.findAllByUserId(userId)
+    }
+
     override fun save(draw: Draw): DrawDocument {
         return drawDocumentService.save(DrawDocument(drawDAO.save(draw)))
     }
 
     override fun synchronizationIndexDraw(): Long {
-        return drawDocumentService.saveAll(drawDAO.findAll().map {
+        return drawDocumentService.saveAll(list().map {
             DrawDocument(it)
         }).toList().size.toLong()
     }
