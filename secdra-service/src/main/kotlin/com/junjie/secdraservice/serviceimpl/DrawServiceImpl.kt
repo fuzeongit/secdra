@@ -81,6 +81,16 @@ class DrawServiceImpl(private val drawDAO: DrawDAO,
         return drawDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
+    override fun remove(id: String): Boolean {
+        return try {
+            drawDAO.deleteById(id)
+            drawDocumentService.remove(id)
+            true
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override fun list(): List<Draw> {
         return drawDAO.findAll()
     }

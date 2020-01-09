@@ -20,6 +20,7 @@ class Auth(private val accessKey: String, private val secretKey: SecretKeySpec) 
             return Auth(accessKey, secretKeySpec)
         }
     }
+
     /**
      * 上传策略
      * 参考文档：[上传策略](https://developer.qiniu.com/kodo/manual/put-policy)

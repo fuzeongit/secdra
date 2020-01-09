@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FollowMessageDAO : JpaRepository<FollowMessage, String> , JpaSpecificationExecutor<FollowMessage> {
+interface FollowMessageDAO : JpaRepository<FollowMessage, String>, JpaSpecificationExecutor<FollowMessage> {
     fun findAllByFollowingIdOrderByCreateDateDesc(followingId: String): List<FollowMessage>
 
     fun countByFollowingIdAndReview(followingId: String, review: Boolean): Long

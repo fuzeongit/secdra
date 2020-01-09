@@ -5,13 +5,13 @@ package com.junjie.secdraweb.model
  * 七牛图片信息实体
  */
 class QiniuImageInfo() {
-    var size:Int = 0
+    var size: Int = 0
 
-    var format:String? = null
+    var format: String? = null
 
-    var width:Long = 0
+    var width: Long = 0
 
-    var height:Long = 0
+    var height: Long = 0
 
-    var colorModel:String? = null
+    var colorModel: String? = null
 }

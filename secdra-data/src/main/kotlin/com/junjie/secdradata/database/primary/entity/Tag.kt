@@ -14,7 +14,7 @@ import javax.persistence.*
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Tag: Serializable {
+class Tag : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")

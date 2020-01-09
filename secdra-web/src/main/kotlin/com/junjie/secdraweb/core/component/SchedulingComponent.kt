@@ -18,22 +18,22 @@ class SchedulingComponent(private val commentMessageService: CommentMessageServi
     fun removeMessageByMonthAgo() {
         try {
             commentMessageService.deleteByMonthAgo()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println(e)
         }
         try {
             replyMessageService.deleteByMonthAgo()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println(e)
         }
         try {
             followMessageService.deleteByMonthAgo()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println(e)
         }
         try {
             systemMessageService.deleteByMonthAgo()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println(e)
         }
     }

@@ -21,6 +21,9 @@ import org.springframework.web.client.RestTemplate
 class QiniuComponent(private val baseConfig: BaseConfig) {
     /**
      * 移动目标
+     * @param url 路径
+     * @param bucket 目标空间
+     * @param sourceBucket 源空间
      */
     fun move(url: String, bucket: String, sourceBucket: String? = baseConfig.qiniuTempBucket): Boolean {
         val sourceNameEncodeBase64 = UrlSafeBase64.encodeToString("$sourceBucket:$url")!!
@@ -55,6 +58,6 @@ class QiniuComponent(private val baseConfig: BaseConfig) {
      */
     fun getImageInfo(url: String, bucketUrl: String? = baseConfig.qiniuBucketUrl): QiniuImageInfo? {
         val client = RestTemplate()
-        return client.getForObject<QiniuImageInfo>("$bucketUrl/$url?imageInfo", QiniuImageInfo::class.java)
+        return client.getForObject("$bucketUrl/$url?imageInfo", QiniuImageInfo::class.java)
     }
 }

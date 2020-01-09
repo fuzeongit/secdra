@@ -17,7 +17,7 @@ interface FootprintService {
 
     fun countByDrawId(drawId: String): Long
 
-    fun pagingByUserId(userId:String, pageable: Pageable): Page<Footprint>
+    fun pagingByUserId(userId: String, pageable: Pageable): Page<Footprint>
 
     fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Footprint>
 }

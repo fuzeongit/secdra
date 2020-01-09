@@ -131,6 +131,21 @@ class DrawController(private val drawService: DrawService,
         return getDrawVO(drawService.save(draw), userId)
     }
 
+    /**
+     * 移除图片
+     */
+    @Auth
+    @PostMapping("/remove")
+    @RestfulPack
+    fun remove(@CurrentUserId userId: String, id: String): Boolean {
+        val draw = drawService.get(id)
+        if (userId != draw.userId) {
+            throw PermissionException("你无权删除该图片")
+        }
+        qiniuComponent.move(draw.url, baseConfig.qiniuTempBucket, baseConfig.qiniuBucket)
+        return drawService.remove(draw.id!!)
+    }
+
     @Auth
     @PostMapping("/batchUpdate")
     @RestfulPack

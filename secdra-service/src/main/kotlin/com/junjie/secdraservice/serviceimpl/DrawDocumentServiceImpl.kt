@@ -10,6 +10,7 @@ import com.junjie.secdraservice.service.FootprintService
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.aggregations.AggregationBuilders
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
@@ -30,6 +31,16 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
     @Cacheable("drawDocument::get", key = "#id")
     override fun get(id: String): DrawDocument {
         return drawDocumentDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
+    }
+
+    @CacheEvict("drawDocument::get", key = "#id")
+    override fun remove(id: String): Boolean {
+        try {
+            drawDocumentDAO.deleteById(id)
+            return true
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     @Cacheable("drawDocument::paging")

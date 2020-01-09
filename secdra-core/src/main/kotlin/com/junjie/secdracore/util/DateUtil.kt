@@ -192,8 +192,8 @@ object DateUtil {
         val count = getWeekOfYear(c.time)
 
         val sdf = SimpleDateFormat("yyyy-MM-dd")
-        var dayOfWeekStart :String
-        var dayOfWeekEnd :String
+        var dayOfWeekStart: String
+        var dayOfWeekEnd: String
         for (i in 1..count) {
             dayOfWeekStart = sdf.format(getFirstDayOfWeek(year, i))
             dayOfWeekEnd = sdf.format(getLastDayOfWeek(year, i))

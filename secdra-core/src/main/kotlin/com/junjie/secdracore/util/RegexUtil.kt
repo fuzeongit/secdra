@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 /**
  * 校验工具类
  */
-object RegexUtil{
+object RegexUtil {
     /**
      * 验证Email
      * @param email email地址，格式：zhangsan@zuidaima.com，zhangsan@xxx.com.cn，xxx代表邮件服务商
@@ -158,7 +158,7 @@ object RegexUtil{
         return Pattern.matches(regex, ipAddress)
     }
 
-    fun  checkPassword(password:String):Boolean{
+    fun checkPassword(password: String): Boolean {
         val regex = "(\\w{6,16})"
         return Pattern.matches(regex, password)
     }

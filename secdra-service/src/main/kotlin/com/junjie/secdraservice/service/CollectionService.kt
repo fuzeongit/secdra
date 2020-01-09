@@ -19,9 +19,9 @@ interface CollectionService {
 
     fun remove(userId: String, drawId: String): Boolean
 
-    fun countByDrawId(drawId: String):Long
+    fun countByDrawId(drawId: String): Long
 
-    fun pagingByUserId(userId:String, pageable: Pageable): Page<Collection>
+    fun pagingByUserId(userId: String, pageable: Pageable): Page<Collection>
 
     fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Collection>
 }

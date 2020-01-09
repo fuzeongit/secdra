@@ -9,8 +9,7 @@ import java.util.concurrent.TimeUnit
  * redis服务
  */
 @Component
-class RedisComponent(private val redisTemplate: StringRedisTemplate)
-{
+class RedisComponent(private val redisTemplate: StringRedisTemplate) {
     fun set(key: String, value: String, expire: Long, timeUnit: TimeUnit) {
         redisTemplate.opsForValue().set(key, value, expire, timeUnit)
     }

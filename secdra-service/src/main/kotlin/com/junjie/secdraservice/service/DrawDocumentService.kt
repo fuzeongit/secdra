@@ -8,6 +8,8 @@ import java.util.*
 interface DrawDocumentService {
     fun get(id: String): DrawDocument
 
+    fun remove(id: String): Boolean
+
     fun paging(pageable: Pageable, tagList: List<String>?, precise: Boolean, name: String?, startDate: Date?, endDate: Date?, userId: String?, self: Boolean): Page<DrawDocument>
 
     fun pagingByRecommend(userId: String?, pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawDocument>

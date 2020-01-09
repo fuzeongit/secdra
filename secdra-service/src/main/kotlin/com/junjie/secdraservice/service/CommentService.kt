@@ -15,9 +15,9 @@ interface CommentService {
 
     fun count(drawId: String): Long
 
-    fun list(drawId: String):List<Comment>
+    fun list(drawId: String): List<Comment>
 
-    fun listTop4(drawId:String):List<Comment>
+    fun listTop4(drawId: String): List<Comment>
 
     fun paging(drawId: String, pageable: Pageable): Page<Comment>
 }

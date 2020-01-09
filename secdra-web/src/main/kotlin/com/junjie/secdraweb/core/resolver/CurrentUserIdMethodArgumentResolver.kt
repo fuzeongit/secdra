@@ -25,7 +25,7 @@ class CurrentUserIdMethodArgumentResolver : HandlerMethodArgumentResolver {
      * 在webRequest获取属性userId
      */
     override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): String {
-        if(StringUtils.isEmpty(webRequest.getAttribute("userId", RequestAttributes.SCOPE_REQUEST))){
+        if (StringUtils.isEmpty(webRequest.getAttribute("userId", RequestAttributes.SCOPE_REQUEST))) {
             return "";
         }
         return webRequest.getAttribute("userId", RequestAttributes.SCOPE_REQUEST) as String

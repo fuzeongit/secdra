@@ -33,16 +33,17 @@
     var socket = "";
     var stompClient = {};
     var sub = {}
+
     function connect(name) {
         socket = new SockJS('http://localhost:8080/webSocket')
         stompClient = Stomp.over(socket);
         stompClient.debug = false
-        stompClient.connect({name: name,token:document.getElementById("input").value}, function (frame) {
+        stompClient.connect({name: name, token: document.getElementById("input").value}, function (frame) {
             console.log(frame)
             stompClient.subscribe('/user/commentNotice', function (message) {
                 console.log(message);
             });
-            sub =  stompClient.subscribe('/broadcast', function (message) {
+            sub = stompClient.subscribe('/broadcast', function (message) {
                 console.log(message);
             });
             stompClient.subscribe('/user/sendBroadcastBySendToUser', function (message) {

@@ -23,7 +23,7 @@ class CommentServiceImpl(private val commentDAO: CommentDAO) : CommentService {
     }
 
     @Cacheable("comment::count", key = "#drawId")
-    override fun count(drawId: String): Long{
+    override fun count(drawId: String): Long {
         return commentDAO.countByDrawId(drawId)
     }
 

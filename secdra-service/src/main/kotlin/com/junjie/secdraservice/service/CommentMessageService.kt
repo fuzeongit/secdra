@@ -10,6 +10,6 @@ interface CommentMessageService {
     fun countUnread(authorId: String): Long
 
     fun listUnread(authorId: String): List<CommentMessage>
-    
+
     fun deleteByMonthAgo()
 }

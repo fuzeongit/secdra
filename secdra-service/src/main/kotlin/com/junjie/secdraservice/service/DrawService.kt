@@ -26,6 +26,8 @@ interface DrawService {
 
     fun get(id: String): Draw
 
+    fun remove(id: String): Boolean
+
     fun list(): List<Draw>
 
     fun listByUserId(userId: String): List<Draw>
