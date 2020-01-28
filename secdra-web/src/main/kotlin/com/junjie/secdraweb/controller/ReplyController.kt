@@ -35,12 +35,12 @@ class ReplyController(private val replyService: ReplyService,
     @Auth
     @PostMapping("/save")
     @RestfulPack
-    fun save(@CurrentUserId answererId: String, commentId: String, authorId: String, criticId: String, drawId: String, content: String): ReplyVO {
+    fun save(@CurrentUserId answererId: String, commentId: String, authorId: String, criticId: String, pictureId: String, content: String): ReplyVO {
         content.isEmpty() && throw Exception("回复不能为空")
-        (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
-        val reply = Reply(commentId, authorId, criticId, answererId, drawId, content)
+        (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || pictureId.isEmpty()) && throw Exception("不能为空")
+        val reply = Reply(commentId, authorId, criticId, answererId, pictureId, content)
         val vo = ReplyVO(replyService.save(reply), getUserVO(criticId, answererId), getUserVO(answererId, answererId))
-        val replyMessage = ReplyMessage(vo.commentId, vo.id, vo.authorId, vo.drawId, vo.criticId, vo.answererId, vo.content)
+        val replyMessage = ReplyMessage(vo.commentId, vo.id, vo.authorId, vo.pictureId, vo.criticId, vo.answererId, vo.content)
         replyMessageService.save(replyMessage)
         webSocketService.sendReply(answererId, criticId)
         return vo

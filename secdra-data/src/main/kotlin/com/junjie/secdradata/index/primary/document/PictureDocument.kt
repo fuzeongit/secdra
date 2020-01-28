@@ -1,7 +1,7 @@
 package com.junjie.secdradata.index.primary.document
 
 import com.junjie.secdradata.constant.PrivacyState
-import com.junjie.secdradata.database.primary.entity.Draw
+import com.junjie.secdradata.database.primary.entity.Picture
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.Document
 import org.springframework.data.elasticsearch.annotations.Field
@@ -9,8 +9,8 @@ import org.springframework.data.elasticsearch.annotations.FieldType
 import java.io.Serializable
 import java.util.*
 
-@Document(indexName = "index_draw_search")
-class DrawDocument : Serializable {
+@Document(indexName = "index_picture_search")
+class PictureDocument : Serializable {
     @Id
     @Field(type = FieldType.Keyword)
     var id: String? = null
@@ -53,17 +53,17 @@ class DrawDocument : Serializable {
 
     constructor()
 
-    constructor(draw: Draw) {
-        this.id = draw.id
-        this.introduction = draw.introduction
-        this.url = draw.url
-        this.userId = draw.userId
-        this.name = draw.name
-        this.privacy = draw.privacy
-        this.width = draw.width
-        this.height = draw.height
-        this.createDate = draw.createDate!!
-        this.modifiedDate = draw.modifiedDate!!
-        this.tagList = draw.tagList.asSequence().map { it.name }.toMutableList()
+    constructor(picture: Picture) {
+        this.id = picture.id
+        this.introduction = picture.introduction
+        this.url = picture.url
+        this.userId = picture.user!!.id!!
+        this.name = picture.name
+        this.privacy = picture.privacy
+        this.width = picture.width
+        this.height = picture.height
+        this.createDate = picture.createDate!!
+        this.modifiedDate = picture.modifiedDate!!
+        this.tagList = picture.tagList.asSequence().map { it.name }.toMutableList()
     }
 }

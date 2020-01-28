@@ -17,7 +17,7 @@ abstract class CommonAbstract {
         while (accountService.existsByPhone(phone.toString())) {
             phone += Random().nextInt(1000)
         }
-        val account = accountService.signUp(phone.toString(), "123456", Date())
+        val account = accountService.signUp(phone.toString(), "123456")
         val gender = if (phone % 2 == 0) Gender.FEMALE else Gender.MALE
         val user = User(accountId = account.id!!, gender = gender, name = UserConstant.nameList.shuffled().last())
         return userService.save(user)

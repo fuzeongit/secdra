@@ -8,8 +8,8 @@ import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.*
-import com.junjie.secdraweb.core.communal.DrawVOAbstract
-import com.junjie.secdraweb.vo.FootprintDrawVO
+import com.junjie.secdraweb.core.communal.PictureVOAbstract
+import com.junjie.secdraweb.vo.FootprintPictureVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -28,61 +28,61 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("footprint")
 class FootprintController(private val footprintService: FootprintService,
-                          override val drawDocumentService: DrawDocumentService,
+                          override val pictureDocumentService: PictureDocumentService,
                           override val collectionService: CollectionService,
                           override val userService: UserService,
-                          override val followService: FollowService) : DrawVOAbstract() {
+                          override val followService: FollowService) : PictureVOAbstract() {
     @Auth
     @PostMapping("/save")
     @RestfulPack
-    fun save(@CurrentUserId userId: String, drawId: String): Long {
-        val draw = drawDocumentService.get(drawId)
-        draw.privacy == PrivacyState.PRIVATE && throw PermissionException("私有图片不能操作")
+    fun save(@CurrentUserId userId: String, pictureId: String): Long {
+        val picture = pictureDocumentService.get(pictureId)
+        picture.privacy == PrivacyState.PRIVATE && throw PermissionException("私有图片不能操作")
         try {
-            footprintService.update(userId, drawId)
+            footprintService.update(userId, pictureId)
         } catch (e: NotFoundException) {
-            footprintService.save(userId, drawId)
+            footprintService.save(userId, pictureId)
             // 由于足迹有时效性，所以不能通过表来统计
-            drawDocumentService.saveViewAmount(draw, draw.viewAmount + 1)
+            pictureDocumentService.saveViewAmount(picture, picture.viewAmount + 1)
         }
-        return draw.viewAmount
+        return picture.viewAmount
     }
 
 
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintDrawVO> {
+    fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintPictureVO> {
         (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
         val page = footprintService.pagingByUserId(targetId ?: userId!!, pageable)
-        val footprintDrawVOList = ArrayList<FootprintDrawVO>()
+        val footprintPictureVOList = ArrayList<FootprintPictureVO>()
         for (footprint in page.content) {
-            val footprintDrawVO = try {
-                val draw = drawDocumentService.get(footprint.drawId)
+            val footprintPictureVO = try {
+                val picture = pictureDocumentService.get(footprint.pictureId)
                 //图片被隐藏
-                if (draw.privacy == PrivacyState.PRIVATE) {
-                    draw.url = ""
+                if (picture.privacy == PrivacyState.PRIVATE) {
+                    picture.url = ""
                 }
-                FootprintDrawVO(
-                        draw,
-                        getDrawVO(draw, userId).focus,
+                FootprintPictureVO(
+                        picture,
+                        getPictureVO(picture, userId).focus,
                         footprint.createDate!!,
-                        getUserVO(draw.userId, userId)
+                        getUserVO(picture.userId, userId)
                 )
             } catch (e: NotFoundException) {
-                FootprintDrawVO(footprint.drawId, collectionService.exists(targetId, footprint.drawId), footprint.createDate!!)
+                FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.createDate!!)
             }
-            footprintDrawVOList.add(footprintDrawVO)
+            footprintPictureVOList.add(footprintPictureVO)
         }
-        return PageImpl(footprintDrawVOList, page.pageable, page.totalElements)
+        return PageImpl(footprintPictureVOList, page.pageable, page.totalElements)
     }
 
     @GetMapping("/pagingUser")
     @RestfulPack
-    fun pagingUser(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
-        val page = footprintService.pagingByDrawId(drawId, pageable)
-        val draw = drawDocumentService.get(drawId)
+    fun pagingUser(@CurrentUserId userId: String?, pictureId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
+        val page = footprintService.pagingByPictureId(pictureId, pageable)
+        val picture = pictureDocumentService.get(pictureId)
         val userVOList = page.content.map {
-            getUserVO(draw.userId, userId)
+            getUserVO(picture.userId, userId)
         }
         return PageImpl(userVOList, page.pageable, page.totalElements)
     }

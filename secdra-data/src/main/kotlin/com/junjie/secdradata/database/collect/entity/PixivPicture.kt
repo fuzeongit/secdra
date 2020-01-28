@@ -15,7 +15,7 @@ import javax.persistence.Id
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class PixivDraw : Serializable {
+class PixivPicture : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")
@@ -23,7 +23,7 @@ class PixivDraw : Serializable {
 
     lateinit var pixivId: String
 
-    lateinit var drawId: String
+    lateinit var pictureId: String
 
     var pixivName: String? = null
 
@@ -43,8 +43,8 @@ class PixivDraw : Serializable {
 
     constructor()
 
-    constructor(pixivId: String, drawId: String) {
+    constructor(pixivId: String, pictureId: String) {
         this.pixivId = pixivId
-        this.drawId = drawId
+        this.pictureId = pictureId
     }
 }

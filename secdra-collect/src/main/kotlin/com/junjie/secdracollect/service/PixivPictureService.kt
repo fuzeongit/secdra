@@ -2,14 +2,14 @@ package com.junjie.secdracollect.service
 
 import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.AccountToPixivUser
-import com.junjie.secdradata.database.collect.entity.PixivDraw
+import com.junjie.secdradata.database.collect.entity.PixivPicture
 
-interface PixivDrawService {
-    fun save(pixivDraw: PixivDraw): PixivDraw
+interface PixivPictureService {
+    fun save(pixivPicture: PixivPicture): PixivPicture
 
-    fun listByState(state: TransferState): List<PixivDraw>
+    fun listByState(state: TransferState): List<PixivPicture>
 
-    fun listByPixivId(pixivId: String): List<PixivDraw>
+    fun listByPixivId(pixivId: String): List<PixivPicture>
 
     fun existsAccountByPixivUserId(pixivUserId: String): Boolean
 
@@ -17,5 +17,5 @@ interface PixivDrawService {
 
     fun saveAccount(accountId: String, pixivUserId: String): AccountToPixivUser
 
-    fun getByDrawId(drawId: String): PixivDraw
+    fun getByPictureId(PictureId: String): PixivPicture
 }

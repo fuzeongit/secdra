@@ -1,9 +1,9 @@
 package com.junjie.secdraservice.serviceimpl
 
-import com.junjie.secdradata.constant.DrawState
+import com.junjie.secdradata.constant.PictureState
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdradata.database.primary.dao.TagDAO
-import com.junjie.secdradata.database.primary.entity.Draw
+import com.junjie.secdradata.database.primary.entity.Picture
 import com.junjie.secdradata.database.primary.entity.Tag
 import com.junjie.secdraservice.service.TagService
 import org.springframework.cache.annotation.Cacheable
@@ -21,13 +21,13 @@ class TagServiceImpl(private val tagDAO: TagDAO) : TagService {
     override fun listTagOrderByLikeAmount(): List<Tag> {
         val specification = Specification<Tag> { root, criteriaQuery, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
-            val joinDraw: Join<Tag, Draw> = root.join("draw", JoinType.INNER)
-            predicatesList.add(criteriaBuilder.equal(joinDraw.get<Int>("drawState"), DrawState.PASS))
-            predicatesList.add(criteriaBuilder.equal(joinDraw.get<Int>("privacy"), PrivacyState.PUBLIC))
+            val joinPicture: Join<Tag, Picture> = root.join("picture", JoinType.INNER)
+            predicatesList.add(criteriaBuilder.equal(joinPicture.get<Int>("pictureState"), PictureState.PASS))
+            predicatesList.add(criteriaBuilder.equal(joinPicture.get<Int>("privacy"), PrivacyState.PUBLIC))
             criteriaQuery
                     .groupBy(root.get<String>("name"))
                     .orderBy(criteriaBuilder.desc(criteriaBuilder.count(root.get<String>("name")))
-                            , criteriaBuilder.desc(criteriaBuilder.sum(joinDraw.get<Number>("likeAmount"))))
+                            , criteriaBuilder.desc(criteriaBuilder.sum(joinPicture.get<Number>("likeAmount"))))
                     .distinct(true)
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }

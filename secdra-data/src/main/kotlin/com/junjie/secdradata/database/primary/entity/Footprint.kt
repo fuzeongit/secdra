@@ -24,7 +24,7 @@ class Footprint {
 
     lateinit var userId: String
 
-    lateinit var drawId: String
+    lateinit var pictureId: String
 
     @CreatedDate
     var createDate: Date? = null
@@ -34,8 +34,8 @@ class Footprint {
 
     constructor()
 
-    constructor(userId: String, drawId: String) {
+    constructor(userId: String, pictureId: String) {
         this.userId = userId
-        this.drawId = drawId
+        this.pictureId = pictureId
     }
 }

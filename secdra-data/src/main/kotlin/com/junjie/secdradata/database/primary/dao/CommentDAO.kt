@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface CommentDAO : JpaRepository<Comment, String> {
-    fun countByDrawId(drawId: String): Long
+    fun countByPictureId(pictureId: String): Long
 
-    fun findAllByDrawIdOrderByCreateDateDesc(drawId: String): List<Comment>
+    fun findAllByPictureIdOrderByCreateDateDesc(pictureId: String): List<Comment>
 
-    fun findAllByDrawId(drawId: String, pageable: Pageable): Page<Comment>
+    fun findAllByPictureId(pictureId: String, pageable: Pageable): Page<Comment>
 }

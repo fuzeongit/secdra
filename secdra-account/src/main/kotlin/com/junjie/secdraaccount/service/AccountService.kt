@@ -17,7 +17,7 @@ interface AccountService {
     /**
      * 注册
      */
-    fun signUp(phone: String, password: String, rePasswordDate: Date): Account
+    fun signUp(phone: String, password: String, rePasswordDate: Date = Date()): Account
 
     /**
      * 登录
@@ -27,5 +27,5 @@ interface AccountService {
     /**
      * 修改密码
      */
-    fun forgot(phone: String, password: String, rePasswordTime: Date): User
+    fun forgot(phone: String, password: String, rePasswordTime: Date = Date()): User
 }

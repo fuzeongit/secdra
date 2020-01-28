@@ -24,7 +24,7 @@ class Tag : Serializable {
 
     @JsonIgnore
     @ManyToOne
-    var draw: Draw? = null
+    var picture: Picture? = null
 
     @CreatedDate
     var createDate: Date? = null

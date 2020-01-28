@@ -25,7 +25,7 @@ class CommentMessage {
     //图片作者id
     lateinit var authorId: String
     //图片id
-    lateinit var drawId: String
+    lateinit var pictureId: String
     //评论人id
     lateinit var criticId: String
 
@@ -38,10 +38,10 @@ class CommentMessage {
 
     constructor()
 
-    constructor(commentId: String, authorId: String, drawId: String, criticId: String, content: String) {
+    constructor(commentId: String, authorId: String, pictureId: String, criticId: String, content: String) {
         this.commentId = commentId
         this.authorId = authorId
-        this.drawId = drawId
+        this.pictureId = pictureId
         this.criticId = criticId
         this.content = content
     }

@@ -11,7 +11,7 @@ class CommentMessageVO {
     //图片作者id
     lateinit var authorId: String
     //图片id
-    lateinit var drawId: String
+    lateinit var pictureId: String
     //评论人id
     lateinit var criticId: String
 

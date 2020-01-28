@@ -2,7 +2,6 @@ package com.junjie.secdradata.database.primary.entity
 
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.util.*
 import javax.persistence.Entity
@@ -28,7 +27,7 @@ class ReplyMessage {
     //图片作者id
     lateinit var authorId: String
     //图片id
-    lateinit var drawId: String
+    lateinit var pictureId: String
     //评论人id
     lateinit var criticId: String
     //回答者id
@@ -43,11 +42,11 @@ class ReplyMessage {
 
     constructor()
 
-    constructor(commentId: String, replyId: String, authorId: String, drawId: String, criticId: String, answererId: String, content: String) {
+    constructor(commentId: String, replyId: String, authorId: String, pictureId: String, criticId: String, answererId: String, content: String) {
         this.commentId = commentId
         this.replyId = replyId
         this.authorId = authorId
-        this.drawId = drawId
+        this.pictureId = pictureId
         this.criticId = criticId
         this.answererId = answererId
         this.content = content

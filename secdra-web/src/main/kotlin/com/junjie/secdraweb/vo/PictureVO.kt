@@ -2,11 +2,11 @@ package com.junjie.secdraweb.vo
 
 import com.junjie.secdradata.constant.CollectState
 import com.junjie.secdradata.constant.PrivacyState
-import com.junjie.secdradata.index.primary.document.DrawDocument
+import com.junjie.secdradata.index.primary.document.PictureDocument
 import org.springframework.beans.BeanUtils
 import java.util.*
 
-class DrawVO {
+class PictureVO {
     lateinit var id: String
 
     lateinit var introduction: String
@@ -37,7 +37,7 @@ class DrawVO {
 
     constructor()
 
-    constructor(draw: DrawDocument) {
-        BeanUtils.copyProperties(draw, this)
+    constructor(picture: PictureDocument) {
+        BeanUtils.copyProperties(picture, this)
     }
 }

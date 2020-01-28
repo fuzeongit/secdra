@@ -1,9 +1,9 @@
 package com.junjie.secdraweb.vo
 
 import com.junjie.secdradata.constant.CollectState
-import com.junjie.secdradata.constant.DrawLifeState
+import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PrivacyState
-import com.junjie.secdradata.index.primary.document.DrawDocument
+import com.junjie.secdradata.index.primary.document.PictureDocument
 import java.util.*
 
 /**
@@ -11,14 +11,14 @@ import java.util.*
  * @author fjj
  * 这里的id是图片的id，创建时间为收藏的创建时间
  */
-class FootprintDrawVO {
+class FootprintPictureVO {
     lateinit var id: String
 
     var url: String? = null
 
     var userId: String? = null
 
-    var life: DrawLifeState = DrawLifeState.EXIST
+    var life: PictureLifeState = PictureLifeState.EXIST
 
     var privacy: PrivacyState = PrivacyState.PUBLIC
 
@@ -39,16 +39,16 @@ class FootprintDrawVO {
         this.url = ""
         this.focus = focus
         this.createDate = createDate
-        this.life = DrawLifeState.DISAPPEAR
+        this.life = PictureLifeState.DISAPPEAR
     }
 
-    constructor(draw: DrawDocument, focus: CollectState, createDate: Date, user: UserVO) {
-        this.id = draw.id!!
-        this.url = draw.url
-        this.userId = draw.userId
-        this.privacy = draw.privacy
-        this.width = draw.width
-        this.height = draw.height
+    constructor(picture: PictureDocument, focus: CollectState, createDate: Date, user: UserVO) {
+        this.id = picture.id!!
+        this.url = picture.url
+        this.userId = picture.userId
+        this.privacy = picture.privacy
+        this.width = picture.width
+        this.height = picture.height
         this.createDate = createDate
         this.focus = focus
         this.user = user

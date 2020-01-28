@@ -2,10 +2,10 @@ package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdradata.constant.PrivacyState
-import com.junjie.secdradata.index.primary.dao.DrawDocumentDAO
-import com.junjie.secdradata.index.primary.document.DrawDocument
+import com.junjie.secdradata.index.primary.dao.PictureDocumentDAO
+import com.junjie.secdradata.index.primary.document.PictureDocument
 import com.junjie.secdraservice.service.CollectionService
-import com.junjie.secdraservice.service.DrawDocumentService
+import com.junjie.secdraservice.service.PictureDocumentService
 import com.junjie.secdraservice.service.FootprintService
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.aggregations.AggregationBuilders
@@ -24,27 +24,27 @@ import java.util.*
 
 
 @Service
-class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
-                              private val elasticsearchTemplate: ElasticsearchTemplate,
-                              private val collectionService: CollectionService,
-                              private val footprintService: FootprintService) : DrawDocumentService {
-    @Cacheable("drawDocument::get", key = "#id")
-    override fun get(id: String): DrawDocument {
-        return drawDocumentDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
+class PictureDocumentServiceImpl(private val pictureDocumentDAO: PictureDocumentDAO,
+                                 private val elasticsearchTemplate: ElasticsearchTemplate,
+                                 private val collectionService: CollectionService,
+                                 private val footprintService: FootprintService) : PictureDocumentService {
+    @Cacheable("pictureDocument::get", key = "#id")
+    override fun get(id: String): PictureDocument {
+        return pictureDocumentDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
-    @CacheEvict("drawDocument::get", key = "#id")
+    @CacheEvict("pictureDocument::get", key = "#id")
     override fun remove(id: String): Boolean {
         try {
-            drawDocumentDAO.deleteById(id)
+            pictureDocumentDAO.deleteById(id)
             return true
         } catch (e: Exception) {
             throw e
         }
     }
 
-    @Cacheable("drawDocument::paging")
-    override fun paging(pageable: Pageable, tagList: List<String>?, precise: Boolean, name: String?, startDate: Date?, endDate: Date?, userId: String?, self: Boolean): Page<DrawDocument> {
+    @Cacheable("pictureDocument::paging")
+    override fun paging(pageable: Pageable, tagList: List<String>?, precise: Boolean, name: String?, startDate: Date?, endDate: Date?, userId: String?, self: Boolean): Page<PictureDocument> {
         val mustQuery = QueryBuilders.boolQuery()
         if (tagList != null && tagList.isNotEmpty()) {
             val tagBoolQuery = QueryBuilders.boolQuery()
@@ -71,16 +71,16 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         if (!userId.isNullOrEmpty()) {
             mustQuery.must(QueryBuilders.termQuery("userId", userId))
         }
-        return drawDocumentDAO.search(mustQuery, pageable)
+        return pictureDocumentDAO.search(mustQuery, pageable)
     }
 
-    override fun pagingByRecommend(userId: String?, pageable: Pageable, startDate: Date?, endDate: Date?): Page<DrawDocument> {
+    override fun pagingByRecommend(userId: String?, pageable: Pageable, startDate: Date?, endDate: Date?): Page<PictureDocument> {
         val tagList = mutableListOf<String>()
         if (!userId.isNullOrEmpty()) {
             val collectionList = collectionService.pagingByUserId(userId!!, PageRequest.of(0, 5)).content
             for (collection in collectionList) {
                 try {
-                    tagList.addAll(get(collection.drawId).tagList)
+                    tagList.addAll(get(collection.pictureId).tagList)
                 } catch (e: NotFoundException) {
                 }
             }
@@ -88,7 +88,7 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         return paging(pageable, tagList, false, null, startDate, endDate, null, false)
     }
 
-    @Cacheable("drawDocument::countByTag", key = "#tag")
+    @Cacheable("pictureDocument::countByTag", key = "#tag")
     override fun countByTag(tag: String): Long {
         val queryBuilder = QueryBuilders
                 .boolQuery()
@@ -96,11 +96,11 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         val searchQuery = NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)
                 .build()
-        return elasticsearchTemplate.count(searchQuery, DrawDocument::class.java)
+        return elasticsearchTemplate.count(searchQuery, PictureDocument::class.java)
     }
 
-    @Cacheable("drawDocument::getFirstByTag", key = "#tag")
-    override fun getFirstByTag(tag: String): DrawDocument {
+    @Cacheable("pictureDocument::getFirstByTag", key = "#tag")
+    override fun getFirstByTag(tag: String): PictureDocument {
         return paging(
                 PageRequest.of(0, 1, Sort(Sort.Direction.DESC, "likeAmount")),
                 listOf(tag), true, null,
@@ -108,11 +108,11 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
                 null, false).content.first()
     }
 
-    @Cacheable("drawDocument::listTagTop30")
+    @Cacheable("pictureDocument::listTagTop30")
     override fun listTagTop30(): List<String> {
         val aggregationBuilders = AggregationBuilders.terms("tagList").field("tagList").size(30).showTermDocCountError(true)
         val query = NativeSearchQueryBuilder()
-                .withIndices("index_draw_search")
+                .withIndices("index_picture_search")
                 .addAggregation(aggregationBuilders)
                 .build()
         return elasticsearchTemplate.query(query) {
@@ -122,30 +122,30 @@ class DrawDocumentServiceImpl(private val drawDocumentDAO: DrawDocumentDAO,
         } ?: listOf()
     }
 
-    @CachePut("drawDocument::get", key = "#draw.id")
-    override fun save(draw: DrawDocument): DrawDocument {
-        val source = drawDocumentDAO.findById(draw.id!!).orElse(draw)
-        draw.viewAmount = source.viewAmount
-        draw.likeAmount = source.likeAmount
-        return drawDocumentDAO.save(draw)
+    @CachePut("pictureDocument::get", key = "#picture.id")
+    override fun save(picture: PictureDocument): PictureDocument {
+        val source = pictureDocumentDAO.findById(picture.id!!).orElse(picture)
+        picture.viewAmount = source.viewAmount
+        picture.likeAmount = source.likeAmount
+        return pictureDocumentDAO.save(picture)
     }
 
-    @CachePut("drawDocument::get", key = "#draw.id")
-    override fun saveViewAmount(draw: DrawDocument, viewAmount: Long): DrawDocument {
-        draw.viewAmount = viewAmount
-        return drawDocumentDAO.save(draw)
+    @CachePut("pictureDocument::get", key = "#picture.id")
+    override fun saveViewAmount(picture: PictureDocument, viewAmount: Long): PictureDocument {
+        picture.viewAmount = viewAmount
+        return pictureDocumentDAO.save(picture)
     }
 
-    @CachePut("drawDocument::get", key = "#draw.id")
-    override fun saveLikeAmount(draw: DrawDocument, likeAmount: Long): DrawDocument {
-        draw.likeAmount = likeAmount
-        return drawDocumentDAO.save(draw)
+    @CachePut("pictureDocument::get", key = "#picture.id")
+    override fun saveLikeAmount(picture: PictureDocument, likeAmount: Long): PictureDocument {
+        picture.likeAmount = likeAmount
+        return pictureDocumentDAO.save(picture)
     }
 
-    override fun saveAll(drawList: List<DrawDocument>): MutableIterable<DrawDocument> {
-        return drawDocumentDAO.saveAll(drawList.map {
-            it.viewAmount = footprintService.countByDrawId(it.id!!)
-            it.likeAmount = collectionService.countByDrawId(it.id!!)
+    override fun saveAll(pictureList: List<PictureDocument>): MutableIterable<PictureDocument> {
+        return pictureDocumentDAO.saveAll(pictureList.map {
+            it.viewAmount = footprintService.countByPictureId(it.id!!)
+            it.likeAmount = collectionService.countByPictureId(it.id!!)
             it
         })
     }

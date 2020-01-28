@@ -2,7 +2,6 @@ package com.junjie.secdradata.database.primary.entity
 
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
@@ -25,15 +24,15 @@ class Collection : Serializable {
 
     lateinit var userId: String
 
-    lateinit var drawId: String
+    lateinit var pictureId: String
 
     @CreatedDate
     var createDate: Date? = null
 
     constructor()
 
-    constructor(userId: String, drawId: String) {
+    constructor(userId: String, pictureId: String) {
         this.userId = userId
-        this.drawId = drawId
+        this.pictureId = pictureId
     }
 }

@@ -15,28 +15,28 @@ import org.springframework.stereotype.Service
 @Service
 class CommentServiceImpl(private val commentDAO: CommentDAO) : CommentService {
     @Caching(evict = [
-        CacheEvict("comment::count", key = "#comment.drawId"),
-        CacheEvict("comment::listTop4", key = "#comment.drawId")
+        CacheEvict("comment::count", key = "#comment.pictureId"),
+        CacheEvict("comment::listTop4", key = "#comment.pictureId")
     ])
     override fun save(comment: Comment): Comment {
         return commentDAO.save(comment)
     }
 
-    @Cacheable("comment::count", key = "#drawId")
-    override fun count(drawId: String): Long {
-        return commentDAO.countByDrawId(drawId)
+    @Cacheable("comment::count", key = "#pictureId")
+    override fun count(pictureId: String): Long {
+        return commentDAO.countByPictureId(pictureId)
     }
 
-    override fun list(drawId: String): List<Comment> {
-        return commentDAO.findAllByDrawIdOrderByCreateDateDesc(drawId)
+    override fun list(pictureId: String): List<Comment> {
+        return commentDAO.findAllByPictureIdOrderByCreateDateDesc(pictureId)
     }
 
-    @Cacheable("comment::listTop4", key = "#drawId")
-    override fun listTop4(drawId: String): List<Comment> {
-        return commentDAO.findAllByDrawId(drawId, PageRequest.of(0, 4, Sort(Sort.Direction.DESC, "createDate"))).content
+    @Cacheable("comment::listTop4", key = "#pictureId")
+    override fun listTop4(pictureId: String): List<Comment> {
+        return commentDAO.findAllByPictureId(pictureId, PageRequest.of(0, 4, Sort(Sort.Direction.DESC, "createDate"))).content
     }
 
-    override fun paging(drawId: String, pageable: Pageable): Page<Comment> {
-        return commentDAO.findAllByDrawId(drawId, pageable)
+    override fun paging(pictureId: String, pageable: Pageable): Page<Comment> {
+        return commentDAO.findAllByPictureId(pictureId, pageable)
     }
 }

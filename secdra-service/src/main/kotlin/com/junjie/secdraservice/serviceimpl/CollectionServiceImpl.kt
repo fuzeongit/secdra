@@ -11,36 +11,36 @@ import org.springframework.stereotype.Service
 
 @Service
 class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : CollectionService {
-    override fun exists(userId: String?, drawId: String): CollectState {
+    override fun exists(userId: String?, pictureId: String): CollectState {
         return if (userId == null) {
             CollectState.CONCERNED
         } else {
-            if (collectionDAO.existsByUserIdAndDrawId(userId, drawId)) CollectState.CONCERNED else CollectState.STRANGE
+            if (collectionDAO.existsByUserIdAndPictureId(userId, pictureId)) CollectState.CONCERNED else CollectState.STRANGE
         }
     }
 
-    override fun save(userId: String, drawId: String): Collection {
-        return collectionDAO.save(Collection(userId, drawId))
+    override fun save(userId: String, pictureId: String): Collection {
+        return collectionDAO.save(Collection(userId, pictureId))
     }
 
-    override fun remove(userId: String, drawId: String): Boolean {
+    override fun remove(userId: String, pictureId: String): Boolean {
         return try {
-            collectionDAO.deleteByUserIdAndDrawId(userId, drawId)
+            collectionDAO.deleteByUserIdAndPictureId(userId, pictureId)
             true
         } catch (e: Exception) {
             throw e
         }
     }
 
-    override fun countByDrawId(drawId: String): Long {
-        return collectionDAO.countByDrawId(drawId)
+    override fun countByPictureId(pictureId: String): Long {
+        return collectionDAO.countByPictureId(pictureId)
     }
 
     override fun pagingByUserId(userId: String, pageable: Pageable): Page<Collection> {
         return collectionDAO.findAllByUserId(userId, pageable)
     }
 
-    override fun pagingByDrawId(drawId: String, pageable: Pageable): Page<Collection> {
-        return collectionDAO.findAllByDrawId(drawId, pageable)
+    override fun pagingByPictureId(pictureId: String, pageable: Pageable): Page<Collection> {
+        return collectionDAO.findAllByPictureId(pictureId, pageable)
     }
 }

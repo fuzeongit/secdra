@@ -1,14 +1,16 @@
 package com.junjie.secdradata.database.primary.entity
 
 import com.junjie.secdradata.constant.Gender
-import com.junjie.secdradata.constant.UserState
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.EntityListeners
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
 /**
  * 用户

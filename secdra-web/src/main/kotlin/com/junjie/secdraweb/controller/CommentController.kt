@@ -39,16 +39,16 @@ class CommentController(private val commentService: CommentService,
     @Auth
     @PostMapping("/save")
     @RestfulPack
-    fun save(@CurrentUserId criticId: String, authorId: String, drawId: String, content: String): CommentVO {
+    fun save(@CurrentUserId criticId: String, authorId: String, pictureId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")
-        (authorId.isEmpty() || drawId.isEmpty()) && throw Exception("不能为空")
-        val comment = Comment(authorId, criticId, drawId, content)
+        (authorId.isEmpty() || pictureId.isEmpty()) && throw Exception("不能为空")
+        val comment = Comment(authorId, criticId, pictureId, content)
         val vo = CommentVO(
                 commentService.save(comment),
                 getUserVO(authorId, criticId),
                 getUserVO(criticId, criticId)
         )
-        val commentMessage = CommentMessage(vo.id, vo.authorId, vo.drawId, vo.criticId, vo.content)
+        val commentMessage = CommentMessage(vo.id, vo.authorId, vo.pictureId, vo.criticId, vo.content)
         commentMessageService.save(commentMessage)
         webSocketService.sendComment(criticId, authorId)
         return vo
@@ -59,8 +59,8 @@ class CommentController(private val commentService: CommentService,
      */
     @GetMapping("listTop4")
     @RestfulPack
-    fun listTop4(@CurrentUserId userId: String?, drawId: String): List<CommentVO> {
-        return getListVO(commentService.listTop4(drawId), userId)
+    fun listTop4(@CurrentUserId userId: String?, pictureId: String): List<CommentVO> {
+        return getListVO(commentService.listTop4(pictureId), userId)
     }
 
     /**
@@ -68,17 +68,17 @@ class CommentController(private val commentService: CommentService,
      */
     @GetMapping("list")
     @RestfulPack
-    fun list(@CurrentUserId userId: String?, drawId: String): List<CommentVO> {
-        return getListVO(commentService.list(drawId), userId)
+    fun list(@CurrentUserId userId: String?, pictureId: String): List<CommentVO> {
+        return getListVO(commentService.list(pictureId), userId)
     }
 
     /**
      * 分页获取
      */
-    @GetMapping("pagingByDrawId")
+    @GetMapping("pagingByPictureId")
     @RestfulPack
-    fun pagingByDrawId(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVO> {
-        return getPageVO(commentService.paging(drawId, pageable), userId)
+    fun pagingByPictureId(@CurrentUserId userId: String?, pictureId: String, @PageableDefault(value = 20) pageable: Pageable): Page<CommentVO> {
+        return getPageVO(commentService.paging(pictureId, pageable), userId)
     }
 
     private fun getPageVO(page: Page<Comment>, userId: String? = null): Page<CommentVO> {

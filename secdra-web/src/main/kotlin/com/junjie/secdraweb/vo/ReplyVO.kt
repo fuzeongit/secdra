@@ -15,7 +15,7 @@ class ReplyVO {
     //回答者id
     lateinit var answererId: String
     //图片id
-    lateinit var drawId: String
+    lateinit var pictureId: String
 
     lateinit var content: String
 

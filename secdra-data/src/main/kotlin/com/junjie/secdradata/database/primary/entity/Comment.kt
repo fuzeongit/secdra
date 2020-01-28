@@ -2,7 +2,6 @@ package com.junjie.secdradata.database.primary.entity
 
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
@@ -27,7 +26,7 @@ class Comment : Serializable {
     //评论人id
     lateinit var criticId: String
 
-    lateinit var drawId: String
+    lateinit var pictureId: String
 
     lateinit var content: String
 
@@ -36,10 +35,10 @@ class Comment : Serializable {
 
     constructor()
 
-    constructor(authorId: String, criticId: String, drawId: String, content: String) {
+    constructor(authorId: String, criticId: String, pictureId: String, content: String) {
         this.authorId = authorId
         this.criticId = criticId
-        this.drawId = drawId
+        this.pictureId = pictureId
         this.content = content
     }
 }

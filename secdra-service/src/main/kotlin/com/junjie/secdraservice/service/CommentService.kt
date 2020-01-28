@@ -13,11 +13,11 @@ import org.springframework.data.domain.Pageable
 interface CommentService {
     fun save(comment: Comment): Comment
 
-    fun count(drawId: String): Long
+    fun count(pictureId: String): Long
 
-    fun list(drawId: String): List<Comment>
+    fun list(pictureId: String): List<Comment>
 
-    fun listTop4(drawId: String): List<Comment>
+    fun listTop4(pictureId: String): List<Comment>
 
-    fun paging(drawId: String, pageable: Pageable): Page<Comment>
+    fun paging(pictureId: String, pageable: Pageable): Page<Comment>
 }

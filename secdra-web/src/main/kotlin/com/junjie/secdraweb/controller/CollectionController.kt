@@ -10,11 +10,11 @@ import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.CollectState
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.CollectionService
-import com.junjie.secdraservice.service.DrawDocumentService
+import com.junjie.secdraservice.service.PictureDocumentService
 import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.core.communal.DrawVOAbstract
-import com.junjie.secdraweb.vo.CollectionDrawVO
+import com.junjie.secdraweb.core.communal.PictureVOAbstract
+import com.junjie.secdraweb.vo.CollectionPictureVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -28,38 +28,38 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping("collection")
-class CollectionController(override val drawDocumentService: DrawDocumentService,
+class CollectionController(override val pictureDocumentService: PictureDocumentService,
                            override val collectionService: CollectionService,
                            override val userService: UserService,
-                           override val followService: FollowService) : DrawVOAbstract() {
+                           override val followService: FollowService) : PictureVOAbstract() {
     @Auth
     @PostMapping("/focus")
     @RestfulPack
-    fun focus(@CurrentUserId userId: String, drawId: String): CollectState {
-        val draw = try {
-            drawDocumentService.get(drawId)
+    fun focus(@CurrentUserId userId: String, pictureId: String): CollectState {
+        val picture = try {
+            pictureDocumentService.get(pictureId)
         } catch (e: NotFoundException) {
             null
         }
-        return if (draw == null) {
+        return if (picture == null) {
             //关注了但图片为空立即取消关注
-            if (collectionService.exists(userId, drawId) == CollectState.CONCERNED) {
-                collectionService.remove(userId, drawId)
+            if (collectionService.exists(userId, pictureId) == CollectState.CONCERNED) {
+                collectionService.remove(userId, pictureId)
                 CollectState.STRANGE
             } else {
                 throw PermissionException("不能收藏已移除图片")
             }
         } else {
-            draw.userId == userId && throw ProgramException("不能收藏自己的作品")
-            val flag = if (collectionService.exists(userId, drawId) == CollectState.STRANGE) {
-                draw.privacy == PrivacyState.PRIVATE && throw PermissionException("不能收藏私密图片")
-                collectionService.save(userId, drawId)
+            picture.userId == userId && throw ProgramException("不能收藏自己的作品")
+            val flag = if (collectionService.exists(userId, pictureId) == CollectState.STRANGE) {
+                picture.privacy == PrivacyState.PRIVATE && throw PermissionException("不能收藏私密图片")
+                collectionService.save(userId, pictureId)
                 CollectState.CONCERNED
             } else {
-                collectionService.remove(userId, drawId)
+                collectionService.remove(userId, pictureId)
                 CollectState.STRANGE
             }
-            drawDocumentService.saveLikeAmount(draw, collectionService.countByDrawId(drawId))
+            pictureDocumentService.saveLikeAmount(picture, collectionService.countByPictureId(pictureId))
             flag
         }
     }
@@ -70,27 +70,27 @@ class CollectionController(override val drawDocumentService: DrawDocumentService
     @Auth
     @PostMapping("/unFocus")
     @RestfulPack
-    fun unFocus(@CurrentUserId userId: String, @RequestParam("drawIdList") drawIdList: Array<String>?): List<String> {
-        if (drawIdList == null || drawIdList.isEmpty()) {
+    fun unFocus(@CurrentUserId userId: String, @RequestParam("pictureIdList") pictureIdList: Array<String>?): List<String> {
+        if (pictureIdList == null || pictureIdList.isEmpty()) {
             throw ProgramException("请选择一张图片")
         }
-        val newDrawIdList = mutableListOf<String>()
-        for (drawId in drawIdList) {
-            if (collectionService.exists(userId, drawId) != CollectState.CONCERNED) {
+        val newPictureIdList = mutableListOf<String>()
+        for (pictureId in pictureIdList) {
+            if (collectionService.exists(userId, pictureId) != CollectState.CONCERNED) {
                 continue
             }
-            val draw = try {
-                drawDocumentService.get(drawId)
+            val picture = try {
+                pictureDocumentService.get(pictureId)
             } catch (e: NotFoundException) {
                 null
             }
-            collectionService.remove(userId, drawId)
-            draw?.let {
-                drawDocumentService.saveLikeAmount(it, collectionService.countByDrawId(drawId))
+            collectionService.remove(userId, pictureId)
+            picture?.let {
+                pictureDocumentService.saveLikeAmount(it, collectionService.countByPictureId(pictureId))
             }
-            newDrawIdList.add(drawId)
+            newPictureIdList.add(pictureId)
         }
-        return newDrawIdList
+        return newPictureIdList
     }
 
     /**
@@ -98,48 +98,48 @@ class CollectionController(override val drawDocumentService: DrawDocumentService
      */
     @GetMapping("/paging")
     @RestfulPack
-    fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionDrawVO> {
+    fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionPictureVO> {
         (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
         val page = collectionService.pagingByUserId(targetId ?: userId!!, pageable)
-        val collectionDrawVOList = ArrayList<CollectionDrawVO>()
+        val collectionPictureVOList = ArrayList<CollectionPictureVO>()
         for (collection in page.content) {
-            val collectionDrawVO = try {
-                val draw = drawDocumentService.get(collection.drawId)
+            val collectionPictureVO = try {
+                val picture = pictureDocumentService.get(collection.pictureId)
                 //图片被隐藏
-                if (draw.privacy == PrivacyState.PRIVATE) {
-                    draw.url = ""
+                if (picture.privacy == PrivacyState.PRIVATE) {
+                    picture.url = ""
                 }
-                CollectionDrawVO(
-                        draw,
-                        getDrawVO(draw, userId).focus,
+                CollectionPictureVO(
+                        picture,
+                        getPictureVO(picture, userId).focus,
                         collection.createDate!!,
-                        getUserVO(draw.userId, userId))
+                        getUserVO(picture.userId, userId))
             } catch (e: NotFoundException) {
-                CollectionDrawVO(collection.drawId, collectionService.exists(targetId, collection.drawId), collection.createDate!!)
+                CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.createDate!!)
             }
-            collectionDrawVOList.add(collectionDrawVO)
+            collectionPictureVOList.add(collectionPictureVO)
         }
-        return PageImpl(collectionDrawVOList, page.pageable, page.totalElements)
+        return PageImpl(collectionPictureVOList, page.pageable, page.totalElements)
     }
 
 
-//    private fun <T> test(userId: String?, targetId: String, drawId: String, clazz: Class<T>): T {
-//        val draw = drawDocumentService.get(drawId)
+//    private fun <T> test(userId: String?, targetId: String, pictureId: String, clazz: Class<T>): T {
+//        val picture = pictureDocumentService.get(pictureId)
 //        //图片被隐藏
-//        if (draw.privacy == PrivacyState.PRIVATE) {
-//            draw.url = ""
+//        if (picture.privacy == PrivacyState.PRIVATE) {
+//            picture.url = ""
 //        }
-//        val userVO = UserVO(userService.getInfo(draw.userId))
-//        userVO.focus = followService.exists(targetId, draw.userId)
-//        return clazz.getDeclaredConstructor(DrawDocument::class.java, CollectState::class.java, Date::class.java, UserVO::class.java)
-//                .newInstance(draw, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, drawId), Date(), userVO)
+//        val userVO = UserVO(userService.getInfo(picture.userId))
+//        userVO.focus = followService.exists(targetId, picture.userId)
+//        return clazz.getDeclaredConstructor(PictureDocument::class.java, CollectState::class.java, Date::class.java, UserVO::class.java)
+//                .newInstance(picture, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, pictureId), Date(), userVO)
 //    }
 
 
     @GetMapping("/pagingUser")
     @RestfulPack
-    fun pagingUser(@CurrentUserId userId: String?, drawId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
-        val page = collectionService.pagingByDrawId(drawId, pageable)
+    fun pagingUser(@CurrentUserId userId: String?, pictureId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
+        val page = collectionService.pagingByPictureId(pictureId, pageable)
         val userVOList = page.content.map {
             getUserVO(it.userId, userId)
         }

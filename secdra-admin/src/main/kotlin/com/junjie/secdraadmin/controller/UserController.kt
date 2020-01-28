@@ -3,10 +3,11 @@ package com.junjie.secdraadmin.controller
 import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdraadmin.code.communal.CommonAbstract
 import com.junjie.secdraadmin.constant.UserConstant
-import com.junjie.secdracollect.service.PixivDrawService
+import com.junjie.secdracollect.service.PixivPictureService
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdradata.constant.Gender
 import com.junjie.secdradata.constant.TransferState
+import com.junjie.secdradata.database.account.entity.Account
 import com.junjie.secdradata.database.primary.dao.UserDAO
 import com.junjie.secdradata.database.primary.entity.User
 import com.junjie.secdraservice.service.UserService
@@ -20,7 +21,17 @@ import java.util.*
 class UserController(
         override val userService: UserService,
         override val accountService: AccountService,
-        private val pixivDrawService: PixivDrawService) : CommonAbstract() {
+        private val pixivPictureService: PixivPictureService
+) : CommonAbstract() {
+
+    @PostMapping("signUp")
+    @RestfulPack
+    fun signUp(phone: String): User {
+        val account =  accountService.signUp(phone, "123456")
+        val user = User(accountId = account.id!!, gender = Gender.FEMALE, name = UserConstant.nameList.shuffled().last())
+        return userService.save(user)
+    }
+
     @PostMapping("init")
     @RestfulPack
     fun init(number: Int): ArrayList<String> {
@@ -34,11 +45,11 @@ class UserController(
     @PostMapping("initByPixiv")
     @RestfulPack
     fun initByPixiv(): Boolean {
-        val list = pixivDrawService.listByState(TransferState.SUCCESS)
+        val list = pixivPictureService.listByState(TransferState.SUCCESS)
         for (item in list) {
-            if (!pixivDrawService.existsAccountByPixivUserId(item.pixivUserId!!)) {
+            if (!pixivPictureService.existsAccountByPixivUserId(item.pixivUserId!!)) {
                 val user = initUser()
-                pixivDrawService.saveAccount(user.accountId, item.pixivUserId!!)
+                pixivPictureService.saveAccount(user.accountId, item.pixivUserId!!)
             }
         }
         return true

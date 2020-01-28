@@ -1,30 +1,30 @@
 package com.junjie.secdracollect.serviceimpl
 
-import com.junjie.secdracollect.service.PixivDrawService
+import com.junjie.secdracollect.service.PixivPictureService
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.dao.AccountToPixivUserDAO
-import com.junjie.secdradata.database.collect.dao.PixivDrawDAO
+import com.junjie.secdradata.database.collect.dao.PixivPictureDAO
 import com.junjie.secdradata.database.collect.entity.AccountToPixivUser
-import com.junjie.secdradata.database.collect.entity.PixivDraw
+import com.junjie.secdradata.database.collect.entity.PixivPicture
 import org.springframework.stereotype.Service
 
 @Service
-class PixivDrawServiceImpl(
-        private val pixivDrawDAO: PixivDrawDAO,
+class PixivPictureServiceImpl(
+        private val pixivPictureDAO: PixivPictureDAO,
         private val accountToPixivUserDAO: AccountToPixivUserDAO
-) : PixivDrawService {
+) : PixivPictureService {
 
-    override fun save(pixivDraw: PixivDraw): PixivDraw {
-        return pixivDrawDAO.save(pixivDraw)
+    override fun save(pixivPicture: PixivPicture): PixivPicture {
+        return pixivPictureDAO.save(pixivPicture)
     }
 
-    override fun listByState(state: TransferState): List<PixivDraw> {
-        return pixivDrawDAO.findAllByState(state)
+    override fun listByState(state: TransferState): List<PixivPicture> {
+        return pixivPictureDAO.findAllByState(state)
     }
 
-    override fun listByPixivId(pixivId: String): List<PixivDraw> {
-        return pixivDrawDAO.findAllByPixivId(pixivId)
+    override fun listByPixivId(pixivId: String): List<PixivPicture> {
+        return pixivPictureDAO.findAllByPixivId(pixivId)
     }
 
     override fun existsAccountByPixivUserId(pixivUserId: String): Boolean {
@@ -39,7 +39,7 @@ class PixivDrawServiceImpl(
         return accountToPixivUserDAO.save(AccountToPixivUser(accountId, pixivUserId))
     }
 
-    override fun getByDrawId(drawId: String): PixivDraw {
-        return pixivDrawDAO.findOneByDrawId(drawId).orElseThrow { NotFoundException("采集图片不存在") }
+    override fun getByPictureId(PictureId: String): PixivPicture {
+        return pixivPictureDAO.findOneByPictureId(PictureId).orElseThrow { NotFoundException("采集图片不存在") }
     }
 }

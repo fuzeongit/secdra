@@ -11,7 +11,7 @@ class CommentVO {
     //评论人id
     lateinit var criticId: String
 
-    lateinit var drawId: String
+    lateinit var pictureId: String
 
     lateinit var content: String
 
