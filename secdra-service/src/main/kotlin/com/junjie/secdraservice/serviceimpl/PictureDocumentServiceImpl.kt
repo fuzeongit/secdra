@@ -1,6 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdradata.index.primary.dao.PictureDocumentDAO
 import com.junjie.secdradata.index.primary.document.PictureDocument
@@ -61,11 +62,11 @@ class PictureDocumentServiceImpl(private val pictureDocumentDAO: PictureDocument
             mustQuery.must(QueryBuilders.matchPhraseQuery("name", name))
         if (startDate != null || endDate != null) {
             val rangeQueryBuilder = QueryBuilders.rangeQuery("createDate")
-            startDate?.let { rangeQueryBuilder.from(it) }
-            endDate?.let { rangeQueryBuilder.to(it) }
+            startDate?.let { rangeQueryBuilder.from(DateUtil.getDayBeginTime(it).time) }
+            endDate?.let { rangeQueryBuilder.lte(DateUtil.getDayEndTime(it).time) }
             mustQuery.must(rangeQueryBuilder)
         }
-        if (userId.isNullOrEmpty() || !self) {
+        if (!self) {
             mustQuery.must(QueryBuilders.termQuery("privacy", PrivacyState.PUBLIC.toString()))
         }
         if (!userId.isNullOrEmpty()) {

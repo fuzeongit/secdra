@@ -37,10 +37,10 @@ class PictureDocument : Serializable {
     var likeAmount: Long = 0
 
     @Field(type = FieldType.Keyword, index = false)
-    var width: Long = 0;
+    var width: Long = 0
 
     @Field(type = FieldType.Keyword, index = false)
-    var height: Long = 0;
+    var height: Long = 0
 
     @Field(type = FieldType.Keyword)
     var tagList: MutableList<String> = mutableListOf()
@@ -57,7 +57,7 @@ class PictureDocument : Serializable {
         this.id = picture.id
         this.introduction = picture.introduction
         this.url = picture.url
-        this.userId = picture.user!!.id!!
+        this.userId = picture.user.id!!
         this.name = picture.name
         this.privacy = picture.privacy
         this.width = picture.width
