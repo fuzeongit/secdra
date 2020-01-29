@@ -31,6 +31,9 @@ class PictureController(
         private val pixivPictureService: PixivPictureService,
         private val elasticsearchTemplate: ElasticsearchTemplate) : CommonAbstract() {
 
+    /**
+     * 根据文件夹写入图片写入数据库
+     */
     @PostMapping("/init")
     @RestfulPack
     fun init(folderPath: String): PictureInitVO {
@@ -39,7 +42,8 @@ class PictureController(
         val errorReadList = mutableListOf<String>()
         val fileNameList = File(folderPath).list() ?: arrayOf()
         fileNameList.toList().filter { it.toLowerCase().endsWith(".png") || it.toLowerCase().endsWith(".jpg") || it.toLowerCase().endsWith(".jpeg") }
-
+        //绑定到临时id
+        val user = userService.get("402880e76fef85c7016fef8676f80001")
         for (fileName in fileNameList) {
             val read = try {
                 val picture = File("$folderPath/$fileName")
@@ -48,8 +52,7 @@ class PictureController(
                 errorReadList.add(fileName)
                 continue
             }
-            //TODO
-            val picture = Picture(User(), fileName, read.width.toLong(), read.height.toLong(), fileName, "这是一张很好看的图片，这是我从p站上下载回来的，侵删！")
+            val picture = Picture(user, fileName, read.width.toLong(), read.height.toLong(), fileName, "这是一张很好看的图片，这是我从p站上下载回来的，侵删！")
             try {
                 val pictureDocument = pictureService.save(picture)
                 val pixivPicture = PixivPicture(fileName.split("_")[0], pictureDocument.id!!)
@@ -100,7 +103,8 @@ class PictureController(
     @PostMapping("/bindUser")
     @RestfulPack
     fun bindUser(): Boolean {
-        val pictureList = pictureService.listByUserId("")
+        //临时id
+        val pictureList = pictureService.listByUserId("402880e76fef85c7016fef8676f80001")
         for (picture in pictureList) {
             val pixivPicture = pixivPictureService.getByPictureId(picture.id!!)
             if (pixivPicture.state == TransferState.SUCCESS) {

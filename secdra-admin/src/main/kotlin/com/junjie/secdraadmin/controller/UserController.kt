@@ -7,14 +7,11 @@ import com.junjie.secdracollect.service.PixivPictureService
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdradata.constant.Gender
 import com.junjie.secdradata.constant.TransferState
-import com.junjie.secdradata.database.account.entity.Account
-import com.junjie.secdradata.database.primary.dao.UserDAO
 import com.junjie.secdradata.database.primary.entity.User
 import com.junjie.secdraservice.service.UserService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("user")
@@ -24,6 +21,9 @@ class UserController(
         private val pixivPictureService: PixivPictureService
 ) : CommonAbstract() {
 
+    /**
+     * 注册一个账号
+     */
     @PostMapping("signUp")
     @RestfulPack
     fun signUp(phone: String): User {
@@ -32,16 +32,9 @@ class UserController(
         return userService.save(user)
     }
 
-    @PostMapping("init")
-    @RestfulPack
-    fun init(number: Int): ArrayList<String> {
-        val phoneList = arrayListOf<String>()
-        for (i in 0 until number) {
-            phoneList.add(initUser().id!!)
-        }
-        return phoneList
-    }
-
+    /**
+     * 采集成功的图片写入pixiv用户
+     */
     @PostMapping("initByPixiv")
     @RestfulPack
     fun initByPixiv(): Boolean {
