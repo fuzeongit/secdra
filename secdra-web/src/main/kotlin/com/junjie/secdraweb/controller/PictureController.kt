@@ -108,7 +108,7 @@ class PictureController(private val pictureService: PictureService,
     @RestfulPack
     fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): PictureVO {
         val picture = pictureService.get(id)
-        picture.user?.id != userId && throw PermissionException("您无权修改该图片")
+        picture.user.id != userId && throw PermissionException("您无权修改该图片")
         if (name != null && name.isNotEmpty()) picture.name = name
         if (introduction != null && introduction.isNotEmpty()) picture.introduction = introduction
         picture.privacy = privacy
@@ -139,12 +139,31 @@ class PictureController(private val pictureService: PictureService,
     @RestfulPack
     fun remove(@CurrentUserId userId: String, id: String): Boolean {
         val picture = pictureService.get(id)
-        if (userId != picture.user?.id) {
+        if (userId != picture.user.id) {
             throw PermissionException("你无权删除该图片")
         }
         qiniuComponent.move(picture.url, baseConfig.qiniuTempBucket, baseConfig.qiniuBucket)
         return pictureService.remove(picture.id!!)
     }
+
+    /**
+     * 批量移除图片
+     */
+    @Auth
+    @PostMapping("/batchRemove")
+    @RestfulPack
+    fun batchRemove(@CurrentUserId userId: String, @RequestParam("idList") idList: Array<String>): Boolean {
+        for (id in idList) {
+            val picture = pictureService.get(id)
+            if (userId != picture.user.id) {
+                throw PermissionException("你无权删除该图片")
+            }
+            qiniuComponent.move(picture.url, baseConfig.qiniuTempBucket, baseConfig.qiniuBucket)
+            pictureService.remove(picture.id!!)
+        }
+        return true
+    }
+
 
     @Auth
     @PostMapping("/batchUpdate")
@@ -154,7 +173,7 @@ class PictureController(private val pictureService: PictureService,
         for (id in idList) {
             try {
                 val picture = pictureService.get(id)
-                if (userId != picture.user?.id) {
+                if (userId != picture.user.id) {
                     continue
                 }
                 if (name != null && name.isNotEmpty()) picture.name = name

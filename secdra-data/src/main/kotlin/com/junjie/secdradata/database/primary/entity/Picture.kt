@@ -36,14 +36,14 @@ class Picture : Serializable {
 
     var pictureState: PictureState = PictureState.PASS
 
-    var width: Long = 0;
+    var width: Long = 0
 
-    var height: Long = 0;
+    var height: Long = 0
 
     @JsonIgnore
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "picture_id")
-    var tagList: MutableSet<Tag> = TreeSet { o1, o2 -> o1.name.compareTo(o2.name) };
+    var tagList: MutableSet<Tag> = TreeSet { o1, o2 -> o1.name.compareTo(o2.name) }
 
     @CreatedDate
     var createDate: Date? = null
@@ -56,7 +56,7 @@ class Picture : Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    var user: User? = null
+    lateinit var user: User
 
     constructor()
 
