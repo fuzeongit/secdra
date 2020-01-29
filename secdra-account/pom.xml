@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>secdra-account</name>
-    <description>Demo project for Spring Boot</description>
+    <description>用户管理项目，主要处理注册登录改密码等功能</description>
 
     <parent>
         <groupId>com.junjie</groupId>

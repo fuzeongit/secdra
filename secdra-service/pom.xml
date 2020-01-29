@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>secdra-service</name>
-    <description>Demo project for Spring Boot</description>
+    <description>业务逻辑及访问Dao层的项目</description>
 
     <parent>
         <groupId>com.junjie</groupId>

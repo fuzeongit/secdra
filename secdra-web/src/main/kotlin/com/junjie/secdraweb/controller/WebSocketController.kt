@@ -1,7 +1,7 @@
 package com.junjie.secdraweb.controller
 
+import com.junjie.secdracore.component.BaseConfig
 import com.junjie.secdracore.model.Result
-import com.junjie.secdraweb.core.component.BaseConfig
 import org.springframework.messaging.Message
 import org.springframework.messaging.handler.annotation.Headers
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -23,7 +23,7 @@ class WebSocketController(private val baseConfig: BaseConfig, private val simpMe
             it.name == "402880e566ddba740166ddbce0b70000"
         }
         for (receiver in receiverList) {
-            simpMessagingTemplate.convertAndSendToUser(receiver.name, "/commentNotice", "你还没有登录哦");
+            simpMessagingTemplate.convertAndSendToUser(receiver.name, "/commentNotice", "你还没有登录哦")
         }
     }
 

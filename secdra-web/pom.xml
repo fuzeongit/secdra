@@ -8,7 +8,7 @@
     <packaging>war</packaging>
 
     <name>secdra-web</name>
-    <description>Demo project for Spring Boot</description>
+    <description>输出给前端的接口项目</description>
 
     <parent>
         <groupId>com.junjie</groupId>
@@ -33,6 +33,10 @@
         <dependency>
             <groupId>com.junjie</groupId>
             <artifactId>secdra-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.junjie</groupId>
+            <artifactId>secdra-qiniu</artifactId>
         </dependency>
         <dependency>
             <groupId>com.junjie</groupId>

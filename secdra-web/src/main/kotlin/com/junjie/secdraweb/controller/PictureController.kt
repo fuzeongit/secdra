@@ -9,10 +9,10 @@ import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdradata.index.primary.document.PictureDocument
 import com.junjie.secdradata.database.primary.entity.Picture
 import com.junjie.secdradata.database.primary.entity.Tag
+import com.junjie.secdraqiniu.core.component.QiniuConfig
+import com.junjie.secdraqiniu.service.BucketService
 import com.junjie.secdraservice.service.*
 import com.junjie.secdraweb.core.communal.PictureVOAbstract
-import com.junjie.secdraweb.core.component.BaseConfig
-import com.junjie.secdraweb.service.QiniuComponent
 import com.junjie.secdraweb.vo.PictureVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -28,8 +28,8 @@ import java.util.*
 @RestController
 @RequestMapping("picture")
 class PictureController(private val pictureService: PictureService,
-                        private val qiniuComponent: QiniuComponent,
-                        private val baseConfig: BaseConfig,
+                        private val bucketService: BucketService,
+                        private val qiniuConfig: QiniuConfig,
                         override val pictureDocumentService: PictureDocumentService,
                         override val collectionService: CollectionService,
                         override val userService: UserService,
@@ -93,8 +93,8 @@ class PictureController(private val pictureService: PictureService,
             picture.tagList.addAll(tagList.map { Tag(it) })
         }
 
-        qiniuComponent.move(url, baseConfig.qiniuBucket)
-        val imageInfo = qiniuComponent.getImageInfo(url, baseConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
+        bucketService.move(url, qiniuConfig.qiniuBucket)
+        val imageInfo = bucketService.getImageInfo(url, qiniuConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
         picture.width = imageInfo.width
         picture.height = imageInfo.height
         return getPictureVO(pictureService.save(picture), userId)
@@ -142,7 +142,7 @@ class PictureController(private val pictureService: PictureService,
         if (userId != picture.user.id) {
             throw PermissionException("你无权删除该图片")
         }
-        qiniuComponent.move(picture.url, baseConfig.qiniuTempBucket, baseConfig.qiniuBucket)
+        bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
         return pictureService.remove(picture.id!!)
     }
 
@@ -158,7 +158,7 @@ class PictureController(private val pictureService: PictureService,
             if (userId != picture.user.id) {
                 throw PermissionException("你无权删除该图片")
             }
-            qiniuComponent.move(picture.url, baseConfig.qiniuTempBucket, baseConfig.qiniuBucket)
+            bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
             pictureService.remove(picture.id!!)
         }
         return true

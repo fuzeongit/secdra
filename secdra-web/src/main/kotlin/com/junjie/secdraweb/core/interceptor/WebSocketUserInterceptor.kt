@@ -2,11 +2,11 @@ package com.junjie.secdraweb.core.interceptor
 
 import com.junjie.secdraaccount.core.component.AccountConfig
 import com.junjie.secdraaccount.service.AccountService
+import com.junjie.secdracore.component.BaseConfig
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.core.component.BaseConfig
 import com.junjie.secdraweb.model.WebSocketUser
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.messaging.Message

@@ -1,18 +1,16 @@
-package com.junjie.secdraweb.core.component
+package com.junjie.secdraqiniu.core.component
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
-import java.util.*
+
 
 /**
  * @author fjj
  * 配置
  */
 @Component
-@ConfigurationProperties("base")
-class BaseConfig {
-    lateinit var notUUID: String
-
+@ConfigurationProperties("qiniu")
+class QiniuConfig {
     lateinit var qiniuAccessKey: String
 
     lateinit var qiniuSecretKey: String

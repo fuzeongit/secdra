@@ -3,8 +3,8 @@ package com.junjie.secdraweb.core.configurer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junjie.secdraaccount.core.component.AccountConfig
 import com.junjie.secdraaccount.service.AccountService
+import com.junjie.secdracore.component.BaseConfig
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.core.component.BaseConfig
 import com.junjie.secdraweb.core.interceptor.WebSocketUserInterceptor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

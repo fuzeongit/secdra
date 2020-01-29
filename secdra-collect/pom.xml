@@ -7,7 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>secdra-collect</name>
-    <description>Demo project for Spring Boot</description>
+    <description>采集逻辑处理项目</description>
 
     <parent>
         <groupId>com.junjie</groupId>

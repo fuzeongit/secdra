@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>secdra-core</name>
-    <description>Demo project for Spring Boot</description>
+    <description>通用核心项目</description>
 
     <parent>
         <groupId>com.junjie</groupId>

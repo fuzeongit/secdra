@@ -3,11 +3,11 @@ package com.junjie.secdraweb.core.configurer
 import com.junjie.secdraaccount.core.component.AccountConfig
 import com.junjie.secdraweb.core.interceptor.AuthInterceptor
 import com.junjie.secdraaccount.service.AccountService
+import com.junjie.secdracore.component.BaseConfig
+import com.junjie.secdraqiniu.core.component.QiniuConfig
 import com.junjie.secdraservice.service.UserService
-import com.junjie.secdraweb.core.component.BaseConfig
 import com.junjie.secdraweb.core.component.RedisComponent
 import com.junjie.secdraweb.core.resolver.CurrentUserIdMethodArgumentResolver
-import com.junjie.secdraweb.service.QiniuComponent
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
@@ -80,14 +80,19 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate,
     }
 
     @Bean
+    internal fun qiniuConfig(): QiniuConfig {
+        return QiniuConfig()
+    }
+
+    @Bean
     internal fun redisComponent(): RedisComponent {
         return RedisComponent(StringRedisTemplate())
     }
 
-    @Bean
-    internal fun qiniuComponent(): QiniuComponent {
-        return QiniuComponent(baseConfig())
-    }
+//    @Bean
+//    internal fun qiniuComponent(): QiniuComponent {
+//        return QiniuComponent(baseConfig())
+//    }
 
 //    @Bean
 //    internal fun schedulingComponent(): SchedulingComponent {

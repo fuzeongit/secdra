@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>secdra</name>
-    <description>Demo project for Spring Boot</description>
+    <description>总项目，项目总依赖</description>
 
     <modules>
         <module>secdra-core</module>
@@ -17,6 +17,7 @@
         <module>secdra-data</module>
         <module>secdra-service</module>
         <module>secdra-collect</module>
+        <module>secdra-qiniu</module>
         <module>secdra-web</module>
         <module>secdra-admin</module>
     </modules>
@@ -60,6 +61,11 @@
             <dependency>
                 <groupId>com.junjie</groupId>
                 <artifactId>secdra-collect</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.junjie</groupId>
+                <artifactId>secdra-qiniu</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
