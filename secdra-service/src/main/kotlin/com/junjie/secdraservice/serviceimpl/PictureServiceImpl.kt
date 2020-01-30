@@ -82,7 +82,7 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
         return pictureDAO.count(specification)
     }
 
-    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, startDate: Date?, endDate: Date?): Page<Picture> {
+    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, startDate: Date?, endDate: Date?): Page<Picture> {
         val specification = Specification<Picture> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
             if (!name.isNullOrEmpty()) {
@@ -90,6 +90,9 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
             }
             if (privacy != null) {
                 predicatesList.add(criteriaBuilder.equal(root.get<Int>("privacy"), privacy))
+            }
+            if (life != null) {
+                predicatesList.add(criteriaBuilder.equal(root.get<Int>("life"), life))
             }
             if (startDate != null) {
                 predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), DateUtil.getDayBeginTime(startDate)))

@@ -6,6 +6,7 @@ import com.junjie.secdraadmin.vo.PictureInitVO
 import com.junjie.secdracollect.service.PixivPictureService
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivPicture
@@ -38,13 +39,13 @@ class PictureController(
      */
     @GetMapping("paging")
     @RestfulPack
-    fun paging(userId: String?, phone: String?, name: String?, privacy: PrivacyState?, startDate: Date?, endDate: Date?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
+    fun paging(userId: String?, phone: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, startDate: Date?, endDate: Date?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
         val phoneUserId = if (!phone.isNullOrEmpty() && userId.isNullOrEmpty()) {
             val account = accountService.getByPhone(phone!!)
             val user = userService.getByAccountId(account.id!!)
             user.id
         } else null
-        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, startDate, endDate)
+        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, life, startDate, endDate)
     }
 
     @PostMapping("updatePrivacy")

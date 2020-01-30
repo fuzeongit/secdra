@@ -26,7 +26,7 @@ interface PictureService {
     @Deprecated("由于ES的引入，弃用改查询，使用ES的countByTag")
     fun countByTag(tag: String): Long
 
-    fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, startDate: Date?, endDate: Date?): Page<Picture>
+    fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, startDate: Date?, endDate: Date?): Page<Picture>
 
     fun pagingByLife(life: PictureLifeState, pageable: Pageable): Page<Picture>
 
