@@ -33,7 +33,7 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
                            override val userService: UserService,
                            override val followService: FollowService) : PictureVOAbstract() {
     @Auth
-    @PostMapping("/focus")
+    @PostMapping("focus")
     @RestfulPack
     fun focus(@CurrentUserId userId: String, pictureId: String): CollectState {
         val picture = try {
@@ -68,7 +68,7 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
      * 取消收藏一组
      */
     @Auth
-    @PostMapping("/unFocus")
+    @PostMapping("unFocus")
     @RestfulPack
     fun unFocus(@CurrentUserId userId: String, @RequestParam("pictureIdList") pictureIdList: Array<String>?): List<String> {
         if (pictureIdList == null || pictureIdList.isEmpty()) {
@@ -96,7 +96,7 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
     /**
      * 获取列表
      */
-    @GetMapping("/paging")
+    @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionPictureVO> {
         (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
@@ -136,7 +136,7 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
 //    }
 
 
-    @GetMapping("/pagingUser")
+    @GetMapping("pagingUser")
     @RestfulPack
     fun pagingUser(@CurrentUserId userId: String?, pictureId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = collectionService.pagingByPictureId(pictureId, pageable)
@@ -145,5 +145,4 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
         }
         return PageImpl(userVOList, page.pageable, page.totalElements)
     }
-
 }

@@ -28,7 +28,7 @@ class MessageController(private val commentMessageService: CommentMessageService
                         override val userService: UserService,
                         override val followService: FollowService) : UserVOAbstract() {
     @Auth
-    @GetMapping("/count")
+    @GetMapping("count")
     @RestfulPack
     fun count(@CurrentUserId userId: String, messageType: MessageType?): HashMap<MessageType, Long> {
         val vo = HashMap<MessageType, Long>()
@@ -40,7 +40,7 @@ class MessageController(private val commentMessageService: CommentMessageService
     }
 
     @Auth
-    @GetMapping("/listUnread")
+    @GetMapping("listUnread")
     @RestfulPack
     fun listUnread(@CurrentUserId userId: String, messageType: MessageType): List<Any> {
         if (messageType == MessageType.COMMENT) {
@@ -59,7 +59,7 @@ class MessageController(private val commentMessageService: CommentMessageService
     }
 
     @Auth
-    @GetMapping("/list")
+    @GetMapping("list")
     @RestfulPack
     fun list(@CurrentUserId userId: String, messageType: MessageType): List<Any> {
         if (messageType == MessageType.COMMENT) {
@@ -84,7 +84,7 @@ class MessageController(private val commentMessageService: CommentMessageService
     }
 
     @Auth
-    @GetMapping("/getSettings")
+    @GetMapping("getSettings")
     @RestfulPack
     fun getSettings(@CurrentUserId userId: String): MessageSettings {
         return try {
@@ -96,7 +96,7 @@ class MessageController(private val commentMessageService: CommentMessageService
     }
 
     @Auth
-    @PostMapping("/saveSettings")
+    @PostMapping("saveSettings")
     @RestfulPack
     fun saveSettings(@CurrentUserId userId: String, id: String, commentStatus: Boolean, replyStatus: Boolean, followStatus: Boolean): MessageSettings {
         val messageSettings = MessageSettings(userId)

@@ -33,7 +33,7 @@ class ReplyController(private val replyService: ReplyService,
      * 发表评论
      */
     @Auth
-    @PostMapping("/save")
+    @PostMapping("save")
     @RestfulPack
     fun save(@CurrentUserId answererId: String, commentId: String, authorId: String, criticId: String, pictureId: String, content: String): ReplyVO {
         content.isEmpty() && throw Exception("回复不能为空")

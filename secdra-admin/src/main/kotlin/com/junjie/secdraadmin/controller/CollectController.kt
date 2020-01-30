@@ -27,7 +27,7 @@ class CollectController(
     /**
      * 获取采集标签任务
      */
-    @GetMapping("/listTagTask")
+    @GetMapping("listTagTask")
     @RestfulPack
     fun listTagTask(state: TransferState?): List<PixivPicture> {
         return pixivPictureService.listByState(state ?: TransferState.WAIT)
@@ -36,7 +36,7 @@ class CollectController(
     /**
      * 保存采集
      */
-    @PostMapping("/save")
+    @PostMapping("save")
     @RestfulPack
     fun pixivPictureSave(pixivId: String, name: String, userName: String, userId: String, tagString: String): Boolean {
         val pixivPictureList = pixivPictureService.listByPixivId(pixivId)
@@ -64,7 +64,7 @@ class CollectController(
     /**
      * 保存pixiv采集错误
      */
-    @PostMapping("/saveError")
+    @PostMapping("saveError")
     @RestfulPack
     fun pixivErrorSave(pixivId: String, message: String): PixivError {
         val pixivError = PixivError(pixivId, message)

@@ -4,7 +4,6 @@ import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdraadmin.code.communal.CommonAbstract
 import com.junjie.secdraadmin.vo.PictureInitVO
 import com.junjie.secdracollect.service.PixivPictureService
-import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdradata.constant.PrivacyState
@@ -12,6 +11,8 @@ import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivPicture
 import com.junjie.secdradata.database.primary.entity.Picture
 import com.junjie.secdradata.index.primary.document.PictureDocument
+import com.junjie.secdraqiniu.core.component.QiniuConfig
+import com.junjie.secdraqiniu.service.BucketService
 import com.junjie.secdraservice.service.PictureDocumentService
 import com.junjie.secdraservice.service.PictureService
 import com.junjie.secdraservice.service.UserService
@@ -19,10 +20,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
@@ -35,19 +33,21 @@ class PictureController(
         override val userService: UserService,
         private val pictureService: PictureService,
         private val pictureDocumentService: PictureDocumentService,
+        private val qiniuConfig: QiniuConfig,
+        private val bucketService: BucketService,
         private val pixivPictureService: PixivPictureService,
         private val elasticsearchTemplate: ElasticsearchTemplate) : CommonAbstract() {
 
     /**
      * 根据标签获取
      */
-    @GetMapping("/paging")
+    @GetMapping("paging")
     @RestfulPack
     fun paging(userId: String?, @PageableDefault(value = 20) pageable: Pageable, tagList: String?, precise: Boolean?, name: String?, startDate: Date?, endDate: Date?): Page<PictureDocument> {
         return pictureDocumentService.paging(pageable, tagList?.split(" "), precise != null && precise, name, startDate, endDate, userId, true)
     }
 
-    @PostMapping("/updatePrivacy")
+    @PostMapping("updatePrivacy")
     @RestfulPack
     fun updatePrivacy(id: String): Boolean {
         val picture = pictureService.get(id)
@@ -60,9 +60,34 @@ class PictureController(
     }
 
     /**
+     * 移除图片
+     */
+    @PostMapping("remove")
+    @RestfulPack
+    fun remove(id: String): Boolean {
+        val picture = pictureService.get(id)
+        bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
+        return pictureService.remove(picture.id!!)
+    }
+
+    /**
+     * 批量移除图片
+     */
+    @PostMapping("batchRemove")
+    @RestfulPack
+    fun batchRemove(@RequestParam("idList") idList: Array<String>): Boolean {
+        for (id in idList) {
+            val picture = pictureService.get(id)
+            bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
+            pictureService.remove(picture.id!!)
+        }
+        return true
+    }
+
+    /**
      * 根据文件夹写入图片写入数据库
      */
-    @PostMapping("/init")
+    @PostMapping("init")
     @RestfulPack
     fun init(folderPath: String, userId: String): PictureInitVO {
         var readNumber = 0
@@ -96,7 +121,7 @@ class PictureController(
     /**
      * 获取没有tag的图片数量
      */
-    @GetMapping("/checkTag")
+    @GetMapping("checkTag")
     @RestfulPack
     fun checkTag(): Int {
         val pictureList = pictureService.list()
@@ -112,7 +137,7 @@ class PictureController(
     /**
      * 清除重复tag
      */
-    @PostMapping("/duplicateRemoval")
+    @PostMapping("duplicateRemoval")
     @RestfulPack
     fun duplicateRemoval(): Boolean {
         val list = pictureService.list()
@@ -128,7 +153,7 @@ class PictureController(
     /**
      * 绑定user
      */
-    @PostMapping("/bindUser")
+    @PostMapping("bindUser")
     @RestfulPack
     fun bindUser(userId: String): Boolean {
         //临时id
@@ -154,7 +179,7 @@ class PictureController(
     /**
      * 建立ES索引
      */
-    @PostMapping("/initIndex")
+    @PostMapping("initIndex")
     @RestfulPack
     fun initIndex(): Boolean {
         elasticsearchTemplate.createIndex(PictureDocument::class.java)
@@ -164,7 +189,7 @@ class PictureController(
     /**
      * 初始化进ES
      */
-    @PostMapping("/importES")
+    @PostMapping("importES")
     @RestfulPack
     fun importES(): Long {
         return pictureService.synchronizationIndexPicture()

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("tag")
 class TagController(private val pictureDocumentService: PictureDocumentService) {
-    @GetMapping("/listTagTop30")
+    @GetMapping("listTagTop30")
     @RestfulPack
     fun listTagTop30(): List<String> {
         return pictureDocumentService.listTagTop30()
     }
 
-    @GetMapping("/listTagAndPictureTop30")
+    @GetMapping("listTagAndPictureTop30")
     @RestfulPack
     fun listTagAndPictureTop30(): List<TagPictureVO> {
         val tagList = pictureDocumentService.listTagTop30()

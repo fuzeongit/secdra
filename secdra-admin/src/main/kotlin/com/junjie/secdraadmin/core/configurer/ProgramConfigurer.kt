@@ -1,5 +1,6 @@
 package com.junjie.secdraadmin.core.configurer
 
+import com.junjie.secdraqiniu.core.component.QiniuConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
@@ -25,6 +26,14 @@ class ProgramConfigurer : WebMvcConfigurer {
                 .allowedMethods("*")
                 //跨域允许时间
                 .maxAge(3600);
+    }
+
+    /**
+     * 七牛配置
+     */
+    @Bean
+    internal fun qiniuConfig(): QiniuConfig {
+        return QiniuConfig()
     }
 
     @Bean

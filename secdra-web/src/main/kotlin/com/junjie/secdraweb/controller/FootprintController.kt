@@ -33,7 +33,7 @@ class FootprintController(private val footprintService: FootprintService,
                           override val userService: UserService,
                           override val followService: FollowService) : PictureVOAbstract() {
     @Auth
-    @PostMapping("/save")
+    @PostMapping("save")
     @RestfulPack
     fun save(@CurrentUserId userId: String, pictureId: String): Long {
         val picture = pictureDocumentService.get(pictureId)
@@ -49,7 +49,7 @@ class FootprintController(private val footprintService: FootprintService,
     }
 
 
-    @GetMapping("/paging")
+    @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintPictureVO> {
         (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
@@ -76,7 +76,7 @@ class FootprintController(private val footprintService: FootprintService,
         return PageImpl(footprintPictureVOList, page.pageable, page.totalElements)
     }
 
-    @GetMapping("/pagingUser")
+    @GetMapping("pagingUser")
     @RestfulPack
     fun pagingUser(@CurrentUserId userId: String?, pictureId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = footprintService.pagingByPictureId(pictureId, pageable)

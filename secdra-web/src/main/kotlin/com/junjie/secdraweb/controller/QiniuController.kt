@@ -13,7 +13,7 @@ import com.junjie.secdraqiniu.core.util.Auth as QiniuAuth
 @RestController
 @RequestMapping("qiniu")
 class QiniuController(private val qiniuConfig: QiniuConfig, private val pictureDAO: PictureDAO) {
-    @GetMapping("/getUploadToken")
+    @GetMapping("getUploadToken")
     @RestfulPack
     fun get(): Result<String> {
         val auth = QiniuAuth.create(qiniuConfig.qiniuAccessKey, qiniuConfig.qiniuSecretKey)

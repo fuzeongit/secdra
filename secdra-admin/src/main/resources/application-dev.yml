@@ -32,6 +32,7 @@ spring:
     allow-bean-definition-overriding: true
 base:
   notUUID: 00000000000000000000000000000000
+qiniu:
   qiniuAccessKey: 0G397Ly7Z6pqnm2MPUhHIbMFzvBX19yyhu-RdiqI
   qiniuSecretKey: _xLtVKJ4VNUrwSsEGkJBHtV2s6mZ2QG2yDXaCvTk
   qiniuTempBucket: temporary
@@ -42,4 +43,3 @@ base:
   qiniuHeadBucketUrl: http://secdrahead.secdra.com
   qiniuBackBucketUrl: http://secdraback.secdra.com
   qiniuBucketUrl: http://secdraimg.secdra.com
-

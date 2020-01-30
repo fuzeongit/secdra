@@ -37,7 +37,7 @@ class PictureController(private val pictureService: PictureService,
     /**
      * 根据标签获取
      */
-    @GetMapping("/paging")
+    @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, tagList: String?, precise: Boolean?, name: String?, startDate: Date?, endDate: Date?, targetId: String?): Page<PictureVO> {
         return getPageVO(pictureDocumentService.paging(pageable, tagList?.split(" "), precise != null && precise, name, startDate, endDate, targetId, userId != null && targetId == userId), userId)
@@ -46,7 +46,7 @@ class PictureController(private val pictureService: PictureService,
     /**
      * 获取推荐
      */
-    @GetMapping("/pagingByRecommend")
+    @GetMapping("pagingByRecommend")
     @RestfulPack
     fun pagingByRecommend(@CurrentUserId userId: String?, @PageableDefault(value = 20) pageable: Pageable, startDate: Date?, endDate: Date?): Page<PictureVO> {
         return getPageVO(pictureDocumentService.pagingByRecommend(userId, pageable, startDate, endDate), userId)
@@ -55,7 +55,7 @@ class PictureController(private val pictureService: PictureService,
     /**
      * 获取图片
      */
-    @GetMapping("/get")
+    @GetMapping("get")
     @RestfulPack
     fun get(id: String, @CurrentUserId userId: String?): PictureVO {
         return getPictureVO(id, userId)
@@ -84,7 +84,7 @@ class PictureController(private val pictureService: PictureService,
      * 保存图片
      */
     @Auth
-    @PostMapping("/save")
+    @PostMapping("save")
     @RestfulPack
     fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Set<String>?): PictureVO {
         val picture = Picture(userService.get(userId), url, name, introduction!!)
@@ -104,7 +104,7 @@ class PictureController(private val pictureService: PictureService,
      * 更新
      */
     @Auth
-    @PostMapping("/update")
+    @PostMapping("update")
     @RestfulPack
     fun update(@CurrentUserId userId: String, id: String, name: String?, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Array<String>?): PictureVO {
         val picture = pictureService.get(id)
@@ -135,7 +135,7 @@ class PictureController(private val pictureService: PictureService,
      * 移除图片
      */
     @Auth
-    @PostMapping("/remove")
+    @PostMapping("remove")
     @RestfulPack
     fun remove(@CurrentUserId userId: String, id: String): Boolean {
         val picture = pictureService.get(id)
@@ -150,7 +150,7 @@ class PictureController(private val pictureService: PictureService,
      * 批量移除图片
      */
     @Auth
-    @PostMapping("/batchRemove")
+    @PostMapping("batchRemove")
     @RestfulPack
     fun batchRemove(@CurrentUserId userId: String, @RequestParam("idList") idList: Array<String>): Boolean {
         for (id in idList) {
@@ -166,7 +166,7 @@ class PictureController(private val pictureService: PictureService,
 
 
     @Auth
-    @PostMapping("/batchUpdate")
+    @PostMapping("batchUpdate")
     @RestfulPack
     fun batchUpdate(@CurrentUserId userId: String, idList: Array<String>, name: String?, introduction: String?, privacy: PrivacyState?, @RequestParam("tagList") tagList: Array<String>?): MutableList<PictureDocument> {
         val pictureList = mutableListOf<PictureDocument>()

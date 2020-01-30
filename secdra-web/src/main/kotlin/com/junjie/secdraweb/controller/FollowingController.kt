@@ -30,7 +30,7 @@ class FollowingController(private val followMessageService: FollowMessageService
                           override val userService: UserService,
                           override val followService: FollowService) : UserVOAbstract() {
     @Auth
-    @PostMapping("/focus")
+    @PostMapping("focus")
     @RestfulPack
     fun focus(@CurrentUserId followerId: String, followingId: String): FollowState {
         if (followerId == followingId) {
@@ -53,7 +53,7 @@ class FollowingController(private val followMessageService: FollowMessageService
      * 取消关注一组
      */
     @Auth
-    @PostMapping("/unFocus")
+    @PostMapping("unFocus")
     @RestfulPack
     fun unFocus(@CurrentUserId followerId: String, @RequestParam("followingIdList") followingIdList: Array<String>?): Boolean {
         if (followingIdList == null || followingIdList.isEmpty()) {
@@ -72,7 +72,7 @@ class FollowingController(private val followMessageService: FollowMessageService
     /**
      * 获取关注列表
      */
-    @GetMapping("/paging")
+    @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId followerId: String?, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         if (followerId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请登录")

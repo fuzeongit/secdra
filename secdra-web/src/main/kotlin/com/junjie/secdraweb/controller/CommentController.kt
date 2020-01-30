@@ -37,7 +37,7 @@ class CommentController(private val commentService: CommentService,
      * 发表评论
      */
     @Auth
-    @PostMapping("/save")
+    @PostMapping("save")
     @RestfulPack
     fun save(@CurrentUserId criticId: String, authorId: String, pictureId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")

@@ -26,7 +26,7 @@ class FollowerController(override val userService: UserService, override val fol
     /**
      * 获取粉丝列表
      */
-    @GetMapping("/paging")
+    @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId followingId: String?, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         if (followingId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请登录")

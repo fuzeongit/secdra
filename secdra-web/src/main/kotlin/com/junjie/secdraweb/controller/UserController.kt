@@ -31,7 +31,7 @@ class UserController(private val qiniuConfig: QiniuConfig,
     /**
      * 获取用户信息
      */
-    @GetMapping("/get")
+    @GetMapping("get")
     @RestfulPack
     fun get(@CurrentUserId userId: String?, id: String?): UserVO {
         (userId.isNullOrEmpty() && id.isNullOrEmpty()) && throw SignInException("请登录")
@@ -42,7 +42,7 @@ class UserController(private val qiniuConfig: QiniuConfig,
      * 修改用户信息
      */
     @Auth
-    @PostMapping("/update")
+    @PostMapping("update")
     @RestfulPack
     fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVO {
         val info = userService.get(userId)
@@ -58,7 +58,7 @@ class UserController(private val qiniuConfig: QiniuConfig,
      * 修改头像
      */
     @Auth
-    @PostMapping("/updateHead")
+    @PostMapping("updateHead")
     @RestfulPack
     fun updateHead(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.get(userId)
@@ -70,7 +70,7 @@ class UserController(private val qiniuConfig: QiniuConfig,
      * 修改背景墙
      */
     @Auth
-    @PostMapping("/updateBack")
+    @PostMapping("updateBack")
     @RestfulPack
     fun updateBack(@CurrentUserId userId: String, url: String): UserVO {
         val info = userService.get(userId)
