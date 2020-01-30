@@ -11,8 +11,6 @@ import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivPicture
 import com.junjie.secdradata.database.primary.entity.Picture
 import com.junjie.secdradata.index.primary.document.PictureDocument
-import com.junjie.secdraqiniu.core.component.QiniuConfig
-import com.junjie.secdraqiniu.service.BucketService
 import com.junjie.secdraservice.service.PictureDocumentService
 import com.junjie.secdraservice.service.PictureService
 import com.junjie.secdraservice.service.UserService
@@ -32,9 +30,6 @@ class PictureController(
         override val accountService: AccountService,
         override val userService: UserService,
         private val pictureService: PictureService,
-        private val pictureDocumentService: PictureDocumentService,
-        private val qiniuConfig: QiniuConfig,
-        private val bucketService: BucketService,
         private val pixivPictureService: PixivPictureService,
         private val elasticsearchTemplate: ElasticsearchTemplate) : CommonAbstract() {
 
@@ -43,8 +38,13 @@ class PictureController(
      */
     @GetMapping("paging")
     @RestfulPack
-    fun paging(userId: String?, @PageableDefault(value = 20) pageable: Pageable, tagList: String?, precise: Boolean?, name: String?, startDate: Date?, endDate: Date?): Page<PictureDocument> {
-        return pictureDocumentService.paging(pageable, tagList?.split(" "), precise != null && precise, name, startDate, endDate, userId, true)
+    fun paging(userId: String?, phone: String?, nickname: String?, name: String?, startDate: Date?, endDate: Date?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
+        val phoneUserId = if (!phone.isNullOrEmpty() && userId.isNullOrEmpty()) {
+            val account = accountService.getByPhone(phone!!)
+            val user = userService.getByAccountId(account.id!!)
+            user.id
+        } else null
+        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, nickname, name, startDate, endDate)
     }
 
     @PostMapping("updatePrivacy")

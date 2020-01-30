@@ -9,6 +9,7 @@ import com.junjie.secdradata.constant.Gender
 import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.primary.entity.User
 import com.junjie.secdraservice.service.UserService
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -27,9 +28,18 @@ class UserController(
     @PostMapping("signUp")
     @RestfulPack
     fun signUp(phone: String): User {
-        val account =  accountService.signUp(phone, "123456")
+        val account = accountService.signUp(phone, "123456")
         val user = User(accountId = account.id!!, gender = Gender.FEMALE, name = UserConstant.nameList.shuffled().last())
         return userService.save(user)
+    }
+
+    /**
+     * 按名称获取列表
+     */
+    @GetMapping("list")
+    @RestfulPack
+    fun list(name: String?): List<User> {
+        return userService.list(name)
     }
 
     /**

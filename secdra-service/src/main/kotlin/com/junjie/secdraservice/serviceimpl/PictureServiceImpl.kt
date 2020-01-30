@@ -2,6 +2,7 @@ package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PictureState
 import com.junjie.secdradata.constant.PrivacyState
@@ -81,6 +82,36 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
         return pictureDAO.count(specification)
     }
 
+    override fun paging(pageable: Pageable, userId: String?, nickname: String?, name: String?, startDate: Date?, endDate: Date?): Page<Picture> {
+        val specification = Specification<Picture> { root, _, criteriaBuilder ->
+            val predicatesList = ArrayList<Predicate>()
+            if (!name.isNullOrEmpty()) {
+                predicatesList.add(criteriaBuilder.like(root.get<String>("name"), "%$name%"))
+            }
+            if (startDate != null) {
+                predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), DateUtil.getDayBeginTime(startDate)))
+            }
+            if (endDate != null) {
+                predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), DateUtil.getDayBeginTime(endDate)))
+            }
+            if(!userId.isNullOrEmpty()||!nickname.isNullOrEmpty()){
+                val joinUser: Join<Picture, User> = root.join("user", JoinType.LEFT)
+                if (!userId.isNullOrEmpty()) {
+                    predicatesList.add(criteriaBuilder.like(joinUser.get<String>("id"), userId))
+                }
+                if (!nickname.isNullOrEmpty()) {
+                    predicatesList.add(criteriaBuilder.like(joinUser.get<String>("name"), "%$nickname%"))
+                }
+            }
+            criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
+        }
+        return pictureDAO.findAll(specification, pageable)
+    }
+
+    override fun pagingByLife(life: PictureLifeState, pageable: Pageable): Page<Picture> {
+        return pictureDAO.findAllByLife(life, pageable)
+    }
+
     override fun get(id: String): Picture {
         return getByLife(id, PictureLifeState.EXIST)
     }
@@ -102,6 +133,16 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    override fun reduction(id: String): PictureDocument {
+        val picture = getByLife(id, null)
+        picture.life = PictureLifeState.EXIST
+        return save(picture, true)
+    }
+
+    override fun delete(id: String) {
+        return pictureDAO.deleteById(id)
     }
 
     override fun list(): List<Picture> {

@@ -25,6 +25,9 @@ interface PictureDAO : JpaRepository<Picture, String>, JpaSpecificationExecutor<
     fun findAllByLife(life: PictureLifeState): List<Picture>
 
     @EntityGraph(value = "Picture.Tag", type = EntityGraph.EntityGraphType.FETCH)
+    fun findAllByLife(life: PictureLifeState, pageable: Pageable): Page<Picture>
+
+    @EntityGraph(value = "Picture.Tag", type = EntityGraph.EntityGraphType.FETCH)
     override fun findAll(@Nullable specification: Specification<Picture>?, pageable: Pageable): Page<Picture>
 
     // @EntityGraph(value = "Picture.Tag", type = EntityGraph.EntityGraphType.FETCH)

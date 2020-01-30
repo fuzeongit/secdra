@@ -28,8 +28,12 @@ class UserServiceImpl(private val userDAO: UserDAO) : UserService {
         return userDAO.findOneByAccountId(accountId).orElseThrow { PermissionException("用户信息不存在") }
     }
 
-    override fun list(): List<User> {
-        return userDAO.findAll()
+    override fun list(name: String?): List<User> {
+        return if (name != null && name.isNotEmpty()) {
+            userDAO.findAllByNameLike("%$name%")
+        } else {
+            userDAO.findAll()
+        }
     }
 
     override fun updateInfo(user: User): User {

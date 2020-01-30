@@ -8,4 +8,6 @@ import java.util.*
 @Repository
 interface UserDAO : JpaRepository<User, String> {
     fun findOneByAccountId(accountId: String): Optional<User>
+
+    fun findAllByNameLike(name: String): List<User>
 }

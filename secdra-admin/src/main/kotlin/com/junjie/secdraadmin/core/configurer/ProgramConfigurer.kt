@@ -1,9 +1,11 @@
 package com.junjie.secdraadmin.core.configurer
 
+import com.junjie.secdraadmin.core.component.RedisComponent
 import com.junjie.secdraqiniu.core.component.QiniuConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.text.SimpleDateFormat
@@ -25,7 +27,7 @@ class ProgramConfigurer : WebMvcConfigurer {
                 //设置允许的方法
                 .allowedMethods("*")
                 //跨域允许时间
-                .maxAge(3600);
+                .maxAge(3600)
     }
 
     /**
@@ -34,6 +36,11 @@ class ProgramConfigurer : WebMvcConfigurer {
     @Bean
     internal fun qiniuConfig(): QiniuConfig {
         return QiniuConfig()
+    }
+
+    @Bean
+    internal fun redisComponent(): RedisComponent {
+        return RedisComponent(StringRedisTemplate())
     }
 
     @Bean

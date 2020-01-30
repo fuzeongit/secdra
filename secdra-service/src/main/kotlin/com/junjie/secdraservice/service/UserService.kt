@@ -27,7 +27,7 @@ interface UserService {
     /**
      * 获取全部用户
      */
-    fun list(): List<User>
+    fun list(name: String? = null): List<User>
 
     /**
      * 修改用户信息
