@@ -1,6 +1,7 @@
 package com.junjie.secdradata.database.primary.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PictureState
 import com.junjie.secdradata.constant.PrivacyState
 import org.hibernate.annotations.GenericGenerator
@@ -35,6 +36,8 @@ class Picture : Serializable {
     var privacy: PrivacyState = PrivacyState.PUBLIC
 
     var pictureState: PictureState = PictureState.PASS
+    //是否存在，不存在不建立索引
+    var life: PictureLifeState = PictureLifeState.EXIST
 
     var width: Long = 0
 

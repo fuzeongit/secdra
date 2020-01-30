@@ -1,6 +1,8 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.exception.NotFoundException
+import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PictureState
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdradata.database.primary.dao.PictureDAO
@@ -80,13 +82,22 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
     }
 
     override fun get(id: String): Picture {
+        return getByLife(id, PictureLifeState.EXIST)
+    }
+
+    override fun getByLife(id: String, life: PictureLifeState?): Picture {
+        if (life != null) {
+            return pictureDAO.findByIdAndLife(id, life).orElseThrow { NotFoundException("图片不存在") }
+        }
         return pictureDAO.findById(id).orElseThrow { NotFoundException("图片不存在") }
     }
 
-    override fun remove(id: String): Boolean {
+    override fun remove(picture: Picture): Boolean {
         return try {
-            pictureDAO.deleteById(id)
-            pictureDocumentService.remove(id)
+            picture.life = PictureLifeState.DISAPPEAR
+            save(picture, true)
+            //删除索引
+            pictureDocumentService.remove(picture.id!!)
             true
         } catch (e: Exception) {
             throw e
@@ -94,14 +105,31 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
     }
 
     override fun list(): List<Picture> {
+        return listByLife(PictureLifeState.EXIST)
+    }
+
+    override fun listByLife(life: PictureLifeState?): List<Picture> {
+        if (life != null) {
+            return pictureDAO.findAllByLife(life)
+        }
         return pictureDAO.findAll()
     }
 
     override fun listByUserId(userId: String): List<Picture> {
+        return listByUserIdAndLife(userId, PictureLifeState.EXIST)
+    }
+
+    override fun listByUserIdAndLife(userId: String, life: PictureLifeState?): List<Picture> {
+        if (life != null) {
+            return pictureDAO.findAllByUser_IdAndLife(userId, life)
+        }
         return pictureDAO.findAllByUser_Id(userId)
     }
 
-    override fun save(picture: Picture): PictureDocument {
+    override fun save(picture: Picture, force: Boolean): PictureDocument {
+        if (picture.life == PictureLifeState.DISAPPEAR && !force) {
+            throw NotFoundException("图片不存在")
+        }
         return pictureDocumentService.save(PictureDocument(pictureDAO.save(picture)))
     }
 

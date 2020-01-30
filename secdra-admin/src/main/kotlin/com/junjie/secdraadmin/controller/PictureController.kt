@@ -60,26 +60,25 @@ class PictureController(
     }
 
     /**
-     * 移除图片
+     * 逻辑删除图片
      */
     @PostMapping("remove")
     @RestfulPack
     fun remove(id: String): Boolean {
         val picture = pictureService.get(id)
-        bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
-        return pictureService.remove(picture.id!!)
+        return pictureService.remove(picture)
     }
 
     /**
-     * 批量移除图片
+     * 逻辑删除图片
      */
     @PostMapping("batchRemove")
     @RestfulPack
     fun batchRemove(@RequestParam("idList") idList: Array<String>): Boolean {
         for (id in idList) {
             val picture = pictureService.get(id)
-            bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
-            pictureService.remove(picture.id!!)
+//            bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
+            pictureService.remove(picture)
         }
         return true
     }

@@ -1,5 +1,6 @@
 package com.junjie.secdraservice.service
 
+import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.index.primary.document.PictureDocument
 import com.junjie.secdradata.database.primary.entity.Picture
 import org.springframework.data.domain.Page
@@ -26,13 +27,21 @@ interface PictureService {
 
     fun get(id: String): Picture
 
-    fun remove(id: String): Boolean
+    fun getByLife(id: String, life: PictureLifeState?): Picture
+
+    fun remove(picture: Picture): Boolean
 
     fun list(): List<Picture>
 
+    fun listByLife(life: PictureLifeState?): List<Picture>
+
     fun listByUserId(userId: String): List<Picture>
 
-    fun save(picture: Picture): PictureDocument
+    fun listByUserIdAndLife(userId: String, life: PictureLifeState?): List<Picture>
+    /**
+     * @param force 是否强制更新
+     */
+    fun save(picture: Picture, force: Boolean = false): PictureDocument
 
     fun synchronizationIndexPicture(): Long
 }

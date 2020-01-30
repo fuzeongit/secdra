@@ -132,7 +132,7 @@ class PictureController(private val pictureService: PictureService,
     }
 
     /**
-     * 移除图片
+     * 逻辑删除图片
      */
     @Auth
     @PostMapping("remove")
@@ -142,8 +142,7 @@ class PictureController(private val pictureService: PictureService,
         if (userId != picture.user.id) {
             throw PermissionException("你无权删除该图片")
         }
-        bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
-        return pictureService.remove(picture.id!!)
+        return pictureService.remove(picture)
     }
 
     /**
@@ -159,7 +158,7 @@ class PictureController(private val pictureService: PictureService,
                 throw PermissionException("你无权删除该图片")
             }
             bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
-            pictureService.remove(picture.id!!)
+            pictureService.remove(picture)
         }
         return true
     }
