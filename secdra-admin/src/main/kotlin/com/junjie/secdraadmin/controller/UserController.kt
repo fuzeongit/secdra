@@ -3,6 +3,7 @@ package com.junjie.secdraadmin.controller
 import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdraadmin.code.communal.CommonAbstract
 import com.junjie.secdraadmin.constant.UserConstant
+import com.junjie.secdraadmin.vo.UserListVO
 import com.junjie.secdracollect.service.PixivPictureService
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdradata.constant.Gender
@@ -38,8 +39,11 @@ class UserController(
      */
     @GetMapping("list")
     @RestfulPack
-    fun list(name: String?): List<User> {
-        return userService.list(name)
+    fun list(name: String?): List<UserListVO> {
+        val list =  userService.list(name)
+        return list.map{
+            UserListVO(it,  accountService.get(it.accountId).phone)
+        }
     }
 
     /**

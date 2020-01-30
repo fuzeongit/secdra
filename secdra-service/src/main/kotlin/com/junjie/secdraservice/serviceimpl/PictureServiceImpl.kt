@@ -82,26 +82,24 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
         return pictureDAO.count(specification)
     }
 
-    override fun paging(pageable: Pageable, userId: String?, nickname: String?, name: String?, startDate: Date?, endDate: Date?): Page<Picture> {
+    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, startDate: Date?, endDate: Date?): Page<Picture> {
         val specification = Specification<Picture> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
             if (!name.isNullOrEmpty()) {
                 predicatesList.add(criteriaBuilder.like(root.get<String>("name"), "%$name%"))
             }
+            if (privacy != null) {
+                predicatesList.add(criteriaBuilder.equal(root.get<Int>("privacy"), privacy))
+            }
             if (startDate != null) {
                 predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), DateUtil.getDayBeginTime(startDate)))
             }
             if (endDate != null) {
-                predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), DateUtil.getDayBeginTime(endDate)))
+                predicatesList.add(criteriaBuilder.lessThan(root.get("createDate"), DateUtil.getDayEndTime(endDate)))
             }
-            if(!userId.isNullOrEmpty()||!nickname.isNullOrEmpty()){
+            if (!userId.isNullOrEmpty()) {
                 val joinUser: Join<Picture, User> = root.join("user", JoinType.LEFT)
-                if (!userId.isNullOrEmpty()) {
-                    predicatesList.add(criteriaBuilder.like(joinUser.get<String>("id"), userId))
-                }
-                if (!nickname.isNullOrEmpty()) {
-                    predicatesList.add(criteriaBuilder.like(joinUser.get<String>("name"), "%$nickname%"))
-                }
+                predicatesList.add(criteriaBuilder.like(joinUser.get<String>("id"), userId))
             }
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
