@@ -1,14 +1,25 @@
 package com.junjie.secdraservice.serviceimpl
 
+import com.junjie.secdracore.component.BaseConfig
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.SignInException
+import com.junjie.secdradata.constant.PictureState
+import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdradata.database.primary.dao.UserDAO
+import com.junjie.secdradata.database.primary.entity.Picture
+import com.junjie.secdradata.database.primary.entity.Tag
 import com.junjie.secdradata.database.primary.entity.User
 import com.junjie.secdraservice.service.UserService
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.persistence.criteria.Join
+import javax.persistence.criteria.JoinType
+import javax.persistence.criteria.Predicate
 
 @Service
 class UserServiceImpl(private val userDAO: UserDAO) : UserService {
@@ -36,8 +47,23 @@ class UserServiceImpl(private val userDAO: UserDAO) : UserService {
         }
     }
 
-    override fun updateInfo(user: User): User {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun paging(pageable: Pageable, name: String?, accountIdList: List<String>): Page<User> {
+        val specification = Specification<User> { root, _, criteriaBuilder ->
+            val predicatesList = ArrayList<Predicate>()
+            if (accountIdList.isNotEmpty()) {
+                val path = root.get<String>("accountId")
+                val inValue = criteriaBuilder.`in`(path)
+                accountIdList.forEach {
+                    inValue.value(it)
+                }
+                predicatesList.add(criteriaBuilder.and(inValue))
+            }
+            if (name != null && name.isNotEmpty()) {
+                predicatesList.add(criteriaBuilder.like(root.get<String>("name"), "%$name%"))
+            }
+            criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
+        }
+        return userDAO.findAll(specification, pageable)
     }
 }
 

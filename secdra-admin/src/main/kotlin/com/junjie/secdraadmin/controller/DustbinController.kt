@@ -1,16 +1,13 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdracore.annotations.RestfulPack
-import com.junjie.secdradata.constant.PictureLifeState
-import com.junjie.secdradata.database.primary.entity.Picture
-import com.junjie.secdradata.index.primary.document.PictureDocument
 import com.junjie.secdraqiniu.core.component.QiniuConfig
 import com.junjie.secdraqiniu.service.BucketService
 import com.junjie.secdraservice.service.PictureService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("dustbin")

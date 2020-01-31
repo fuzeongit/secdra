@@ -1,7 +1,8 @@
 package com.junjie.secdraservice.service
 
 import com.junjie.secdradata.database.primary.entity.User
-import java.util.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 /**
  * 用户的服务
@@ -29,8 +30,5 @@ interface UserService {
      */
     fun list(name: String? = null): List<User>
 
-    /**
-     * 修改用户信息
-     */
-    fun updateInfo(user: User): User
+    fun paging(pageable: Pageable, name: String?, accountIdList: List<String>): Page<User>
 }

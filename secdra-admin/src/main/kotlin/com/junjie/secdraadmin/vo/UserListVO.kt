@@ -8,4 +8,8 @@ class UserListVO(user: User, var phone: String) {
     var accountId: String = user.accountId
 
     var name: String = user.name
+
+    var head: String? = user.head
+
+    var background: String? = user.background
 }

@@ -28,5 +28,7 @@ interface AccountService {
     /**
      * 修改密码
      */
-    fun forgot(phone: String, password: String, rePasswordTime: Date = Date()): User
+    fun forgot(phone: String, password: String, rePasswordTime: Date = Date()): Account
+
+    fun listByPhoneLike(phone: String): List<Account>
 }

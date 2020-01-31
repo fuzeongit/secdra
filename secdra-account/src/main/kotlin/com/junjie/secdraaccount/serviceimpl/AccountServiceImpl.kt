@@ -43,7 +43,11 @@ class AccountServiceImpl(private val accountDAO: AccountDAO) : AccountService {
         return accountDAO.findOneByPhoneAndPassword(phone, password).orElseThrow { SignInException("账号密码不正确") }
     }
 
-    override fun forgot(phone: String, password: String, rePasswordTime: Date): User {
+    override fun forgot(phone: String, password: String, rePasswordTime: Date): Account {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun listByPhoneLike(phone: String): List<Account> {
+        return accountDAO.findAllByPhoneLike("%$phone%")
     }
 }

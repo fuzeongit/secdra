@@ -13,4 +13,6 @@ interface AccountDAO : JpaRepository<Account, String> {
     fun findOneByPhone(phone: String): Optional<Account>
 
     fun findOneByPhoneAndPassword(phone: String, password: String): Optional<Account>
+
+    fun findAllByPhoneLike(phone: String): List<Account>
 }

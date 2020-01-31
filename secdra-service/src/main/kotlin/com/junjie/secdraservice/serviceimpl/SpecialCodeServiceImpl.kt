@@ -16,4 +16,13 @@ class SpecialCodeServiceImpl(private val specialCodeDAO: SpecialCodeDAO) : Speci
         return specialCodeDAO.save(SpecialCode(code))
     }
 
+    override fun list(): List<SpecialCode> {
+        return specialCodeDAO.findAll()
+    }
+
+    override fun remove(id: String): Boolean {
+        specialCodeDAO.deleteById(id)
+        return true
+    }
+
 }
