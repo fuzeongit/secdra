@@ -3,10 +3,12 @@ package com.junjie.secdraadmin.controller
 import com.junjie.secdracollect.service.PixivPictureService
 import com.junjie.secdracollect.service.PixivErrorService
 import com.junjie.secdracore.annotations.RestfulPack
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.util.EmojiUtil
 import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivPicture
 import com.junjie.secdradata.database.collect.entity.PixivError
+import com.junjie.secdradata.database.primary.entity.Picture
 import com.junjie.secdradata.database.primary.entity.Tag
 import com.junjie.secdraservice.service.PictureService
 import org.springframework.web.bind.annotation.GetMapping
@@ -53,7 +55,7 @@ class CollectController(
                 picture.name = pixivPicture.pixivName!!
                 picture.tagList.addAll(pixivPicture.tagList!!.split("|").asSequence().toSet().asSequence().map { Tag(it) }.toList())
                 pixivPictureService.save(pixivPicture)
-                pictureService.save(picture)
+                pictureService.save(picture, true)
             } catch (e: Exception) {
                 pixivErrorService.save(PixivError(pixivId, e.message))
             }
@@ -69,5 +71,22 @@ class CollectController(
     fun pixivErrorSave(pixivId: String, message: String): PixivError {
         val pixivError = PixivError(pixivId, message)
         return pixivErrorService.save(pixivError)
+    }
+
+    /**
+     * 保存pixiv采集错误
+     */
+    @GetMapping("listPictureBySuit")
+    @RestfulPack
+    fun listPictureBySuit(pixivId: String): List<Picture> {
+        val list = pixivPictureService.listByPixivId(pixivId)
+        val resultList = mutableListOf<Picture>()
+        for (item in list) {
+            try {
+                resultList.add(pictureService.getByLife(item.pictureId))
+            } catch (e: NotFoundException) {
+            }
+        }
+        return resultList
     }
 }

@@ -18,15 +18,6 @@ class DustbinController(private val qiniuConfig: QiniuConfig,
                         private val bucketService: BucketService,
                         private val pictureService: PictureService) {
     /**
-     * 获取回收站
-     */
-    @GetMapping("paging")
-    @RestfulPack
-    fun paging(@PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
-        return pictureService.pagingByLife(PictureLifeState.DISAPPEAR, pageable)
-    }
-
-    /**
      * 还原
      */
     @PostMapping("reduction")

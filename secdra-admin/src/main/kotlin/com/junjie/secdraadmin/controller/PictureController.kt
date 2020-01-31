@@ -39,13 +39,13 @@ class PictureController(
      */
     @GetMapping("paging")
     @RestfulPack
-    fun paging(userId: String?, phone: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, startDate: Date?, endDate: Date?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
+    fun paging(userId: String?, phone: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
         val phoneUserId = if (!phone.isNullOrEmpty() && userId.isNullOrEmpty()) {
             val account = accountService.getByPhone(phone!!)
             val user = userService.getByAccountId(account.id!!)
             user.id
         } else null
-        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, life, startDate, endDate)
+        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, life, master, startDate, endDate)
     }
 
     @PostMapping("updatePrivacy")

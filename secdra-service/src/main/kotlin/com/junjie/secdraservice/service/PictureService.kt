@@ -26,13 +26,11 @@ interface PictureService {
     @Deprecated("由于ES的引入，弃用改查询，使用ES的countByTag")
     fun countByTag(tag: String): Long
 
-    fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, startDate: Date?, endDate: Date?): Page<Picture>
-
-    fun pagingByLife(life: PictureLifeState, pageable: Pageable): Page<Picture>
+    fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?): Page<Picture>
 
     fun get(id: String): Picture
 
-    fun getByLife(id: String, life: PictureLifeState?): Picture
+    fun getByLife(id: String, life: PictureLifeState? = null): Picture
 
     /**
      * 逻辑删除
@@ -51,7 +49,7 @@ interface PictureService {
 
     fun list(): List<Picture>
 
-    fun listByLife(life: PictureLifeState?): List<Picture>
+    fun listByLife(life: PictureLifeState? = null): List<Picture>
 
     fun listByUserId(userId: String): List<Picture>
 

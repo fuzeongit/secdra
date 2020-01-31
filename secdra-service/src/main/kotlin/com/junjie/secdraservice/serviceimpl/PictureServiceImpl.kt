@@ -82,7 +82,7 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
         return pictureDAO.count(specification)
     }
 
-    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, startDate: Date?, endDate: Date?): Page<Picture> {
+    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?): Page<Picture> {
         val specification = Specification<Picture> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
             if (!name.isNullOrEmpty()) {
@@ -93,6 +93,13 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
             }
             if (life != null) {
                 predicatesList.add(criteriaBuilder.equal(root.get<Int>("life"), life))
+            }
+            if (master != null) {
+                if(master){
+                    predicatesList.add(criteriaBuilder.like(root.get<String>("url"), "%_p0%"))
+                }else{
+                    predicatesList.add(criteriaBuilder.notLike(root.get<String>("url"), "%_p0%"))
+                }
             }
             if (startDate != null) {
                 predicatesList.add(criteriaBuilder.greaterThan(root.get("createDate"), DateUtil.getDayBeginTime(startDate)))
@@ -107,10 +114,6 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }
         return pictureDAO.findAll(specification, pageable)
-    }
-
-    override fun pagingByLife(life: PictureLifeState, pageable: Pageable): Page<Picture> {
-        return pictureDAO.findAllByLife(life, pageable)
     }
 
     override fun get(id: String): Picture {
@@ -137,7 +140,7 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
     }
 
     override fun reduction(id: String): PictureDocument {
-        val picture = getByLife(id, null)
+        val picture = getByLife(id)
         picture.life = PictureLifeState.EXIST
         return save(picture, true)
     }
