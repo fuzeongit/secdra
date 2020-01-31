@@ -5,6 +5,7 @@ import com.junjie.secdraweb.core.interceptor.AuthInterceptor
 import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdracore.component.BaseConfig
 import com.junjie.secdraqiniu.core.component.QiniuConfig
+import com.junjie.secdraservice.service.SpecialCodeService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.component.RedisComponent
 import com.junjie.secdraweb.core.resolver.CurrentUserIdMethodArgumentResolver
@@ -24,9 +25,11 @@ import java.util.*
  * 程序的配置清单
  */
 @Configuration
-class ProgramConfigurer(private val redisTemplate: StringRedisTemplate,
-                        private val accountService: AccountService,
-                        private val userService: UserService) : WebMvcConfigurer {
+class ProgramConfigurer(
+        private val accountService: AccountService,
+        private val userService: UserService,
+        private val specialCodeService: SpecialCodeService
+) : WebMvcConfigurer {
     /**
      * 拦截器
      */
@@ -61,7 +64,7 @@ class ProgramConfigurer(private val redisTemplate: StringRedisTemplate,
 
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
-        return AuthInterceptor(accountConfig(), redisTemplate, accountService, userService)
+        return AuthInterceptor(accountConfig(), accountService, userService, specialCodeService)
     }
 
     @Bean

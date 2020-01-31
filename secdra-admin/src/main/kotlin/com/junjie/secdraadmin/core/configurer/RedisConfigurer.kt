@@ -26,10 +26,10 @@ class RedisConfigurer : CachingConfigurerSupport() {
         val configMap = HashMap<String, RedisCacheConfiguration>()
         //
         cacheNames.add("pictureDocument::get")
-        cacheNames.add("user::getInfo")
+        cacheNames.add("user::get")
         // 对每个缓存空间应用不同的配置
         configMap["pictureDocument::get"] = redisCacheConfiguration.entryTtl(Duration.ofHours(1))
-        configMap["user::getInfo"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
+        configMap["user::get"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
                 .cacheDefaults(redisCacheConfiguration)

@@ -34,7 +34,7 @@ class UserController(private val qiniuConfig: QiniuConfig,
     @GetMapping("get")
     @RestfulPack
     fun get(@CurrentUserId userId: String?, id: String?): UserVO {
-        (userId.isNullOrEmpty() && id.isNullOrEmpty()) && throw SignInException("请登录")
+        (userId.isNullOrEmpty() && id.isNullOrEmpty()) && throw SignInException("请重新登录")
         return getUserVO(id ?: userId!!, userId)
     }
 

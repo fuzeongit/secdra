@@ -99,7 +99,7 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
     @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<CollectionPictureVO> {
-        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
+        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请重新登录")
         val page = collectionService.pagingByUserId(targetId ?: userId!!, pageable)
         val collectionPictureVOList = ArrayList<CollectionPictureVO>()
         for (collection in page.content) {

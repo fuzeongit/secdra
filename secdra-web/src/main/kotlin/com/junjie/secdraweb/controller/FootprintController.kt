@@ -52,7 +52,7 @@ class FootprintController(private val footprintService: FootprintService,
     @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId userId: String?, targetId: String?, @PageableDefault(value = 20) pageable: Pageable): Page<FootprintPictureVO> {
-        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请登录")
+        (userId.isNullOrEmpty() && targetId.isNullOrEmpty()) && throw SignInException("请重新登录")
         val page = footprintService.pagingByUserId(targetId ?: userId!!, pageable)
         val footprintPictureVOList = ArrayList<FootprintPictureVO>()
         for (footprint in page.content) {

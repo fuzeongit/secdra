@@ -75,7 +75,7 @@ class FollowingController(private val followMessageService: FollowMessageService
     @GetMapping("paging")
     @RestfulPack
     fun paging(@CurrentUserId followerId: String?, id: String?, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
-        if (followerId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请登录")
+        if (followerId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请重新登录")
         val page = followService.pagingByFollowerId(id ?: followerId!!, pageable)
         val userVOList = page.content.map {
             val userVO = UserVO(userService.get(it.followingId))

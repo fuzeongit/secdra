@@ -134,7 +134,7 @@ class PictureController(private val pictureService: PictureService,
     /**
      * 逻辑删除图片
      */
-    @Auth
+    @Auth(true)
     @PostMapping("remove")
     @RestfulPack
     fun remove(@CurrentUserId userId: String, id: String): Boolean {
@@ -148,7 +148,7 @@ class PictureController(private val pictureService: PictureService,
     /**
      * 批量移除图片
      */
-    @Auth
+    @Auth(true)
     @PostMapping("batchRemove")
     @RestfulPack
     fun batchRemove(@CurrentUserId userId: String, @RequestParam("idList") idList: Array<String>): Boolean {

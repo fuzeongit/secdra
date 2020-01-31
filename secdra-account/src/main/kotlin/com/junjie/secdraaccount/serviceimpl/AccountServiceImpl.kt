@@ -7,11 +7,19 @@ import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.database.primary.entity.User
 import com.junjie.secdradata.database.account.dao.AccountDAO
 import com.junjie.secdradata.database.account.entity.Account
+import org.springframework.cache.annotation.CachePut
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class AccountServiceImpl(private val accountDAO: AccountDAO) : AccountService {
+    @CachePut("account::get", key = "#account.id")
+    override fun save(account: Account): Account {
+        return accountDAO.save(account)
+    }
+
+    @Cacheable("account::get")
     override fun get(id: String): Account {
         return accountDAO.findById(id).orElseThrow { NotFoundException("账号不存在") }
     }

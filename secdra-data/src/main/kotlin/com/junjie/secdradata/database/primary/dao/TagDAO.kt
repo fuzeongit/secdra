@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TagDAO : JpaRepository<Tag, String>, JpaSpecificationExecutor<Tag> {
-    //    fun findFirst(@Nullable specification: Specification<Tag>): Tag
-}
+interface TagDAO : JpaRepository<Tag, String>, JpaSpecificationExecutor<Tag>

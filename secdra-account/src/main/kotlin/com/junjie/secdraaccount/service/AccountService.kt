@@ -5,6 +5,8 @@ import com.junjie.secdradata.database.account.entity.Account
 import java.util.*
 
 interface AccountService {
+    fun save(account: Account): Account
+
     fun get(id: String): Account
 
     fun getByPhone(phone: String): Account

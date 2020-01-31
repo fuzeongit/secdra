@@ -30,14 +30,16 @@ class RedisConfigurer : CachingConfigurerSupport() {
         cacheNames.add("pictureDocument::countByTag")
         cacheNames.add("pictureDocument::getFirstByTag")
         cacheNames.add("pictureDocument::listTagTop30")
-        cacheNames.add("user::getInfo")
+        cacheNames.add("user::get")
+        cacheNames.add("account::get")
         // 对每个缓存空间应用不同的配置
         configMap["pictureDocument::get"] = redisCacheConfiguration.entryTtl(Duration.ofHours(1))
         configMap["pictureDocument::paging"] = redisCacheConfiguration.entryTtl(Duration.ofHours(1))
         configMap["pictureDocument::countByTag"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         configMap["pictureDocument::getFirstByTag"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         configMap["pictureDocument::listTagTop30"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
-        configMap["user::getInfo"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
+        configMap["user::get"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
+        configMap["account::get"] = redisCacheConfiguration.entryTtl(Duration.ofHours(12))
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
                 .cacheDefaults(redisCacheConfiguration)
