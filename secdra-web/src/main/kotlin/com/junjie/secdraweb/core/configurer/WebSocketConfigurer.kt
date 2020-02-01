@@ -22,8 +22,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
  * webSocket配置
  */
 @Configuration
-class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate,
-                          private val userService: UserService,
+class WebSocketConfigurer(private val userService: UserService,
                           private val accountService: AccountService) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
@@ -53,7 +52,7 @@ class WebSocketConfigurer(private val redisTemplate: StringRedisTemplate,
 
     @Bean
     internal fun webSocketUserInterceptor(): WebSocketUserInterceptor {
-        return WebSocketUserInterceptor(baseConfig(), accountConfig(), redisTemplate, accountService, userService)
+        return WebSocketUserInterceptor(baseConfig(), accountConfig(), accountService, userService)
     }
 
     @Bean

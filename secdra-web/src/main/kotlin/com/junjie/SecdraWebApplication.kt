@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.scheduling.annotation.EnableAsync
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
@@ -16,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @EnableAsync
 @EnableWebSocketMessageBroker
 @EnableSwagger2
-//@EnableScheduling
+@EnableScheduling
 @SpringBootApplication
 class SecdraWebApplication : SpringBootServletInitializer() {
     override fun configure(builder: SpringApplicationBuilder): SpringApplicationBuilder {

@@ -21,7 +21,6 @@ import java.util.*
 
 class WebSocketUserInterceptor(private val baseConfig: BaseConfig,
                                private val accountConfig: AccountConfig,
-                               private val redisTemplate: StringRedisTemplate,
                                private val accountService: AccountService,
                                private val userService: UserService) : ChannelInterceptor {
 
@@ -41,28 +40,15 @@ class WebSocketUserInterceptor(private val baseConfig: BaseConfig,
                 val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
                 //生成时间
                 val nbf = Date(claims["nbf"]?.toString()?.toLong()!! * 1000)
-                //最后更改密码时间
-                val rePasswordDateStr = redisTemplate.opsForValue()[String.format(accountConfig.updatePasswordTimePrefix, accountId)]
-                val rePasswordDate: Date?
-                //缓存穿透
-                rePasswordDate = if (rePasswordDateStr.isNullOrEmpty()) {
-                    val info = accountService.get(accountId)
-                    //最后更改密码时间写入redis
-                    redisTemplate.opsForValue().set(
-                            String.format(accountConfig.updatePasswordTimePrefix, accountId),
-                            info.rePasswordDate.time.toString())
-                    info.rePasswordDate
-                } else {
-                    Date(rePasswordDateStr?.toLong()!!)
-                }
+
+                val account = accountService.get(accountId)
                 if (DateUtil.getDistanceTimestamp(Date(), exp) < 0) {
                     throw SignInException("用户登录已过期")
                 }
                 if (accountId.isEmpty()) {
                     throw SignInException("请重新登录")
                 }
-                if (DateUtil.getDistanceTimestamp(rePasswordDate, nbf) < 0) {
-                    redisTemplate.opsForValue().set(String.format(accountConfig.updatePasswordTimePrefix, accountId), "")
+                if (DateUtil.getDistanceTimestamp(account.rePasswordDate, nbf) < 0) {
                     throw SignInException("请重新登录")
                 }
                 accessor.user = WebSocketUser(userService.getByAccountId(accountId).id!!)
