@@ -12,7 +12,8 @@ import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivPicture
 import com.junjie.secdradata.database.primary.entity.Picture
 import com.junjie.secdradata.index.primary.document.PictureDocument
-import com.junjie.secdraservice.service.PictureDocumentService
+import com.junjie.secdraqiniu.core.component.QiniuConfig
+import com.junjie.secdraqiniu.service.BucketService
 import com.junjie.secdraservice.service.PictureService
 import com.junjie.secdraservice.service.UserService
 import org.springframework.data.domain.Page
@@ -30,6 +31,8 @@ import javax.imageio.ImageIO
 class PictureController(
         override val accountService: AccountService,
         override val userService: UserService,
+        private val bucketService: BucketService,
+        private val qiniuConfig: QiniuConfig,
         private val pictureService: PictureService,
         private val pixivPictureService: PixivPictureService,
         private val elasticsearchTemplate: ElasticsearchTemplate) : CommonAbstract() {
@@ -63,16 +66,6 @@ class PictureController(
     /**
      * 逻辑删除图片
      */
-    @PostMapping("remove")
-    @RestfulPack
-    fun remove(id: String): Boolean {
-        val picture = pictureService.get(id)
-        return pictureService.remove(picture)
-    }
-
-    /**
-     * 逻辑删除图片
-     */
     @PostMapping("batchRemove")
     @RestfulPack
     fun batchRemove(@RequestParam("idList") idList: Array<String>): Boolean {
@@ -83,6 +76,22 @@ class PictureController(
         }
         return true
     }
+
+    /**
+     * 物理删除图片
+     * 慎用
+     */
+    @PostMapping("batchDelete")
+    @RestfulPack
+    fun batchDelete(@RequestParam("idList") idList: Array<String>): Boolean {
+        for (id in idList) {
+            val picture = pictureService.getByLife(id)
+            bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
+            pictureService.delete(id)
+        }
+        return true
+    }
+
 
     /**
      * 根据文件夹写入图片写入数据库
