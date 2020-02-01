@@ -70,12 +70,13 @@ class Picture : Serializable {
         this.introduction = introduction
     }
 
-    constructor(user: User, url: String, width: Long, height: Long, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通") {
+    constructor(user: User, url: String, width: Long, height: Long, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通", privacy: PrivacyState = PrivacyState.PUBLIC) {
         this.user = user
         this.url = url
         this.name = name
         this.introduction = introduction
         this.width = width
         this.height = height
+        this.privacy = privacy
     }
 }

@@ -14,9 +14,12 @@ class PixivPictureServiceImpl(
         private val pixivPictureDAO: PixivPictureDAO,
         private val accountToPixivUserDAO: AccountToPixivUserDAO
 ) : PixivPictureService {
-
     override fun save(pixivPicture: PixivPicture): PixivPicture {
         return pixivPictureDAO.save(pixivPicture)
+    }
+
+    override fun saveAll(pixivPictureList: List<PixivPicture>): List<PixivPicture> {
+        return pixivPictureDAO.saveAll(pixivPictureList)
     }
 
     override fun listByState(state: TransferState): List<PixivPicture> {

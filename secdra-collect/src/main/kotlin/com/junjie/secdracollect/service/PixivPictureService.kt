@@ -7,6 +7,8 @@ import com.junjie.secdradata.database.collect.entity.PixivPicture
 interface PixivPictureService {
     fun save(pixivPicture: PixivPicture): PixivPicture
 
+    fun saveAll(pixivPictureList: List<PixivPicture>): List<PixivPicture>
+
     fun listByState(state: TransferState): List<PixivPicture>
 
     fun listByPixivId(pixivId: String): List<PixivPicture>

@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PixivErrorDAO : JpaRepository<PixivError, String> {
     fun findAllByPixivId(pixivId: String): List<PixivError>
+
+    fun findAllByRecord(record: Boolean): List<PixivError>
+
+    fun findAllByStatusAndRecord(status: Int, record: Boolean): List<PixivError>
 }

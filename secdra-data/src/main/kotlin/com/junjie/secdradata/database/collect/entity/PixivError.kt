@@ -17,6 +17,8 @@ class PixivError {
 
     lateinit var pixivId: String
 
+    var status: Int? = null
+
     @Column(columnDefinition = "text")
     var message: String? = null
 
@@ -30,8 +32,9 @@ class PixivError {
 
     constructor()
 
-    constructor(pixivId: String, message: String?) {
+    constructor(pixivId: String, status: Int, message: String?) {
         this.pixivId = pixivId
+        this.status = status
         this.message = message
     }
 }

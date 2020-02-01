@@ -89,7 +89,7 @@ class PictureController(
      */
     @PostMapping("init")
     @RestfulPack
-    fun init(folderPath: String, userId: String): PictureInitVO {
+    fun init(folderPath: String, userId: String, privacy: PrivacyState): PictureInitVO {
         var readNumber = 0
         val errorUrlList = mutableListOf<String>()
         val errorReadList = mutableListOf<String>()
@@ -105,7 +105,7 @@ class PictureController(
                 errorReadList.add(fileName)
                 continue
             }
-            val picture = Picture(user, fileName, read.width.toLong(), read.height.toLong(), fileName, "这是一张很好看的图片，这是我从p站上下载回来的，侵删！")
+            val picture = Picture(user, fileName, read.width.toLong(), read.height.toLong(), fileName, "这是一张很好看的图片，这是我从p站上下载回来的，侵删！", privacy)
             try {
                 val pictureDocument = pictureService.save(picture)
                 val pixivPicture = PixivPicture(fileName.split("_")[0], pictureDocument.id!!)

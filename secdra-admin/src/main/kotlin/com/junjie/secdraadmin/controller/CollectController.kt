@@ -57,7 +57,7 @@ class CollectController(
                 pixivPictureService.save(pixivPicture)
                 pictureService.save(picture, true)
             } catch (e: Exception) {
-                pixivErrorService.save(PixivError(pixivId, e.message))
+                pixivErrorService.save(PixivError(pixivId, 500, e.message))
             }
         }
         return true
@@ -68,8 +68,8 @@ class CollectController(
      */
     @PostMapping("saveError")
     @RestfulPack
-    fun pixivErrorSave(pixivId: String, message: String): PixivError {
-        val pixivError = PixivError(pixivId, message)
+    fun pixivErrorSave(pixivId: String, status: Int, message: String?): PixivError {
+        val pixivError = PixivError(pixivId, status, message)
         return pixivErrorService.save(pixivError)
     }
 
@@ -88,5 +88,25 @@ class CollectController(
             }
         }
         return resultList
+    }
+
+    /**
+     * 保存pixiv采集错误
+     */
+    @PostMapping("giveUpError")
+    @RestfulPack
+    fun giveUpError(status: Int?): Boolean {
+        val pixivErrorList = pixivErrorService.listByRecord(false, status)
+        pixivErrorList.forEach {
+            val pixivPictureList =
+                    pixivPictureService.listByPixivId(it.pixivId)
+            pixivPictureService.saveAll(pixivPictureList.map { pixivPicture ->
+                pixivPicture.state = TransferState.ABANDON
+                pixivPicture
+            })
+            it.record = true
+            pixivErrorService.save(it)
+        }
+        return true
     }
 }
