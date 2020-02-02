@@ -8,7 +8,7 @@ import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdracore.util.CookieUtil
 import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdracore.util.JwtUtil
-import com.junjie.secdraservice.service.SpecialCodeService
+import com.junjie.secdraservice.service.AuthorizeCodeService
 import com.junjie.secdraservice.service.UserService
 import org.springframework.lang.Nullable
 import org.springframework.web.method.HandlerMethod
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse
 class AuthInterceptor(private val accountConfig: AccountConfig,
                       private val accountService: AccountService,
                       private val userService: UserService,
-                      private val specialCodeService: SpecialCodeService
+                      private val authorizeCodeService: AuthorizeCodeService
 ) : HandlerInterceptor {
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -64,16 +64,16 @@ class AuthInterceptor(private val accountConfig: AccountConfig,
                 }
 
                 if (auth != null && auth.needCode) {
-                    val specialCodeCookie = cookieMap["specialCode"]
-                    val specialCode = (if (specialCodeCookie != null) {
-                        specialCodeCookie.value
+                    val authorizeCodeCookie = cookieMap["authorizeCode"]
+                    val authorizeCode = (if (authorizeCodeCookie != null) {
+                        authorizeCodeCookie.value
                     } else {
-                        request.getHeader("specialCodeCookie")
-                    }) ?: throw PermissionException("该操作需要操作码进行")
+                        request.getHeader("authorizeCodeCookie")
+                    }) ?: throw PermissionException("该操作需要特殊授权码进行")
                     try {
-                        specialCodeService.getByCode(specialCode)
+                        authorizeCodeService.getByCode(authorizeCode)
                     } catch (e: Exception) {
-                        throw PermissionException("该操作的操作码不合法")
+                        throw PermissionException("该操作的特殊授权码不合法")
                     }
                 }
                 request.setAttribute("userId", userService.getByAccountId(accountId).id!!)

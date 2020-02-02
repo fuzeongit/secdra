@@ -4,7 +4,7 @@ import com.junjie.secdraaccount.core.component.AccountConfig
 import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdracore.component.BaseConfig
 import com.junjie.secdraqiniu.core.component.QiniuConfig
-import com.junjie.secdraservice.service.SpecialCodeService
+import com.junjie.secdraservice.service.AuthorizeCodeService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.component.RedisComponent
 import com.junjie.secdraweb.core.interceptor.AuthInterceptor
@@ -28,7 +28,7 @@ import java.util.*
 class ProgramConfigurer(
         private val accountService: AccountService,
         private val userService: UserService,
-        private val specialCodeService: SpecialCodeService
+        private val authorizeCodeService: AuthorizeCodeService
 ) : WebMvcConfigurer {
     /**
      * 拦截器
@@ -64,7 +64,7 @@ class ProgramConfigurer(
 
     @Bean
     internal fun authInterceptor(): AuthInterceptor {
-        return AuthInterceptor(accountConfig(), accountService, userService, specialCodeService)
+        return AuthInterceptor(accountConfig(), accountService, userService, authorizeCodeService)
     }
 
     @Bean

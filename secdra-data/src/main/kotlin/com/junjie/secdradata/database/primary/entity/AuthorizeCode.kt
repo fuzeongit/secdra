@@ -1,9 +1,7 @@
 package com.junjie.secdradata.database.primary.entity
 
-import com.junjie.secdradata.constant.Gender
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
@@ -18,7 +16,7 @@ import javax.persistence.*
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("code"))])
-class SpecialCode : Serializable {
+class AuthorizeCode : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
     @GeneratedValue(generator = "idGenerator")

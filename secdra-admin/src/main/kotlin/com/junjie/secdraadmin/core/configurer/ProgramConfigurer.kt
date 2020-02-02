@@ -30,7 +30,7 @@ class ProgramConfigurer(private val administratorService: AdministratorService) 
         registry.addInterceptor(authInterceptor())
                 .addPathPatterns("/collect/*")
                 .addPathPatterns("/picture/*")
-                .addPathPatterns("/specialCode/*")
+                .addPathPatterns("/authorizeCode/*")
                 .addPathPatterns("/user/*")
         super.addInterceptors(registry)
     }
