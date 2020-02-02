@@ -24,3 +24,4 @@
 /nbdist/
 /.nb-gradle/
 /secdra-web/src/main/resources/application-prod.yml
+/secdra-admin/src/main/resources/application-prod.yml
