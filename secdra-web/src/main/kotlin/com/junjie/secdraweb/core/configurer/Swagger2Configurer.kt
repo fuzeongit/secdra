@@ -1,7 +1,6 @@
 package com.junjie.secdraweb.core.configurer
 
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
@@ -13,7 +12,7 @@ import springfox.documentation.spring.web.plugins.Docket
  * @author fjj
  * 自动化api文档配置
  */
-@Configuration
+//@Configuration
 class Swagger2Configurer {
 
     @Bean
@@ -23,15 +22,15 @@ class Swagger2Configurer {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.junjie.secdraweb.controller"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
     }
 
-    fun apiInfo(): ApiInfo {
+    private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
                 .title("api文档")
                 .description("")
                 .termsOfServiceUrl("")
                 .version("1.0")
-                .build();
+                .build()
     }
 }
