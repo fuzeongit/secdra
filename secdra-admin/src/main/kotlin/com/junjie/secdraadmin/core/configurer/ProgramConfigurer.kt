@@ -1,12 +1,15 @@
 package com.junjie.secdraadmin.core.configurer
 
 import com.junjie.secdraadmin.core.component.RedisComponent
+import com.junjie.secdraadmin.core.interceptor.AuthInterceptor
 import com.junjie.secdraqiniu.core.component.QiniuConfig
+import com.junjie.secdraservice.service.AdministratorService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,7 +19,18 @@ import java.util.*
  * 程序的配置清单
  */
 @Configuration
-class ProgramConfigurer : WebMvcConfigurer {
+class ProgramConfigurer(private val administratorService: AdministratorService) : WebMvcConfigurer {
+    /**
+     * 拦截器
+     */
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        // 多个拦截器组成一个拦截器链
+        // addPathPatterns 用于添加拦截规则
+        // excludePathPatterns 用户排除拦截
+        registry.addInterceptor(authInterceptor()).addPathPatterns("/**")
+        super.addInterceptors(registry)
+    }
+
     override fun addCorsMappings(registry: CorsRegistry) {
         //设置允许跨域的路径
         registry.addMapping("/**")
@@ -26,6 +40,8 @@ class ProgramConfigurer : WebMvcConfigurer {
                 .allowCredentials(true)
                 //设置允许的方法
                 .allowedMethods("*")
+                //设置允许的方法
+                .allowedHeaders("*")
                 //跨域允许时间
                 .maxAge(3600)
     }
@@ -41,6 +57,11 @@ class ProgramConfigurer : WebMvcConfigurer {
     @Bean
     internal fun redisComponent(): RedisComponent {
         return RedisComponent(StringRedisTemplate())
+    }
+
+    @Bean
+    internal fun authInterceptor(): AuthInterceptor {
+        return AuthInterceptor(administratorService)
     }
 
     @Bean

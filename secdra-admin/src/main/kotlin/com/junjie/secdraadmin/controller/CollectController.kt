@@ -74,7 +74,7 @@ class CollectController(
     }
 
     /**
-     * 保存pixiv采集错误
+     * 获取套图
      */
     @GetMapping("listPictureBySuit")
     @RestfulPack
