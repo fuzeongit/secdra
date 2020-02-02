@@ -1,4 +1,4 @@
-package com.junjie.secdraadmin.code.communal
+package com.junjie.secdraadmin.core.communal
 
 import com.junjie.secdraaccount.service.AccountService
 import com.junjie.secdraadmin.constant.UserConstant

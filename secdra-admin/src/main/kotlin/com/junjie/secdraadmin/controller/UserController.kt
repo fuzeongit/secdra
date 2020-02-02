@@ -1,7 +1,7 @@
 package com.junjie.secdraadmin.controller
 
 import com.junjie.secdraaccount.service.AccountService
-import com.junjie.secdraadmin.code.communal.CommonAbstract
+import com.junjie.secdraadmin.core.communal.CommonAbstract
 import com.junjie.secdraadmin.constant.UserConstant
 import com.junjie.secdraadmin.vo.UserListVO
 import com.junjie.secdracollect.service.PixivPictureService
