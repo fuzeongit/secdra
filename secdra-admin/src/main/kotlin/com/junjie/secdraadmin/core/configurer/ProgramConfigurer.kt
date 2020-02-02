@@ -27,7 +27,11 @@ class ProgramConfigurer(private val administratorService: AdministratorService) 
         // 多个拦截器组成一个拦截器链
         // addPathPatterns 用于添加拦截规则
         // excludePathPatterns 用户排除拦截
-        registry.addInterceptor(authInterceptor()).addPathPatterns("/**")
+        registry.addInterceptor(authInterceptor())
+                .addPathPatterns("/collect/*")
+                .addPathPatterns("/picture/*")
+                .addPathPatterns("/specialCode/*")
+                .addPathPatterns("/user/*")
         super.addInterceptors(registry)
     }
 

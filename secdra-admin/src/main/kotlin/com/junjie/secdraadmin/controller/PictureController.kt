@@ -80,6 +80,18 @@ class PictureController(
     }
 
     /**
+     * 还原
+     */
+    @PostMapping("reduction")
+    @RestfulPack
+    fun reduction(@RequestParam("idList") idList: Array<String>): Boolean {
+        for (id in idList) {
+            pictureService.reduction(id)
+        }
+        return true
+    }
+
+    /**
      * 物理删除图片
      * 慎用
      */
