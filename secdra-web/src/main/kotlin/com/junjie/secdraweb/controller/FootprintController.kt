@@ -5,6 +5,7 @@ import com.junjie.secdracore.annotations.CurrentUserId
 import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
+import com.junjie.secdracore.exception.ProgramException
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.*
@@ -69,6 +70,8 @@ class FootprintController(private val footprintService: FootprintService,
                         getUserVO(picture.userId, userId)
                 )
             } catch (e: NotFoundException) {
+                FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.createDate!!)
+            } catch (e: PermissionException) {
                 FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.createDate!!)
             }
             footprintPictureVOList.add(footprintPictureVO)

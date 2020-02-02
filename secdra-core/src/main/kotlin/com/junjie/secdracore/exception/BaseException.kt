@@ -1,6 +1,6 @@
 package com.junjie.secdracore.exception
 
-open class BaseException : Exception {
+open class BaseException : RuntimeException  {
     var status: Int = 500
 
     var data: Any? = null

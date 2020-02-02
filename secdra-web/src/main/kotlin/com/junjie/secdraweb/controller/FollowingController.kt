@@ -62,9 +62,7 @@ class FollowingController(private val followMessageService: FollowMessageService
         for (followingId in followingIdList) {
             try {
                 followService.remove(followerId, followingId)
-            } catch (e: Exception) {
-
-            }
+            } catch (e: Exception) {}
         }
         return false
     }
