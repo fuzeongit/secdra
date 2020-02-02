@@ -51,6 +51,9 @@ class PictureController(
         return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, life, master, startDate, endDate)
     }
 
+    /**
+     * 更新隐藏状态
+     */
     @PostMapping("updatePrivacy")
     @RestfulPack
     fun updatePrivacy(id: String): Boolean {
@@ -71,7 +74,6 @@ class PictureController(
     fun batchRemove(@RequestParam("idList") idList: Array<String>): Boolean {
         for (id in idList) {
             val picture = pictureService.get(id)
-//            bucketService.move(picture.url, qiniuConfig.qiniuTempBucket, qiniuConfig.qiniuBucket)
             pictureService.remove(picture)
         }
         return true
@@ -95,6 +97,7 @@ class PictureController(
 
     /**
      * 根据文件夹写入图片写入数据库
+     * 本地使用
      */
     @PostMapping("init")
     @RestfulPack
@@ -125,38 +128,6 @@ class PictureController(
             }
         }
         return PictureInitVO(errorUrlList, errorReadList, readNumber)
-    }
-
-    /**
-     * 获取没有tag的图片数量
-     */
-    @GetMapping("checkTag")
-    @RestfulPack
-    fun checkTag(): Int {
-        val pictureList = pictureService.list()
-        var nullTagNumber = 0
-        for (picture in pictureList) {
-            if (picture.tagList.size == 0) {
-                nullTagNumber++
-            }
-        }
-        return nullTagNumber
-    }
-
-    /**
-     * 清除重复tag
-     */
-    @PostMapping("duplicateRemoval")
-    @RestfulPack
-    fun duplicateRemoval(): Boolean {
-        val list = pictureService.list()
-        for (item in list) {
-            val tagList = item.tagList.asSequence().distinctBy { it.name }.toSet()
-            item.tagList.clear()
-            item.tagList.addAll(tagList)
-            pictureService.save(item)
-        }
-        return true
     }
 
     /**
