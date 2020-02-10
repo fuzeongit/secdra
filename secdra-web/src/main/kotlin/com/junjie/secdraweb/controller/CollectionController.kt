@@ -15,6 +15,7 @@ import com.junjie.secdraservice.service.FollowService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.communal.PictureVOAbstract
 import com.junjie.secdraweb.vo.CollectionPictureVO
+import com.junjie.secdraweb.vo.FootprintPictureVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -116,6 +117,8 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
                         collection.createDate!!,
                         getUserVO(picture.userId, userId))
             } catch (e: NotFoundException) {
+                CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.createDate!!)
+            } catch (e: PermissionException) {
                 CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.createDate!!)
             }
             collectionPictureVOList.add(collectionPictureVO)
