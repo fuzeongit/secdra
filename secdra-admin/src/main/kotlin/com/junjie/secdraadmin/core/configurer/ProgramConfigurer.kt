@@ -44,7 +44,7 @@ class ProgramConfigurer(private val administratorService: AdministratorService) 
                 .allowCredentials(true)
                 //设置允许的方法
                 .allowedMethods("*")
-                //设置允许的方法
+                //设置允许的请求头
                 .allowedHeaders("*")
                 //跨域允许时间
                 .maxAge(3600)
