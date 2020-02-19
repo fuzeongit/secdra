@@ -1,6 +1,7 @@
 package com.junjie.secdraservice.serviceimpl
 
 import com.junjie.secdracore.component.BaseConfig
+import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdracore.exception.PermissionException
 import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.PictureState
@@ -31,12 +32,12 @@ class UserServiceImpl(private val userDAO: UserDAO) : UserService {
 
     @Cacheable("user::get")
     override fun get(id: String): User {
-        return userDAO.findById(id).orElseThrow { PermissionException("用户信息不存在") }
+        return userDAO.findById(id).orElseThrow { NotFoundException("用户信息不存在") }
     }
 
     @Cacheable("user::getByAccountId")
     override fun getByAccountId(accountId: String): User {
-        return userDAO.findOneByAccountId(accountId).orElseThrow { PermissionException("用户信息不存在") }
+        return userDAO.findOneByAccountId(accountId).orElseThrow { NotFoundException("用户信息不存在") }
     }
 
     override fun list(name: String?): List<User> {
