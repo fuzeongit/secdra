@@ -87,16 +87,12 @@ class PictureController(private val pictureService: PictureService,
     @PostMapping("save")
     @RestfulPack
     fun save(@CurrentUserId userId: String, url: String, name: String, introduction: String?, privacy: PrivacyState, @RequestParam("tagList") tagList: Set<String>?): PictureVO {
-        val picture = Picture(userService.get(userId), url, name, introduction!!)
-        picture.privacy = privacy
+        bucketService.move(url, qiniuConfig.qiniuBucket)
+        val imageInfo = bucketService.getImageInfo(url, qiniuConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
+        val picture = Picture(userService.get(userId), url, imageInfo.width, imageInfo.height, name, introduction!!, privacy)
         if (tagList != null && tagList.isNotEmpty()) {
             picture.tagList.addAll(tagList.map { Tag(it) })
         }
-
-        bucketService.move(url, qiniuConfig.qiniuBucket)
-        val imageInfo = bucketService.getImageInfo(url, qiniuConfig.qiniuBucketUrl) ?: throw ProgramException("移除图片出错")
-        picture.width = imageInfo.width
-        picture.height = imageInfo.height
         return getPictureVO(pictureService.save(picture), userId)
     }
 

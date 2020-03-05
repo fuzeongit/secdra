@@ -2,6 +2,7 @@ package com.junjie.secdraservice.service
 
 import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.constant.SizeType
 import com.junjie.secdradata.index.primary.document.PictureDocument
 import com.junjie.secdradata.database.primary.entity.Picture
 import org.springframework.data.domain.Page
@@ -26,7 +27,7 @@ interface PictureService {
     @Deprecated("由于ES的引入，弃用改查询，使用ES的countByTag")
     fun countByTag(tag: String): Long
 
-    fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?): Page<Picture>
+    fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?, sizeType: SizeType?): Page<Picture>
 
     fun get(id: String): Picture
 

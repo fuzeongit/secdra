@@ -8,6 +8,7 @@ import com.junjie.secdracore.annotations.RestfulPack
 import com.junjie.secdracore.exception.NotFoundException
 import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.constant.SizeType
 import com.junjie.secdradata.constant.TransferState
 import com.junjie.secdradata.database.collect.entity.PixivPicture
 import com.junjie.secdradata.database.primary.entity.Picture
@@ -42,13 +43,13 @@ class PictureController(
      */
     @GetMapping("paging")
     @RestfulPack
-    fun paging(userId: String?, phone: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
+    fun paging(userId: String?, phone: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?, sizeType: SizeType?, @PageableDefault(value = 20) pageable: Pageable): Page<Picture> {
         val phoneUserId = if (!phone.isNullOrEmpty() && userId.isNullOrEmpty()) {
             val account = accountService.getByPhone(phone!!)
             val user = userService.getByAccountId(account.id!!)
             user.id
         } else null
-        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, life, master, startDate, endDate)
+        return pictureService.paging(pageable, if (!userId.isNullOrEmpty()) userId else phoneUserId, name, privacy, life, master, startDate, endDate, sizeType)
     }
 
     /**

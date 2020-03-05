@@ -2,6 +2,7 @@ package com.junjie.secdraweb.vo
 
 import com.junjie.secdradata.constant.CollectState
 import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.constant.SizeType
 import com.junjie.secdradata.index.primary.document.PictureDocument
 import org.springframework.beans.BeanUtils
 import java.util.*
@@ -27,6 +28,7 @@ class PictureVO {
 
     var height: Long = 0
 
+    lateinit var sizeType: SizeType
     /**
      * 由于es的查询的原因，在空的情况下也有一条空的数据而不是空数组
      */

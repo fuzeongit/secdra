@@ -6,6 +6,7 @@ import com.junjie.secdracore.util.DateUtil
 import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PictureState
 import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.constant.SizeType
 import com.junjie.secdradata.database.primary.dao.PictureDAO
 import com.junjie.secdradata.index.primary.document.PictureDocument
 import com.junjie.secdradata.database.primary.entity.Picture
@@ -82,7 +83,7 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
         return pictureDAO.count(specification)
     }
 
-    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?): Page<Picture> {
+    override fun paging(pageable: Pageable, userId: String?, name: String?, privacy: PrivacyState?, life: PictureLifeState?, master: Boolean?, startDate: Date?, endDate: Date?, sizeType: SizeType?): Page<Picture> {
         val specification = Specification<Picture> { root, _, criteriaBuilder ->
             val predicatesList = ArrayList<Predicate>()
             if (!name.isNullOrEmpty()) {
@@ -95,9 +96,9 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
                 predicatesList.add(criteriaBuilder.equal(root.get<Int>("life"), life))
             }
             if (master != null) {
-                if(master){
+                if (master) {
                     predicatesList.add(criteriaBuilder.like(root.get<String>("url"), "%_p0%"))
-                }else{
+                } else {
                     predicatesList.add(criteriaBuilder.notLike(root.get<String>("url"), "%_p0%"))
                 }
             }
@@ -110,6 +111,9 @@ class PictureServiceImpl(private val pictureDAO: PictureDAO,
             if (!userId.isNullOrEmpty()) {
                 val joinUser: Join<Picture, User> = root.join("user", JoinType.LEFT)
                 predicatesList.add(criteriaBuilder.like(joinUser.get<String>("id"), userId))
+            }
+            if (sizeType != null) {
+                predicatesList.add(criteriaBuilder.equal(root.get<String>("sizeType"), sizeType))
             }
             criteriaBuilder.and(*predicatesList.toArray(arrayOfNulls<Predicate>(predicatesList.size)))
         }

@@ -15,7 +15,7 @@ import javax.persistence.*
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("code"))])
+@Table(name = "authorize_code", uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("code"))])
 class AuthorizeCode : Serializable {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID

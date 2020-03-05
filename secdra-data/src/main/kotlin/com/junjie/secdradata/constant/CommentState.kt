@@ -1,6 +1,6 @@
 package com.junjie.secdradata.constant
 
-enum class CommentState private constructor(var value: String) {
+enum class CommentState(var value: String) {
     DISABLE("禁用"),
     PASS("通过")
 }

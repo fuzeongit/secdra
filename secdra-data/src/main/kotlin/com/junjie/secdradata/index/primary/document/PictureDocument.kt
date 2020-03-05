@@ -1,6 +1,7 @@
 package com.junjie.secdradata.index.primary.document
 
 import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.constant.SizeType
 import com.junjie.secdradata.database.primary.entity.Picture
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.Document
@@ -42,6 +43,9 @@ class PictureDocument : Serializable {
     @Field(type = FieldType.Keyword, index = false)
     var height: Long = 0
 
+    @Field(type = FieldType.Keyword, index = false)
+    lateinit var sizeType: SizeType
+
     @Field(type = FieldType.Keyword)
     var tagList: MutableList<String> = mutableListOf()
 
@@ -62,6 +66,7 @@ class PictureDocument : Serializable {
         this.privacy = picture.privacy
         this.width = picture.width
         this.height = picture.height
+        this.sizeType = picture.sizeType
         this.createDate = picture.createDate!!
         this.modifiedDate = picture.modifiedDate!!
         this.tagList = picture.tagList.asSequence().map { it.name }.toMutableList()

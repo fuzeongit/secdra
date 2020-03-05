@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.junjie.secdradata.constant.PictureLifeState
 import com.junjie.secdradata.constant.PictureState
 import com.junjie.secdradata.constant.PrivacyState
+import com.junjie.secdradata.constant.SizeType
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -43,6 +44,8 @@ class Picture : Serializable {
 
     var height: Long = 0
 
+    lateinit var sizeType: SizeType
+
     @JsonIgnore
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "picture_id")
@@ -63,13 +66,6 @@ class Picture : Serializable {
 
     constructor()
 
-    constructor(user: User, url: String, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通") {
-        this.user = user
-        this.url = url
-        this.name = name
-        this.introduction = introduction
-    }
-
     constructor(user: User, url: String, width: Long, height: Long, name: String = "无题", introduction: String = "身无彩凤双飞翼，心有灵犀一点通", privacy: PrivacyState = PrivacyState.PUBLIC) {
         this.user = user
         this.url = url
@@ -78,5 +74,10 @@ class Picture : Serializable {
         this.width = width
         this.height = height
         this.privacy = privacy
+        this.sizeType = when {
+            width > height -> SizeType.TRANSVERSE
+            width < height -> SizeType.VERTICAL
+            else -> SizeType.SQUARE
+        }
     }
 }
