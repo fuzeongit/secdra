@@ -1,11 +1,8 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
+import com.junjie.secdradata.database.base.AskEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 
 /**
@@ -13,33 +10,19 @@ import javax.persistence.*
  * @author fjj
  */
 @Entity
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("userId"))])
+@Table(name = "message_settings", uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("created_by"))])
 @EntityListeners(AuditingEntityListener::class)
-class MessageSettings : Serializable {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
-    lateinit var userId: String
-
+class MessageSettings() : AskEntity(), Serializable {
+    //评论状态
+    @Column(name = "comment_status")
     var commentStatus: Boolean = true
-
+    //回复状态
+    @Column(name = "reply_status")
     var replyStatus: Boolean = true
-
+    //关注状态
+    @Column(name = "follow_status")
     var followStatus: Boolean = true
-
+    //系统通知状态
+    @Column(name = "system_status")
     var systemStatus: Boolean = true
-
-    @CreatedDate
-    var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
-
-    constructor()
-
-    constructor(userId: String) {
-        this.userId = userId
-    }
 }

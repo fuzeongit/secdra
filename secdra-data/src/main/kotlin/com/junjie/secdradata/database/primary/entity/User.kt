@@ -1,16 +1,13 @@
 package com.junjie.secdradata.database.primary.entity
 
 import com.junjie.secdradata.constant.Gender
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
+import com.junjie.secdradata.database.base.BaseEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.util.*
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
 
 /**
  * 用户
@@ -19,43 +16,49 @@ import javax.persistence.Id
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class User : Serializable {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
+class User() : BaseEntity(), Serializable {
+    //账户id
+    @Column(name = "account_id", length = 32)
     lateinit var accountId: String
-
+    //性别
+    @Column(name = "gender")
     var gender: Gender = Gender.MALE
-
+    //生日
+    @Column(name = "birthday")
     var birthday: Date = Date()
-
+    //昵称
+    @Column(name = "name")
     var name: String = "9527"
-
+    //简介
+    @Column(name = "introduction")
     var introduction: String = "大家好啊"
-
-    var address: String? = null
-
+    //国家
+    @Column(name = "country", length = 32)
+    var country: String = "中国"
+    //省份
+    @Column(name = "province", length = 32)
+    var province: String? = null
+    //城市
+    @Column(name = "city", length = 32)
+    var city: String? = null
+    //头像
+    @Column(name = "head")
     var head: String? = null
 
+    //背景图
+    @Column(name = "background")
     var background: String? = null
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
-
-    constructor()
-
-    constructor(accountId: String, gender: Gender = Gender.MALE, birthday: Date = Date(), name: String = "9527", introduction: String = "大家好啊", address: String? = null, head: String? = null, background: String? = null) {
+    constructor(accountId: String, gender: Gender = Gender.MALE, birthday: Date = Date(), name: String = "9527", introduction: String = "大家好啊",
+                country: String = "中国", province: String? = null, city: String? = null, head: String? = null, background: String? = null) : this() {
         this.accountId = accountId
         this.gender = gender
         this.birthday = birthday
         this.name = name
         this.introduction = introduction
-        this.address = address
+        this.country = country
+        this.province = province
+        this.city = city
         this.head = head
         this.background = background
     }

@@ -18,20 +18,20 @@ class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
             return FollowState.SElF
         }
         return try {
-            if (followDAO.existsByFollowerIdAndFollowingId(followerId, followingId)) FollowState.CONCERNED else FollowState.STRANGE
+            if (followDAO.existsByCreatedByAndFollowingId(followerId, followingId)) FollowState.CONCERNED else FollowState.STRANGE
         } catch (e: Exception) {
             FollowState.SElF
         }
     }
 
-    override fun save(followerId: String, followingId: String): Follow {
-        val follow = Follow(followerId, followingId)
+    override fun save(followingId: String): Follow {
+        val follow = Follow(followingId)
         return followDAO.save(follow)
     }
 
     override fun remove(followerId: String, followingId: String): Boolean {
         return try {
-            followDAO.deleteByFollowerIdAndFollowingId(followerId, followingId)
+            followDAO.deleteByCreatedByAndFollowingId(followerId, followingId)
             true
         } catch (e: Exception) {
             throw e
@@ -39,7 +39,7 @@ class FollowServiceImpl(private val followDAO: FollowDAO) : FollowService {
     }
 
     override fun pagingByFollowerId(followerId: String, pageable: Pageable): Page<Follow> {
-        return followDAO.findAllByFollowerId(followerId, pageable)
+        return followDAO.findAllByCreatedBy(followerId, pageable)
     }
 
     override fun pagingByFollowingId(followingId: String, pageable: Pageable): Page<Follow> {

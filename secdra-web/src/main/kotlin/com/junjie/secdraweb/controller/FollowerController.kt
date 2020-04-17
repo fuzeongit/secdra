@@ -32,7 +32,7 @@ class FollowerController(override val userService: UserService, override val fol
         if (followingId.isNullOrEmpty() && id.isNullOrEmpty()) throw SignInException("请重新登录")
         val page = followService.pagingByFollowingId(id ?: followingId!!, pageable)
         val userVOList = page.content.map {
-            getUserVO(it.followerId, followingId)
+            getUserVO(it.createdBy!!, followingId)
         }
         return PageImpl(userVOList, page.pageable, page.totalElements)
     }

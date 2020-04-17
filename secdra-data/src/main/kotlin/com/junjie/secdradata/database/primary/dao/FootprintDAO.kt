@@ -11,16 +11,16 @@ import java.util.*
 
 @Repository
 interface FootprintDAO : JpaRepository<Footprint, String>, JpaSpecificationExecutor<Footprint> {
-    fun getFirstByUserIdAndPictureId(userId: String, pictureId: String): Optional<Footprint>
+    fun getFirstByCreatedByAndPictureId(createdBy: String, pictureId: String): Optional<Footprint>
 
-    fun existsByUserIdAndPictureId(userId: String, pictureId: String): Boolean
+    fun existsByCreatedByAndPictureId(createdBy: String, pictureId: String): Boolean
 
     @Transactional
-    fun deleteByUserIdAndPictureId(userId: String, pictureId: String)
+    fun deleteByCreatedByAndPictureId(createdBy: String, pictureId: String)
 
     fun countByPictureId(pictureId: String): Long
 
-    fun findAllByUserId(userId: String, pageable: Pageable): Page<Footprint>
+    fun findAllByCreatedBy(createdBy: String, pageable: Pageable): Page<Footprint>
 
     fun findAllByPictureId(pictureId: String, pageable: Pageable): Page<Footprint>
 }

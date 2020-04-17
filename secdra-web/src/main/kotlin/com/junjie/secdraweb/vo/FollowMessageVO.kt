@@ -2,12 +2,13 @@ package com.junjie.secdraweb.vo
 
 import com.junjie.secdradata.database.primary.entity.FollowMessage
 import org.springframework.beans.BeanUtils
+import org.springframework.data.annotation.CreatedBy
 import java.util.*
 
 class FollowMessageVO {
     lateinit var id: String
 
-    lateinit var followerId: String
+    lateinit var createdBy: String
 
     lateinit var followingId: String
 

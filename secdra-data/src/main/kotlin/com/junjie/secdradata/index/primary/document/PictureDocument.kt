@@ -53,7 +53,7 @@ class PictureDocument : Serializable {
     var createDate: Date = Date()
 
     @Field(type = FieldType.Keyword)
-    var modifiedDate: Date = Date()
+    var lastModifiedDate: Date = Date()
 
     constructor()
 
@@ -68,7 +68,7 @@ class PictureDocument : Serializable {
         this.height = picture.height
         this.sizeType = picture.sizeType
         this.createDate = picture.createDate!!
-        this.modifiedDate = picture.modifiedDate!!
+        this.lastModifiedDate = picture.lastModifiedDate!!
         this.tagList = picture.tagList.asSequence().map { it.name }.toMutableList()
     }
 }

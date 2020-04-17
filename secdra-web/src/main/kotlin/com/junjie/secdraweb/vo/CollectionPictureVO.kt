@@ -12,11 +12,9 @@ import java.util.*
  * 这里的id是图片的id，创建时间为收藏的创建时间
  */
 class CollectionPictureVO {
-    lateinit var id: String
+    var id: String
 
     var url: String? = null
-
-    var userId: String? = null
 
     var life: PictureLifeState = PictureLifeState.EXIST
 
@@ -30,26 +28,23 @@ class CollectionPictureVO {
 
     var user: UserVO? = null
 
-    var createDate: Date? = null
+    var lastModifiedDate: Date? = null
 
-    constructor()
-
-    constructor(id: String, focus: CollectState, createDate: Date) {
+    constructor(id: String, focus: CollectState, lastModifiedDate: Date) {
         this.id = id
         this.url = ""
         this.focus = focus
-        this.createDate = createDate
+        this.lastModifiedDate = lastModifiedDate
         this.life = PictureLifeState.DISAPPEAR
     }
 
-    constructor(picture: PictureDocument, focus: CollectState, createDate: Date, user: UserVO) {
+    constructor(picture: PictureDocument, focus: CollectState, lastModifiedDate: Date, user: UserVO) {
         this.id = picture.id!!
         this.url = picture.url
-        this.userId = picture.userId
         this.privacy = picture.privacy
         this.width = picture.width
         this.height = picture.height
-        this.createDate = createDate
+        this.lastModifiedDate = lastModifiedDate
         this.focus = focus
         this.user = user
     }

@@ -25,7 +25,7 @@ import javax.persistence.criteria.Predicate
 
 
 @Service
-class PictureServiceImpl(private val pictureDAO: PictureDAO,
+class   PictureServiceImpl(private val pictureDAO: PictureDAO,
                          private val pictureDocumentService: PictureDocumentService) : PictureService {
     override fun paging(pageable: Pageable, tag: String?, startDate: Date?, endDate: Date?): Page<Picture> {
         val specification = Specification<Picture> { root, _, criteriaBuilder ->

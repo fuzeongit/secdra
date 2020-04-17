@@ -15,17 +15,17 @@ class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : Collecti
         return if (userId == null) {
             CollectState.CONCERNED
         } else {
-            if (collectionDAO.existsByUserIdAndPictureId(userId, pictureId)) CollectState.CONCERNED else CollectState.STRANGE
+            if (collectionDAO.existsByCreatedByAndPictureId(userId, pictureId)) CollectState.CONCERNED else CollectState.STRANGE
         }
     }
 
     override fun save(userId: String, pictureId: String): Collection {
-        return collectionDAO.save(Collection(userId, pictureId))
+        return collectionDAO.save(Collection(pictureId))
     }
 
     override fun remove(userId: String, pictureId: String): Boolean {
         return try {
-            collectionDAO.deleteByUserIdAndPictureId(userId, pictureId)
+            collectionDAO.deleteByCreatedByAndPictureId(userId, pictureId)
             true
         } catch (e: Exception) {
             throw e
@@ -37,7 +37,7 @@ class CollectionServiceImpl(private val collectionDAO: CollectionDAO) : Collecti
     }
 
     override fun pagingByUserId(userId: String, pageable: Pageable): Page<Collection> {
-        return collectionDAO.findAllByUserId(userId, pageable)
+        return collectionDAO.findAllByCreatedBy(userId, pageable)
     }
 
     override fun pagingByPictureId(pictureId: String, pageable: Pageable): Page<Collection> {

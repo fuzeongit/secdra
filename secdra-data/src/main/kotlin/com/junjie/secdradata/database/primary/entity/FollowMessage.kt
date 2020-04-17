@@ -1,14 +1,12 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
+import com.junjie.secdradata.database.base.AskEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.util.*
+import java.io.Serializable
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.Table
 
 /**
  * 关注或粉丝消息
@@ -16,25 +14,16 @@ import javax.persistence.Id
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class FollowMessage {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
-    lateinit var followerId: String
-
+@Table(name = "follow_message")
+class FollowMessage() : AskEntity(), Serializable {
+    //关注人的id
+    @Column(name = "following_id", length = 32)
     lateinit var followingId: String
     // 由于read是数据库保留字
+    @Column(name = "review")
     var review: Boolean = false
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    constructor()
-
-    constructor(followerId: String, followingId: String) {
-        this.followerId = followerId
+    constructor(followingId: String) : this() {
         this.followingId = followingId
     }
 }

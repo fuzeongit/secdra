@@ -1,10 +1,12 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
+import com.junjie.secdradata.database.base.BaseEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.util.*
-import javax.persistence.*
+import java.io.Serializable
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EntityListeners
+import javax.persistence.Table
 
 /**
  * 系统通知消息
@@ -12,27 +14,24 @@ import javax.persistence.*
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class SystemMessage {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
-    lateinit var userId: String
-
+@Table(name = "system_message")
+class SystemMessage() : BaseEntity(), Serializable {
+    //标题
+    @Column(name = "title")
     lateinit var title: String
-
+    //接收人id
+    @Column(name = "user_id")
+    lateinit var userId: String
+    //内容
     @Column(columnDefinition = "text")
     lateinit var content: String
-    // 由于read是数据库保留字
+
+    // 是否阅读，由于read是数据库保留字
+    @Column(name = "review")
     var review: Boolean = false
 
-    @CreatedDate
-    var createDate: Date? = null
 
-    constructor()
-
-    constructor(userId: String, title: String, content: String) {
+    constructor(userId: String, title: String, content: String) : this() {
         this.userId = userId
         this.title = title
         this.content = content

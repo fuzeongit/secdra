@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: dev
+#    active: prod
+  jmx:
+    default-domain: secdra-admin

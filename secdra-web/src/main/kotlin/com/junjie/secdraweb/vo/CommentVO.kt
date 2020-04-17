@@ -9,7 +9,7 @@ class CommentVO {
     //图片作者id
     lateinit var authorId: String
     //评论人id
-    lateinit var criticId: String
+    lateinit var createdBy: String
 
     lateinit var pictureId: String
 

@@ -12,27 +12,27 @@ import java.util.*
 @Service
 class FootprintServiceImpl(private val footprintDAO: FootprintDAO) : FootprintService {
     override fun get(userId: String, pictureId: String): Footprint {
-        return footprintDAO.getFirstByUserIdAndPictureId(userId, pictureId).orElseThrow { NotFoundException("找不到足迹") }
+        return footprintDAO.getFirstByCreatedByAndPictureId(userId, pictureId).orElseThrow { NotFoundException("找不到足迹") }
     }
 
     override fun exists(userId: String, pictureId: String): Boolean {
-        return footprintDAO.existsByUserIdAndPictureId(userId, pictureId)
+        return footprintDAO.existsByCreatedByAndPictureId(userId, pictureId)
     }
 
-    override fun save(userId: String, pictureId: String): Footprint {
-        return footprintDAO.save(Footprint(userId, pictureId))
+    override fun save(pictureId: String): Footprint {
+        return footprintDAO.save(Footprint(pictureId))
     }
 
     override fun update(userId: String, pictureId: String): Footprint {
         val footprint = get(userId, pictureId)
         // 比较特殊，因为没有数据发生变化，所以修改时间不会进行更改，所以要手动修改
-        footprint.modifiedDate = Date()
+        footprint.lastModifiedDate = Date()
         return footprintDAO.save(footprint)
     }
 
     override fun remove(userId: String, pictureId: String): Boolean {
         return try {
-            footprintDAO.deleteByUserIdAndPictureId(userId, pictureId)
+            footprintDAO.deleteByCreatedByAndPictureId(userId, pictureId)
             true
         } catch (e: Exception) {
             throw e
@@ -44,7 +44,7 @@ class FootprintServiceImpl(private val footprintDAO: FootprintDAO) : FootprintSe
     }
 
     override fun pagingByUserId(userId: String, pageable: Pageable): Page<Footprint> {
-        return footprintDAO.findAllByUserId(userId, pageable)
+        return footprintDAO.findAllByCreatedBy(userId, pageable)
     }
 
     override fun pagingByPictureId(pictureId: String, pageable: Pageable): Page<Footprint> {

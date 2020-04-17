@@ -38,8 +38,8 @@ class FollowingController(private val followMessageService: FollowMessageService
         }
         val focus = followService.exists(followerId, followingId)
         return if (focus == FollowState.STRANGE) {
-            val follow = followService.save(followerId, followingId)
-            val followMessage = FollowMessage(follow.followerId, follow.followingId)
+            val follow = followService.save(followingId)
+            val followMessage = FollowMessage(follow.followingId)
             followMessageService.save(followMessage)
             webSocketService.sendFollowingFocus(followerId, followingId)
             FollowState.CONCERNED

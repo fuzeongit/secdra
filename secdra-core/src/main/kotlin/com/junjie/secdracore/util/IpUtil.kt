@@ -5,10 +5,9 @@ import java.net.UnknownHostException
 import javax.servlet.http.HttpServletRequest
 
 object IpUtil {
-    fun getIpAddress(request: HttpServletRequest): String? {
-        var ipAddress: String?
-        try {
-            ipAddress = request.getHeader("x-forwarded-for")
+    fun getIpAddress(request: HttpServletRequest): String {
+        return try {
+            var ipAddress = request.getHeader("x-forwarded-for")
             if (ipAddress.isEmpty() || "unknown".equals(ipAddress, ignoreCase = true)) {
                 ipAddress = request.getHeader("Proxy-Client-IP")
             }
@@ -19,14 +18,8 @@ object IpUtil {
                 ipAddress = request.remoteAddr
                 if (ipAddress == "127.0.0.1") {
                     // 根据网卡取本机配置的IP
-                    var inet: InetAddress? = null
-                    try {
-                        inet = InetAddress.getLocalHost()
-                    } catch (e: UnknownHostException) {
-                        e.printStackTrace()
-                    }
-
-                    ipAddress = inet!!.hostAddress
+                    val internet = InetAddress.getLocalHost()
+                    ipAddress = internet.hostAddress
                 }
             }
             // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
@@ -36,9 +29,9 @@ object IpUtil {
                     ipAddress = ipAddress.substring(0, ipAddress.indexOf(","))
                 }
             }
+            ipAddress
         } catch (e: Exception) {
-            ipAddress = ""
+            ""
         }
-        return ipAddress
     }
 }

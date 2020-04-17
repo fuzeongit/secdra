@@ -63,13 +63,15 @@ class AccountController(private val accountConfig: AccountConfig,
         verificationCode != redisCode && throw ProgramException("验证码无效")
         //获取系统时间
         val nowMillis = System.currentTimeMillis()
-        val user = accountService.signUp(phone, password, Date(nowMillis))
+        val account = accountService.signUp(phone, password)
         //清理验证码
         redisTemplate.delete(String.format(accountConfig.registerVerificationCodePrefix, phone))
         //把修改密码时间放到redis
-        redisTemplate.opsForValue().set(String.format(accountConfig.updatePasswordTimePrefix, user.id), nowMillis.toString())
+        redisTemplate.opsForValue().set(String.format(accountConfig.updatePasswordTimePrefix, account.id), nowMillis.toString())
         //生成token
-        val token = JwtUtil.createJWT(user.id!!, nowMillis, accountConfig.jwtExpiresSecond, accountConfig.jwtSecretString)
+        val claimMap = hashMapOf<String, String>()
+        claimMap["id"] = account.id!!
+        val token = JwtUtil.createJWT(claimMap, nowMillis, accountConfig.jwtExpiresSecond, accountConfig.jwtSecretString)
         response.setHeader("token", token)
         return true
     }
@@ -77,9 +79,10 @@ class AccountController(private val accountConfig: AccountConfig,
     @PostMapping("/signIn")
     @RestfulPack
     fun signIn(phone: String, password: String, response: HttpServletResponse): Boolean {
-        val user = accountService.signIn(phone, password)
-        val nowMillis = System.currentTimeMillis()
-        val token = JwtUtil.createJWT(user.id!!, nowMillis, accountConfig.jwtExpiresSecond, accountConfig.jwtSecretString)
+        val account = accountService.signIn(phone, password)
+        val claimMap = hashMapOf<String, String>()
+        claimMap["id"] = account.id!!
+        val token = JwtUtil.createJWT(claimMap, System.currentTimeMillis(), accountConfig.jwtExpiresSecond, accountConfig.jwtSecretString)
         response.setHeader("token", token)
         return true
     }

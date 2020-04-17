@@ -1,0 +1,45 @@
+server:
+  port: 8081
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  datasource:
+    primary:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
+    account:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra_account?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
+    collect:
+      driver-class-name: com.mysql.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/secdra_collect?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+      username: root
+      password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  data:
+    elasticsearch:
+      cluster-nodes: 127.0.0.1:9300
+      cluster-name: elasticsearch
+  main:
+    allow-bean-definition-overriding: true
+base:
+  notUUID: 00000000000000000000000000000000
+qiniu:
+  qiniuAccessKey: 0G397Ly7Z6pqnm2MPUhHIbMFzvBX19yyhu-RdiqI
+  qiniuSecretKey: _xLtVKJ4VNUrwSsEGkJBHtV2s6mZ2QG2yDXaCvTk
+  qiniuTempBucket: temporary
+  qiniuHeadBucket: head
+  qiniuBackBucket: background
+  qiniuBucket: secdra
+  qiniuTempBucketUrl: http://secdratemp.secdra.com
+  qiniuHeadBucketUrl: http://secdrahead.secdra.com
+  qiniuBackBucketUrl: http://secdraback.secdra.com
+  qiniuBucketUrl: http://secdraimg.secdra.com

@@ -1,38 +1,31 @@
 package com.junjie.secdradata.database.collect.entity
 
+import com.junjie.secdradata.database.base.BaseEntity
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class PixivError {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
+@Table(name = "pixiv_error")
+class PixivError() : BaseEntity(), Serializable {
+    @Column(name = "pixiv_id", length = 32)
     lateinit var pixivId: String
 
+    @Column(name = "status")
     var status: Int? = null
 
     @Column(columnDefinition = "text")
     var message: String? = null
 
+    @Column(name = "record")
     var record: Boolean = false
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
-
-    constructor()
-
-    constructor(pixivId: String, status: Int, message: String?) {
+    constructor(pixivId: String, status: Int, message: String?) : this() {
         this.pixivId = pixivId
         this.status = status
         this.message = message

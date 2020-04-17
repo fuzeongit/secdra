@@ -42,13 +42,13 @@ class CommentController(private val commentService: CommentService,
     fun save(@CurrentUserId criticId: String, authorId: String, pictureId: String, content: String): CommentVO {
         content.isEmpty() && throw Exception("评论不能为空")
         (authorId.isEmpty() || pictureId.isEmpty()) && throw Exception("不能为空")
-        val comment = Comment(authorId, criticId, pictureId, content)
+        val comment = Comment(authorId, pictureId, content)
         val vo = CommentVO(
                 commentService.save(comment),
                 getUserVO(authorId, criticId),
                 getUserVO(criticId, criticId)
         )
-        val commentMessage = CommentMessage(vo.id, vo.authorId, vo.pictureId, vo.criticId, vo.content)
+        val commentMessage = CommentMessage(vo.id, vo.authorId, vo.pictureId, vo.content)
         commentMessageService.save(commentMessage)
         webSocketService.sendComment(criticId, authorId)
         return vo
@@ -91,7 +91,7 @@ class CommentController(private val commentService: CommentService,
             CommentVO(
                     it,
                     getUserVO(it.authorId, userId),
-                    getUserVO(it.criticId, userId)
+                    getUserVO(it.createdBy!!, userId)
             )
         }
     }

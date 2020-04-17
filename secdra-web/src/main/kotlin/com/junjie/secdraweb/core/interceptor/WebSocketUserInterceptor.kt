@@ -48,18 +48,19 @@ class WebSocketUserInterceptor(private val baseConfig: BaseConfig,
                 if (accountId.isEmpty()) {
                     throw SignInException("请重新登录")
                 }
-                if (DateUtil.getDistanceTimestamp(account.rePasswordDate, nbf) < 0) {
+                if (DateUtil.getDistanceTimestamp(account.lastModifiedDate!!, nbf) < 0) {
                     throw SignInException("请重新登录")
                 }
                 accessor.user = WebSocketUser(userService.getByAccountId(accountId).id!!)
             } catch (e: Exception) {
                 accessor.user = WebSocketUser(baseConfig.notUUID)
             }
-        } else if (StompCommand.DISCONNECT == accessor.command) {
-            //点击断开连接，这里会执行两次，第二次执行的时候，message.getHeaders.size()=5,第一次是6。直接关闭浏览器，只会执行一次，size是5。
-            //println("断开连接 --- 拦截器")
-            //val vo = message.headers[SimpMessageHeaderAccessor.USER_HEADER] as WebSocketUser
         }
+//        else if (StompCommand.DISCONNECT == accessor.command) {
+//            //点击断开连接，这里会执行两次，第二次执行的时候，message.getHeaders.size()=5,第一次是6。直接关闭浏览器，只会执行一次，size是5。
+//            //println("断开连接 --- 拦截器")
+//            //val vo = message.headers[SimpMessageHeaderAccessor.USER_HEADER] as WebSocketUser
+//        }
         return message
     }
 }

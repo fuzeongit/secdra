@@ -6,7 +6,7 @@ import com.junjie.secdradata.database.primary.entity.User
 import org.springframework.beans.BeanUtils
 import java.util.*
 
-class UserVO {
+class UserVO(user: User) {
     lateinit var id: String
 
     var gender: Gender = Gender.MALE
@@ -17,17 +17,19 @@ class UserVO {
 
     lateinit var introduction: String
 
-    var address: String? = null
-
     var head: String? = null
 
     var background: String? = null
 
     var focus: FollowState = FollowState.SElF
 
-    constructor()
+    var country: String = "中国"
 
-    constructor(user: User) {
+    var province: String? = null
+
+    var city: String? = null
+
+    init {
         BeanUtils.copyProperties(user, this)
     }
 }

@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface CollectionDAO : JpaRepository<Collection, String> {
-    fun existsByUserIdAndPictureId(userId: String, pictureId: String): Boolean
+    fun existsByCreatedByAndPictureId(createdBy: String, pictureId: String): Boolean
     @Transactional
-    fun deleteByUserIdAndPictureId(userId: String, pictureId: String)
+    fun deleteByCreatedByAndPictureId(createdBy: String, pictureId: String)
 
     fun countByPictureId(pictureId: String): Long
 
-    fun findAllByUserId(userId: String, pageable: Pageable): Page<Collection>
+    fun findAllByCreatedBy(createdBy: String, pageable: Pageable): Page<Collection>
 
     fun findAllByPictureId(pictureId: String, pageable: Pageable): Page<Collection>
 }

@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface FollowDAO : JpaRepository<Follow, String> {
-    fun existsByFollowerIdAndFollowingId(followerId: String, followingId: String): Boolean
+    fun existsByCreatedByAndFollowingId(createdBy: String, followingId: String): Boolean
     @Transactional
-    fun deleteByFollowerIdAndFollowingId(followerId: String, followingId: String)
+    fun deleteByCreatedByAndFollowingId(createdBy: String, followingId: String)
 
-    fun findAllByFollowerId(followerId: String, pageable: Pageable): Page<Follow>
+    fun findAllByCreatedBy(createdBy: String, pageable: Pageable): Page<Follow>
 
     fun findAllByFollowingId(followingId: String, pageable: Pageable): Page<Follow>
 }

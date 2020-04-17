@@ -22,7 +22,8 @@ class AuthInterceptor(private val administratorService: AdministratorService
             /**
              * 不用缓存，并发不高
              */
-            administratorService.get(accessKey, secretKey)
+            val admin = administratorService.get(accessKey, secretKey)
+            request.setAttribute("adminId", admin.id!!)
             true
         } catch (e: Exception) {
             throw PermissionException("没有授权")

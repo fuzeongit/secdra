@@ -42,7 +42,7 @@ class FootprintController(private val footprintService: FootprintService,
         try {
             footprintService.update(userId, pictureId)
         } catch (e: NotFoundException) {
-            footprintService.save(userId, pictureId)
+            footprintService.save(pictureId)
             // 由于足迹有时效性，所以不能通过表来统计
             pictureDocumentService.saveViewAmount(picture, picture.viewAmount + 1)
         }
@@ -66,13 +66,13 @@ class FootprintController(private val footprintService: FootprintService,
                 FootprintPictureVO(
                         picture,
                         getPictureVO(picture, userId).focus,
-                        footprint.createDate!!,
+                        footprint.lastModifiedDate!!,
                         getUserVO(picture.userId, userId)
                 )
             } catch (e: NotFoundException) {
-                FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.createDate!!)
+                FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.lastModifiedDate!!)
             } catch (e: PermissionException) {
-                FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.createDate!!)
+                FootprintPictureVO(footprint.pictureId, collectionService.exists(targetId, footprint.pictureId), footprint.lastModifiedDate!!)
             }
             footprintPictureVOList.add(footprintPictureVO)
         }

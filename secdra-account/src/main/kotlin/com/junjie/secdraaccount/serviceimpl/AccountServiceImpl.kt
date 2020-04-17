@@ -32,9 +32,9 @@ class AccountServiceImpl(private val accountDAO: AccountDAO) : AccountService {
         return accountDAO.existsByPhone(phone)
     }
 
-    override fun signUp(phone: String, password: String, rePasswordDate: Date): Account {
+    override fun signUp(phone: String, password: String): Account {
         existsByPhone(phone) && throw PermissionException("手机号已存在")
-        val account = Account(phone, password, rePasswordDate)
+        val account = Account(phone, password)
         return accountDAO.save(account)
     }
 

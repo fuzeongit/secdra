@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable
 interface FollowService {
     fun exists(followerId: String?, followingId: String): FollowState
 
-    fun save(followerId: String, followingId: String): Follow
+    fun save(followingId: String): Follow
 
     fun remove(followerId: String, followingId: String): Boolean
 

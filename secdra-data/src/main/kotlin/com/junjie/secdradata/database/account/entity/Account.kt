@@ -1,6 +1,7 @@
 package com.junjie.secdradata.database.account.entity
 
 import com.junjie.secdradata.constant.UserState
+import com.junjie.secdradata.database.base.BaseEntity
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -17,31 +18,20 @@ import javax.persistence.*
 @Entity
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("phone"))])
 @EntityListeners(AuditingEntityListener::class)
-class Account : Serializable {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
+class Account() : BaseEntity(), Serializable {
+    //手机
+    @Column(name = "phone", length = 32)
     lateinit var phone: String
 
+    //密码
+    @Column(name = "password", length = 32)
     lateinit var password: String
 
-    var rePasswordDate: Date = Date()
+    @Column(name = "state")
+    var state: UserState = UserState.PASS
 
-    var userState: UserState = UserState.PASS
-
-    @CreatedDate
-    var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
-
-    constructor()
-
-    constructor(phone: String, password: String, rePasswordDate: Date = Date()) {
+    constructor(phone: String, password: String) : this() {
         this.phone = phone
         this.password = password
-        this.rePasswordDate = rePasswordDate
     }
 }

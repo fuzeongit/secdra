@@ -4,7 +4,7 @@ import com.junjie.secdradata.database.primary.entity.ReplyMessage
 import org.springframework.beans.BeanUtils
 import java.util.*
 
-class ReplyMessageVO {
+class ReplyMessageVO(replyMessage: ReplyMessage, var answerer: UserVO) {
     lateinit var id: String
     //评论id
     lateinit var commentId: String
@@ -17,22 +17,13 @@ class ReplyMessageVO {
     //评论人id
     lateinit var criticId: String
     //回答者id
-    lateinit var answererId: String
+    lateinit var createdBy: String
 
     lateinit var content: String
 
     lateinit var createDate: Date
 
-    lateinit var answerer: UserVO
-
-    constructor()
-
-    constructor(replyMessage: ReplyMessage) {
+    init {
         BeanUtils.copyProperties(replyMessage, this)
-    }
-
-    constructor(replyMessage: ReplyMessage, answerer: UserVO) {
-        BeanUtils.copyProperties(replyMessage, this)
-        this.answerer = answerer
     }
 }

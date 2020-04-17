@@ -45,7 +45,7 @@ class AuthInterceptor(private val accountConfig: AccountConfig,
                     request.getHeader("token")
                 }
                 val claims = JwtUtil.parseJWT(token, accountConfig.jwtSecretString)
-                val accountId = claims["accountId"] as String
+                val accountId = claims["id"] as String
                 //过期时间
                 val exp = Date(claims["exp"]!!.toString().toLong() * 1000)
                 //生成时间
@@ -59,7 +59,7 @@ class AuthInterceptor(private val accountConfig: AccountConfig,
                 if (accountId.isEmpty()) {
                     throw SignInException("请重新登录")
                 }
-                if (DateUtil.getDistanceTimestamp(account.rePasswordDate, nbf) < 0) {
+                if (DateUtil.getDistanceTimestamp(account.lastModifiedDate!!, nbf) < 0) {
                     throw SignInException("请重新登录")
                 }
 

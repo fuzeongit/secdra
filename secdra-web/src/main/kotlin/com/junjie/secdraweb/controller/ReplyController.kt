@@ -38,9 +38,9 @@ class ReplyController(private val replyService: ReplyService,
     fun save(@CurrentUserId answererId: String, commentId: String, authorId: String, criticId: String, pictureId: String, content: String): ReplyVO {
         content.isEmpty() && throw Exception("回复不能为空")
         (commentId.isEmpty() || authorId.isEmpty() || criticId.isEmpty() || pictureId.isEmpty()) && throw Exception("不能为空")
-        val reply = Reply(commentId, authorId, criticId, answererId, pictureId, content)
+        val reply = Reply(commentId, authorId, criticId, pictureId, content)
         val vo = ReplyVO(replyService.save(reply), getUserVO(criticId, answererId), getUserVO(answererId, answererId))
-        val replyMessage = ReplyMessage(vo.commentId, vo.id, vo.authorId, vo.pictureId, vo.criticId, vo.answererId, vo.content)
+        val replyMessage = ReplyMessage(vo.commentId, vo.id, vo.authorId, vo.pictureId, vo.criticId, vo.content)
         replyMessageService.save(replyMessage)
         webSocketService.sendReply(answererId, criticId)
         return vo
@@ -53,7 +53,7 @@ class ReplyController(private val replyService: ReplyService,
     @RestfulPack
     fun list(@CurrentUserId userId: String, commentId: String): List<ReplyVO> {
         return replyService.list(commentId).map {
-            ReplyVO(it, getUserVO(it.criticId, userId), getUserVO(it.answererId, userId))
+            ReplyVO(it, getUserVO(it.criticId, userId), getUserVO(it.createdBy!!, userId))
         }
     }
 }

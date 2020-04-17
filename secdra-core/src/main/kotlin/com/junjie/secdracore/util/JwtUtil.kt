@@ -18,7 +18,7 @@ object JwtUtil {
         }
     }
 
-    fun createJWT(accountId: String, nowMillis: Long, expiresSecond: Long, base64Security: String): String {
+    fun createJWT(claimMap: Map<String, String>, nowMillis: Long, expiresSecond: Long, base64Security: String): String {
         val signatureAlgorithm = SignatureAlgorithm.HS256
 
         val now = Date(nowMillis)
@@ -30,8 +30,10 @@ object JwtUtil {
 
         //添加构成JWT的参数
         val builder = Jwts.builder().setHeaderParam("typ", "JWT")
-                .claim("accountId", accountId)
-                .signWith(signatureAlgorithm, signingKey)
+        for (key in claimMap.keys) {
+            builder.claim(key, claimMap[key])
+        }
+        builder.signWith(signatureAlgorithm, signingKey)
         //添加Token过期时间
         if (expiresSecond >= 0) {
             val expMillis = nowMillis + expiresSecond

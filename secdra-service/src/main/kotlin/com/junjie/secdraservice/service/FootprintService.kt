@@ -9,7 +9,7 @@ interface FootprintService {
 
     fun exists(userId: String, pictureId: String): Boolean
 
-    fun save(userId: String, pictureId: String): Footprint
+    fun save(pictureId: String): Footprint
 
     fun update(userId: String, pictureId: String): Footprint
 

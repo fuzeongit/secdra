@@ -1,13 +1,12 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
+import com.junjie.secdradata.database.base.AskEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.util.*
+import java.io.Serializable
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.Table
 
 
 /**
@@ -16,25 +15,16 @@ import javax.persistence.Id
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Feedback {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
-    var userId: String? = null
-    //评论id
+@Table(name = "feedback")
+class Feedback() : AskEntity(), Serializable {
+    //内容
+    @Column(name = "content", columnDefinition = "text")
     lateinit var content: String
-    //图片作者id
+    //邮箱
+    @Column(name = "email", length = 32)
     var email: String? = null
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    constructor()
-
-    constructor(userId: String?, content: String, email: String?) {
-        this.userId = userId
+    constructor(content: String, email: String?) : this() {
         this.content = content
         this.email = email
     }

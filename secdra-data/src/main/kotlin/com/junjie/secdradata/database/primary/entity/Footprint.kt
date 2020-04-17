@@ -1,14 +1,9 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
+import com.junjie.secdradata.database.base.AskEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.util.*
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import java.io.Serializable
+import javax.persistence.*
 
 /**
  * 足迹
@@ -16,26 +11,13 @@ import javax.persistence.Id
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Footprint {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
-    lateinit var userId: String
-
+@Table(name = "footprint", uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("created_by", "picture_id"))])
+class Footprint() : AskEntity(), Serializable {
+    //图片id
+    @Column(name = "picture_id", length = 32)
     lateinit var pictureId: String
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    @LastModifiedDate
-    var modifiedDate: Date? = null
-
-    constructor()
-
-    constructor(userId: String, pictureId: String) {
-        this.userId = userId
+    constructor(pictureId: String) : this() {
         this.pictureId = pictureId
     }
 }

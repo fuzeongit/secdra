@@ -10,19 +10,17 @@ import com.junjie.secdracore.exception.SignInException
 import com.junjie.secdradata.constant.CollectState
 import com.junjie.secdradata.constant.PrivacyState
 import com.junjie.secdraservice.service.CollectionService
-import com.junjie.secdraservice.service.PictureDocumentService
 import com.junjie.secdraservice.service.FollowService
+import com.junjie.secdraservice.service.PictureDocumentService
 import com.junjie.secdraservice.service.UserService
 import com.junjie.secdraweb.core.communal.PictureVOAbstract
 import com.junjie.secdraweb.vo.CollectionPictureVO
-import com.junjie.secdraweb.vo.FootprintPictureVO
 import com.junjie.secdraweb.vo.UserVO
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
-import java.lang.reflect.UndeclaredThrowableException
 
 /**
  * @author fjj
@@ -114,38 +112,24 @@ class CollectionController(override val pictureDocumentService: PictureDocumentS
                 CollectionPictureVO(
                         picture,
                         getPictureVO(picture, userId).focus,
-                        collection.createDate!!,
+                        collection.lastModifiedDate!!,
                         getUserVO(picture.userId, userId))
             } catch (e: NotFoundException) {
-                CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.createDate!!)
+                CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.lastModifiedDate!!)
             } catch (e: PermissionException) {
-                CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.createDate!!)
+                CollectionPictureVO(collection.pictureId, collectionService.exists(targetId, collection.pictureId), collection.lastModifiedDate!!)
             }
             collectionPictureVOList.add(collectionPictureVO)
         }
         return PageImpl(collectionPictureVOList, page.pageable, page.totalElements)
     }
 
-
-//    private fun <T> test(userId: String?, targetId: String, pictureId: String, clazz: Class<T>): T {
-//        val picture = pictureDocumentService.get(pictureId)
-//        //图片被隐藏
-//        if (picture.privacy == PrivacyState.PRIVATE) {
-//            picture.url = ""
-//        }
-//        val userVO = UserVO(userService.getInfo(picture.userId))
-//        userVO.focus = followService.exists(targetId, picture.userId)
-//        return clazz.getDeclaredConstructor(PictureDocument::class.java, CollectState::class.java, Date::class.java, UserVO::class.java)
-//                .newInstance(picture, if (userId != null && userId == targetId) CollectState.SElF else collectionService.exists(targetId, pictureId), Date(), userVO)
-//    }
-
-
     @GetMapping("pagingUser")
     @RestfulPack
     fun pagingUser(@CurrentUserId userId: String?, pictureId: String, @PageableDefault(value = 20) pageable: Pageable): Page<UserVO> {
         val page = collectionService.pagingByPictureId(pictureId, pageable)
         val userVOList = page.content.map {
-            getUserVO(it.userId, userId)
+            getUserVO(it.createdBy!!, userId)
         }
         return PageImpl(userVOList, page.pageable, page.totalElements)
     }

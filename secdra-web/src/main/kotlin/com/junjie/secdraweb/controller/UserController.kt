@@ -44,13 +44,17 @@ class UserController(private val qiniuConfig: QiniuConfig,
     @Auth
     @PostMapping("update")
     @RestfulPack
-    fun update(@CurrentUserId userId: String, name: String?, gender: Gender?, birthday: Date?, introduction: String?, address: String?): UserVO {
+    fun update(@CurrentUserId userId: String, name: String?,
+               gender: Gender?, birthday: Date?, introduction: String?,
+               country: String?, province: String?, city: String?): UserVO {
         val info = userService.get(userId)
         if (name != null && name.isNotEmpty()) info.name = name
         gender?.let { info.gender = it }
         birthday?.let { info.birthday = it }
         if (introduction != null && introduction.isNotEmpty()) info.introduction = introduction
-        if (address != null && address.isNotEmpty()) info.address = address
+        if (country != null && country.isNotEmpty()) info.country = country
+        if (province != null && province.isNotEmpty()) info.province = province
+        if (city != null && city.isNotEmpty()) info.city = city
         return getUserVO(userService.save(info), userId)
     }
 

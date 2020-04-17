@@ -21,6 +21,6 @@ class FeedbackController(private val feedbackService: FeedbackService) {
     @PostMapping("save")
     @RestfulPack
     fun save(@CurrentUserId userId: String?, content: String, email: String?): Feedback {
-        return feedbackService.save(Feedback(userId, content, email))
+        return feedbackService.save(Feedback(content, email))
     }
 }

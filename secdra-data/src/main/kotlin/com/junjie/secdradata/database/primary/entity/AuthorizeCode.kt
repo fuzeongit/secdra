@@ -1,10 +1,8 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
+import com.junjie.secdradata.database.base.AskEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.util.*
 import javax.persistence.*
 
 
@@ -16,20 +14,12 @@ import javax.persistence.*
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "authorize_code", uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("code"))])
-class AuthorizeCode : Serializable {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
-
+class AuthorizeCode() : AskEntity(), Serializable {
+    //操作码
+    @Column(name = "code", length = 32)
     lateinit var code: String
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    constructor()
-
-    constructor(code: String) {
+    constructor(code: String) : this() {
         this.code = code
     }
 }

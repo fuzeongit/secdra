@@ -18,7 +18,7 @@ interface AccountService {
     /**
      * 注册
      */
-    fun signUp(phone: String, password: String, rePasswordDate: Date = Date()): Account
+    fun signUp(phone: String, password: String): Account
 
     /**
      * 登录

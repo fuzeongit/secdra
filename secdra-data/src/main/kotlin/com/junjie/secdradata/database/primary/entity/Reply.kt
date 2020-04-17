@@ -1,13 +1,12 @@
 package com.junjie.secdradata.database.primary.entity
 
-import org.hibernate.annotations.GenericGenerator
-import org.springframework.data.annotation.CreatedDate
+import com.junjie.secdradata.database.base.AskEntity
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.util.*
+import java.io.Serializable
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.Table
 
 /**
  * 回复
@@ -15,34 +14,28 @@ import javax.persistence.Id
  */
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Reply {
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid") //这个是hibernate的注解/生成32位UUID
-    @GeneratedValue(generator = "idGenerator")
-    var id: String? = null
+@Table(name = "reply")
+class Reply() : AskEntity(), Serializable {
     //评论id
+    @Column(name = "comment_id", length = 32)
     lateinit var commentId: String
     //图片作者id
+    @Column(name = "author_id", length = 32)
     lateinit var authorId: String
     //评论人id
+    @Column(name = "critic_id", length = 32)
     lateinit var criticId: String
-    //回答者id
-    lateinit var answererId: String
     //图片id
+    @Column(name = "picture_id", length = 32)
     lateinit var pictureId: String
-
+    //内容
+    @Column(name = "content")
     lateinit var content: String
 
-    @CreatedDate
-    var createDate: Date? = null
-
-    constructor()
-
-    constructor(commentId: String, authorId: String, criticId: String, answererId: String, pictureId: String, content: String) {
+    constructor(commentId: String, authorId: String, criticId: String, pictureId: String, content: String) : this() {
         this.commentId = commentId
         this.authorId = authorId
         this.criticId = criticId
-        this.answererId = answererId
         this.pictureId = pictureId
         this.content = content
     }
