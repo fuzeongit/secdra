@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
  * 定时器的配置
  * @author fjj
  */
-//@Configuration
+@Configuration
 class SchedulingConfigurer(
         private val commentMessageService: CommentMessageService,
         private val replyMessageService: ReplyMessageService,

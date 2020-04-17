@@ -28,14 +28,13 @@ class WebSocketUserInterceptor(private val baseConfig: BaseConfig,
         val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
         if (StompCommand.CONNECT == accessor!!.command) {
             try {
-
                 //获取头信息
                 val raw = message.headers[SimpMessageHeaderAccessor.NATIVE_HEADERS] as Map<*, *>
 //                val token = raw["token"] as LinkedList<*>
                 val token = (raw["token"] as LinkedList<*>)[0].toString()
 
                 val claims = JwtUtil.parseJWT(token, accountConfig.jwtSecretString)
-                val accountId = claims["accountId"] as String
+                val accountId = claims["id"] as String
                 //过期时间
                 val exp = Date(claims["exp"]?.toString()?.toLong()!! * 1000)
                 //生成时间
