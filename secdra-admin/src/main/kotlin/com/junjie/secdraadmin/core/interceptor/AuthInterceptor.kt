@@ -17,13 +17,13 @@ class AuthInterceptor(private val administratorService: AdministratorService
     @Throws(Exception::class)
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         return try {
-            val accessKey = request.getHeader("accessKey")
-            val secretKey = request.getHeader("secretKey")
-            /**
-             * 不用缓存，并发不高
-             */
-            val admin = administratorService.get(accessKey, secretKey)
-            request.setAttribute("adminId", admin.id!!)
+//            val accessKey = request.getHeader("accessKey")
+//            val secretKey = request.getHeader("secretKey")
+//            /**
+//             * 不用缓存，并发不高
+//             */
+//            val admin = administratorService.get(accessKey, secretKey)
+//            request.setAttribute("adminId", admin.id!!)
             true
         } catch (e: Exception) {
             throw PermissionException("没有授权")
