@@ -26,21 +26,31 @@
 #### 项目结构 ![](https://github.com/JunJieFu/static-image/blob/master/secdra/catalog.png)  
     
 #### 数据处理 统一返回接口  
-  
+  ``` bash  
  class Result<T> {        var status: Int? = null    
        var message: String? = null    
        var data: T? = null    
    }  
-  
+  ```
   
   
 前端返回  
-  
+  ``` bash  
  { status:200, data:null, message:"" }  
-
+```
 在这次后台做的一些修改中，主要是已添加接口缓存为主，这方面还需要持续优化。
 还有就是添加了socket的一些支持，主要依靠WebSocketMessageBrokerConfigurer来实现。
 后续调整会将统一返回作为一个注解，而不是现在这样统一返回。
 
 
-#### 开源协议 [MIT](https://opensource.org/licenses/MIT)
+#### 开源协议 
+[MIT](https://opensource.org/licenses/MIT)
+
+#### 后语
+由于初始的项目设计不支持像google那样多程序登录，所以启动了新的项目，该项目已经不作更新，新项目请移步
+
+[beauty](https://github.com/JunJieFu/beauty)
+
+官网如下
+
+[beauty.secdra.com](http://beauty.secdra.com)
